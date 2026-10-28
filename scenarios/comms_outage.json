@@ -1,0 +1,6 @@
+{
+  "name": "Communication Dropout",
+  "duration_minutes": 60,
+  "seed": 42,
+  "faults": [{"kind": "comms_loss", "start_minute": 15, "duration_minutes": 18}]
+}

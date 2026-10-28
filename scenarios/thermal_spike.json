@@ -1,0 +1,7 @@
+{
+  "name": "Thermal Stress and Safe Mode",
+  "duration_minutes": 160,
+  "seed": 42,
+  "initial_temp_c": 43.5,
+  "faults": [{"kind": "thermal_spike", "start_minute": 20, "duration_minutes": 90, "severity": 1.5}]
+}

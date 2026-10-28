@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "mission_id": "lunar-ops-demo-001",
+  "source": "lunar-ops",
+  "target": "spacecraft-reliability-lab",
+  "context": {
+    "asset_id": "orbital-relay-01",
+    "asset_type": "orbital_relay",
+    "simulation_id": "comms-resilience-001"
+  },
+  "scenario": {
+    "name": "Lunar orbital relay power and communications resilience (synthetic)",
+    "duration_minutes": 240,
+    "seed": 101,
+    "battery_capacity_wh": 500,
+    "initial_battery_wh": 350,
+    "normal_load_w": 120,
+    "safe_load_w": 60,
+    "solar_generation_w": 150,
+    "faults": [
+      {"kind": "eclipse", "start_minute": 20, "duration_minutes": 115, "severity": 1},
+      {"kind": "comms_loss", "start_minute": 45, "duration_minutes": 25, "severity": 1}
+    ]
+  }
+}

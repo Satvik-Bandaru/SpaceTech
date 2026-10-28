@@ -1,0 +1,14 @@
+{
+  "name": "Extended Eclipse and Power Shortage",
+  "duration_minutes": 240,
+  "seed": 42,
+  "battery_capacity_wh": 200,
+  "initial_battery_wh": 90,
+  "normal_load_w": 120,
+  "safe_load_w": 30,
+  "solar_generation_w": 150,
+  "faults": [
+    {"kind": "eclipse", "start_minute": 10, "duration_minutes": 110},
+    {"kind": "load_spike", "start_minute": 30, "duration_minutes": 15, "severity": 1.5}
+  ]
+}

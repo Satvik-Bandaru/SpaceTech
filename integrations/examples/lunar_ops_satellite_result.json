@@ -1,0 +1,3170 @@
+{
+  "schema_version": "1.0",
+  "mission_id": "lunar-ops-demo-001",
+  "simulation_id": "comms-resilience-001",
+  "run_id": "sim-defc7460d92b8b643e1f",
+  "request_sha256": "defc7460d92b8b643e1f97039d929b8965770b50533b67e4a42e47dc85d94c4f",
+  "source": "spacecraft-reliability-lab",
+  "target": "lunar-ops",
+  "asset_id": "orbital-relay-01",
+  "asset_type": "orbital_relay",
+  "result_status": "COMPLETED",
+  "data_provenance": "SYNTHETIC",
+  "model_version": "spacecraft-conceptual-v0.1",
+  "model_validated_for_flight": false,
+  "metrics": {
+    "safe_mode_minutes": 0,
+    "comms_availability_pct": 89.58,
+    "normal_operational_pct": 89.58,
+    "min_battery_pct": 26.0,
+    "max_temperature_c": 22.926,
+    "event_count": 1
+  },
+  "advisory_flags": [
+    "SYNTHETIC_COMMS_INTERRUPTION"
+  ],
+  "events": [
+    {
+      "minute": 47,
+      "event": "COMMS_LOSS_DETECTED"
+    }
+  ],
+  "telemetry": [
+    {
+      "minute": 0,
+      "mode": "normal",
+      "battery_wh": 350.5,
+      "battery_pct": 70.1,
+      "temperature_c": 22.926,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 1,
+      "mode": "normal",
+      "battery_wh": 351.0,
+      "battery_pct": 70.2,
+      "temperature_c": 22.852,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 2,
+      "mode": "normal",
+      "battery_wh": 351.5,
+      "battery_pct": 70.3,
+      "temperature_c": 22.779,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 3,
+      "mode": "normal",
+      "battery_wh": 352.0,
+      "battery_pct": 70.4,
+      "temperature_c": 22.708,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 4,
+      "mode": "normal",
+      "battery_wh": 352.5,
+      "battery_pct": 70.5,
+      "temperature_c": 22.637,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 5,
+      "mode": "normal",
+      "battery_wh": 353.0,
+      "battery_pct": 70.6,
+      "temperature_c": 22.567,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 6,
+      "mode": "normal",
+      "battery_wh": 353.5,
+      "battery_pct": 70.7,
+      "temperature_c": 22.498,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 7,
+      "mode": "normal",
+      "battery_wh": 354.0,
+      "battery_pct": 70.8,
+      "temperature_c": 22.429,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 8,
+      "mode": "normal",
+      "battery_wh": 354.5,
+      "battery_pct": 70.9,
+      "temperature_c": 22.362,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 9,
+      "mode": "normal",
+      "battery_wh": 355.0,
+      "battery_pct": 71.0,
+      "temperature_c": 22.295,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 10,
+      "mode": "normal",
+      "battery_wh": 355.5,
+      "battery_pct": 71.1,
+      "temperature_c": 22.229,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 11,
+      "mode": "normal",
+      "battery_wh": 356.0,
+      "battery_pct": 71.2,
+      "temperature_c": 22.164,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 12,
+      "mode": "normal",
+      "battery_wh": 356.5,
+      "battery_pct": 71.3,
+      "temperature_c": 22.099,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 13,
+      "mode": "normal",
+      "battery_wh": 357.0,
+      "battery_pct": 71.4,
+      "temperature_c": 22.036,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 14,
+      "mode": "normal",
+      "battery_wh": 357.5,
+      "battery_pct": 71.5,
+      "temperature_c": 21.973,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 15,
+      "mode": "normal",
+      "battery_wh": 358.0,
+      "battery_pct": 71.6,
+      "temperature_c": 21.911,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 16,
+      "mode": "normal",
+      "battery_wh": 358.5,
+      "battery_pct": 71.7,
+      "temperature_c": 21.85,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 17,
+      "mode": "normal",
+      "battery_wh": 359.0,
+      "battery_pct": 71.8,
+      "temperature_c": 21.789,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 18,
+      "mode": "normal",
+      "battery_wh": 359.5,
+      "battery_pct": 71.9,
+      "temperature_c": 21.729,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 19,
+      "mode": "normal",
+      "battery_wh": 360.0,
+      "battery_pct": 72.0,
+      "temperature_c": 21.67,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 20,
+      "mode": "normal",
+      "battery_wh": 358.0,
+      "battery_pct": 71.6,
+      "temperature_c": 21.612,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 21,
+      "mode": "normal",
+      "battery_wh": 356.0,
+      "battery_pct": 71.2,
+      "temperature_c": 21.554,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 22,
+      "mode": "normal",
+      "battery_wh": 354.0,
+      "battery_pct": 70.8,
+      "temperature_c": 21.497,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 23,
+      "mode": "normal",
+      "battery_wh": 352.0,
+      "battery_pct": 70.4,
+      "temperature_c": 21.44,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 24,
+      "mode": "normal",
+      "battery_wh": 350.0,
+      "battery_pct": 70.0,
+      "temperature_c": 21.385,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 25,
+      "mode": "normal",
+      "battery_wh": 348.0,
+      "battery_pct": 69.6,
+      "temperature_c": 21.33,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 26,
+      "mode": "normal",
+      "battery_wh": 346.0,
+      "battery_pct": 69.2,
+      "temperature_c": 21.275,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 27,
+      "mode": "normal",
+      "battery_wh": 344.0,
+      "battery_pct": 68.8,
+      "temperature_c": 21.222,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 28,
+      "mode": "normal",
+      "battery_wh": 342.0,
+      "battery_pct": 68.4,
+      "temperature_c": 21.169,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 29,
+      "mode": "normal",
+      "battery_wh": 340.0,
+      "battery_pct": 68.0,
+      "temperature_c": 21.116,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 30,
+      "mode": "normal",
+      "battery_wh": 338.0,
+      "battery_pct": 67.6,
+      "temperature_c": 21.064,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 31,
+      "mode": "normal",
+      "battery_wh": 336.0,
+      "battery_pct": 67.2,
+      "temperature_c": 21.013,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 32,
+      "mode": "normal",
+      "battery_wh": 334.0,
+      "battery_pct": 66.8,
+      "temperature_c": 20.963,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 33,
+      "mode": "normal",
+      "battery_wh": 332.0,
+      "battery_pct": 66.4,
+      "temperature_c": 20.913,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 34,
+      "mode": "normal",
+      "battery_wh": 330.0,
+      "battery_pct": 66.0,
+      "temperature_c": 20.863,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 35,
+      "mode": "normal",
+      "battery_wh": 328.0,
+      "battery_pct": 65.6,
+      "temperature_c": 20.815,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 36,
+      "mode": "normal",
+      "battery_wh": 326.0,
+      "battery_pct": 65.2,
+      "temperature_c": 20.766,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 37,
+      "mode": "normal",
+      "battery_wh": 324.0,
+      "battery_pct": 64.8,
+      "temperature_c": 20.719,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 38,
+      "mode": "normal",
+      "battery_wh": 322.0,
+      "battery_pct": 64.4,
+      "temperature_c": 20.672,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 39,
+      "mode": "normal",
+      "battery_wh": 320.0,
+      "battery_pct": 64.0,
+      "temperature_c": 20.625,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 40,
+      "mode": "normal",
+      "battery_wh": 318.0,
+      "battery_pct": 63.6,
+      "temperature_c": 20.579,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 41,
+      "mode": "normal",
+      "battery_wh": 316.0,
+      "battery_pct": 63.2,
+      "temperature_c": 20.534,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 42,
+      "mode": "normal",
+      "battery_wh": 314.0,
+      "battery_pct": 62.8,
+      "temperature_c": 20.489,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 43,
+      "mode": "normal",
+      "battery_wh": 312.0,
+      "battery_pct": 62.4,
+      "temperature_c": 20.445,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 44,
+      "mode": "normal",
+      "battery_wh": 310.0,
+      "battery_pct": 62.0,
+      "temperature_c": 20.401,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 45,
+      "mode": "normal",
+      "battery_wh": 308.0,
+      "battery_pct": 61.6,
+      "temperature_c": 20.358,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 46,
+      "mode": "normal",
+      "battery_wh": 306.0,
+      "battery_pct": 61.2,
+      "temperature_c": 20.315,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 47,
+      "mode": "normal",
+      "battery_wh": 304.0,
+      "battery_pct": 60.8,
+      "temperature_c": 20.273,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 48,
+      "mode": "normal",
+      "battery_wh": 302.0,
+      "battery_pct": 60.4,
+      "temperature_c": 20.231,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 49,
+      "mode": "normal",
+      "battery_wh": 300.0,
+      "battery_pct": 60.0,
+      "temperature_c": 20.19,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 50,
+      "mode": "normal",
+      "battery_wh": 298.0,
+      "battery_pct": 59.6,
+      "temperature_c": 20.15,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 51,
+      "mode": "normal",
+      "battery_wh": 296.0,
+      "battery_pct": 59.2,
+      "temperature_c": 20.109,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 52,
+      "mode": "normal",
+      "battery_wh": 294.0,
+      "battery_pct": 58.8,
+      "temperature_c": 20.07,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 53,
+      "mode": "normal",
+      "battery_wh": 292.0,
+      "battery_pct": 58.4,
+      "temperature_c": 20.03,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 54,
+      "mode": "normal",
+      "battery_wh": 290.0,
+      "battery_pct": 58.0,
+      "temperature_c": 19.992,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 55,
+      "mode": "normal",
+      "battery_wh": 288.0,
+      "battery_pct": 57.6,
+      "temperature_c": 19.953,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 56,
+      "mode": "normal",
+      "battery_wh": 286.0,
+      "battery_pct": 57.2,
+      "temperature_c": 19.916,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 57,
+      "mode": "normal",
+      "battery_wh": 284.0,
+      "battery_pct": 56.8,
+      "temperature_c": 19.878,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 58,
+      "mode": "normal",
+      "battery_wh": 282.0,
+      "battery_pct": 56.4,
+      "temperature_c": 19.841,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 59,
+      "mode": "normal",
+      "battery_wh": 280.0,
+      "battery_pct": 56.0,
+      "temperature_c": 19.805,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 60,
+      "mode": "normal",
+      "battery_wh": 278.0,
+      "battery_pct": 55.6,
+      "temperature_c": 19.769,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 61,
+      "mode": "normal",
+      "battery_wh": 276.0,
+      "battery_pct": 55.2,
+      "temperature_c": 19.733,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 62,
+      "mode": "normal",
+      "battery_wh": 274.0,
+      "battery_pct": 54.8,
+      "temperature_c": 19.698,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 63,
+      "mode": "normal",
+      "battery_wh": 272.0,
+      "battery_pct": 54.4,
+      "temperature_c": 19.663,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 64,
+      "mode": "normal",
+      "battery_wh": 270.0,
+      "battery_pct": 54.0,
+      "temperature_c": 19.629,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 65,
+      "mode": "normal",
+      "battery_wh": 268.0,
+      "battery_pct": 53.6,
+      "temperature_c": 19.595,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 66,
+      "mode": "normal",
+      "battery_wh": 266.0,
+      "battery_pct": 53.2,
+      "temperature_c": 19.561,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 67,
+      "mode": "normal",
+      "battery_wh": 264.0,
+      "battery_pct": 52.8,
+      "temperature_c": 19.528,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 68,
+      "mode": "normal",
+      "battery_wh": 262.0,
+      "battery_pct": 52.4,
+      "temperature_c": 19.495,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 69,
+      "mode": "normal",
+      "battery_wh": 260.0,
+      "battery_pct": 52.0,
+      "temperature_c": 19.463,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": false,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse",
+        "comms_loss"
+      ]
+    },
+    {
+      "minute": 70,
+      "mode": "normal",
+      "battery_wh": 258.0,
+      "battery_pct": 51.6,
+      "temperature_c": 19.431,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 71,
+      "mode": "normal",
+      "battery_wh": 256.0,
+      "battery_pct": 51.2,
+      "temperature_c": 19.4,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 72,
+      "mode": "normal",
+      "battery_wh": 254.0,
+      "battery_pct": 50.8,
+      "temperature_c": 19.368,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 73,
+      "mode": "normal",
+      "battery_wh": 252.0,
+      "battery_pct": 50.4,
+      "temperature_c": 19.337,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 74,
+      "mode": "normal",
+      "battery_wh": 250.0,
+      "battery_pct": 50.0,
+      "temperature_c": 19.307,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 75,
+      "mode": "normal",
+      "battery_wh": 248.0,
+      "battery_pct": 49.6,
+      "temperature_c": 19.277,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 76,
+      "mode": "normal",
+      "battery_wh": 246.0,
+      "battery_pct": 49.2,
+      "temperature_c": 19.247,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 77,
+      "mode": "normal",
+      "battery_wh": 244.0,
+      "battery_pct": 48.8,
+      "temperature_c": 19.218,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 78,
+      "mode": "normal",
+      "battery_wh": 242.0,
+      "battery_pct": 48.4,
+      "temperature_c": 19.189,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 79,
+      "mode": "normal",
+      "battery_wh": 240.0,
+      "battery_pct": 48.0,
+      "temperature_c": 19.16,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 80,
+      "mode": "normal",
+      "battery_wh": 238.0,
+      "battery_pct": 47.6,
+      "temperature_c": 19.132,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 81,
+      "mode": "normal",
+      "battery_wh": 236.0,
+      "battery_pct": 47.2,
+      "temperature_c": 19.104,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 82,
+      "mode": "normal",
+      "battery_wh": 234.0,
+      "battery_pct": 46.8,
+      "temperature_c": 19.076,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 83,
+      "mode": "normal",
+      "battery_wh": 232.0,
+      "battery_pct": 46.4,
+      "temperature_c": 19.049,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 84,
+      "mode": "normal",
+      "battery_wh": 230.0,
+      "battery_pct": 46.0,
+      "temperature_c": 19.022,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 85,
+      "mode": "normal",
+      "battery_wh": 228.0,
+      "battery_pct": 45.6,
+      "temperature_c": 18.995,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 86,
+      "mode": "normal",
+      "battery_wh": 226.0,
+      "battery_pct": 45.2,
+      "temperature_c": 18.969,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 87,
+      "mode": "normal",
+      "battery_wh": 224.0,
+      "battery_pct": 44.8,
+      "temperature_c": 18.943,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 88,
+      "mode": "normal",
+      "battery_wh": 222.0,
+      "battery_pct": 44.4,
+      "temperature_c": 18.917,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 89,
+      "mode": "normal",
+      "battery_wh": 220.0,
+      "battery_pct": 44.0,
+      "temperature_c": 18.892,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 90,
+      "mode": "normal",
+      "battery_wh": 218.0,
+      "battery_pct": 43.6,
+      "temperature_c": 18.867,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 91,
+      "mode": "normal",
+      "battery_wh": 216.0,
+      "battery_pct": 43.2,
+      "temperature_c": 18.842,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 92,
+      "mode": "normal",
+      "battery_wh": 214.0,
+      "battery_pct": 42.8,
+      "temperature_c": 18.817,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 93,
+      "mode": "normal",
+      "battery_wh": 212.0,
+      "battery_pct": 42.4,
+      "temperature_c": 18.793,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 94,
+      "mode": "normal",
+      "battery_wh": 210.0,
+      "battery_pct": 42.0,
+      "temperature_c": 18.769,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 95,
+      "mode": "normal",
+      "battery_wh": 208.0,
+      "battery_pct": 41.6,
+      "temperature_c": 18.746,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 96,
+      "mode": "normal",
+      "battery_wh": 206.0,
+      "battery_pct": 41.2,
+      "temperature_c": 18.722,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 97,
+      "mode": "normal",
+      "battery_wh": 204.0,
+      "battery_pct": 40.8,
+      "temperature_c": 18.699,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 98,
+      "mode": "normal",
+      "battery_wh": 202.0,
+      "battery_pct": 40.4,
+      "temperature_c": 18.676,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 99,
+      "mode": "normal",
+      "battery_wh": 200.0,
+      "battery_pct": 40.0,
+      "temperature_c": 18.654,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 100,
+      "mode": "normal",
+      "battery_wh": 198.0,
+      "battery_pct": 39.6,
+      "temperature_c": 18.632,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 101,
+      "mode": "normal",
+      "battery_wh": 196.0,
+      "battery_pct": 39.2,
+      "temperature_c": 18.61,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 102,
+      "mode": "normal",
+      "battery_wh": 194.0,
+      "battery_pct": 38.8,
+      "temperature_c": 18.588,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 103,
+      "mode": "normal",
+      "battery_wh": 192.0,
+      "battery_pct": 38.4,
+      "temperature_c": 18.567,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 104,
+      "mode": "normal",
+      "battery_wh": 190.0,
+      "battery_pct": 38.0,
+      "temperature_c": 18.545,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 105,
+      "mode": "normal",
+      "battery_wh": 188.0,
+      "battery_pct": 37.6,
+      "temperature_c": 18.524,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 106,
+      "mode": "normal",
+      "battery_wh": 186.0,
+      "battery_pct": 37.2,
+      "temperature_c": 18.504,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 107,
+      "mode": "normal",
+      "battery_wh": 184.0,
+      "battery_pct": 36.8,
+      "temperature_c": 18.483,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 108,
+      "mode": "normal",
+      "battery_wh": 182.0,
+      "battery_pct": 36.4,
+      "temperature_c": 18.463,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 109,
+      "mode": "normal",
+      "battery_wh": 180.0,
+      "battery_pct": 36.0,
+      "temperature_c": 18.443,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 110,
+      "mode": "normal",
+      "battery_wh": 178.0,
+      "battery_pct": 35.6,
+      "temperature_c": 18.423,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 111,
+      "mode": "normal",
+      "battery_wh": 176.0,
+      "battery_pct": 35.2,
+      "temperature_c": 18.404,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 112,
+      "mode": "normal",
+      "battery_wh": 174.0,
+      "battery_pct": 34.8,
+      "temperature_c": 18.385,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 113,
+      "mode": "normal",
+      "battery_wh": 172.0,
+      "battery_pct": 34.4,
+      "temperature_c": 18.366,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 114,
+      "mode": "normal",
+      "battery_wh": 170.0,
+      "battery_pct": 34.0,
+      "temperature_c": 18.347,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 115,
+      "mode": "normal",
+      "battery_wh": 168.0,
+      "battery_pct": 33.6,
+      "temperature_c": 18.328,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 116,
+      "mode": "normal",
+      "battery_wh": 166.0,
+      "battery_pct": 33.2,
+      "temperature_c": 18.31,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 117,
+      "mode": "normal",
+      "battery_wh": 164.0,
+      "battery_pct": 32.8,
+      "temperature_c": 18.292,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 118,
+      "mode": "normal",
+      "battery_wh": 162.0,
+      "battery_pct": 32.4,
+      "temperature_c": 18.274,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 119,
+      "mode": "normal",
+      "battery_wh": 160.0,
+      "battery_pct": 32.0,
+      "temperature_c": 18.256,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 120,
+      "mode": "normal",
+      "battery_wh": 158.0,
+      "battery_pct": 31.6,
+      "temperature_c": 18.239,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 121,
+      "mode": "normal",
+      "battery_wh": 156.0,
+      "battery_pct": 31.2,
+      "temperature_c": 18.221,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 122,
+      "mode": "normal",
+      "battery_wh": 154.0,
+      "battery_pct": 30.8,
+      "temperature_c": 18.204,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 123,
+      "mode": "normal",
+      "battery_wh": 152.0,
+      "battery_pct": 30.4,
+      "temperature_c": 18.188,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 124,
+      "mode": "normal",
+      "battery_wh": 150.0,
+      "battery_pct": 30.0,
+      "temperature_c": 18.171,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 125,
+      "mode": "normal",
+      "battery_wh": 148.0,
+      "battery_pct": 29.6,
+      "temperature_c": 18.154,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 126,
+      "mode": "normal",
+      "battery_wh": 146.0,
+      "battery_pct": 29.2,
+      "temperature_c": 18.138,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 127,
+      "mode": "normal",
+      "battery_wh": 144.0,
+      "battery_pct": 28.8,
+      "temperature_c": 18.122,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 128,
+      "mode": "normal",
+      "battery_wh": 142.0,
+      "battery_pct": 28.4,
+      "temperature_c": 18.106,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 129,
+      "mode": "normal",
+      "battery_wh": 140.0,
+      "battery_pct": 28.0,
+      "temperature_c": 18.091,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 130,
+      "mode": "normal",
+      "battery_wh": 138.0,
+      "battery_pct": 27.6,
+      "temperature_c": 18.075,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 131,
+      "mode": "normal",
+      "battery_wh": 136.0,
+      "battery_pct": 27.2,
+      "temperature_c": 18.06,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 132,
+      "mode": "normal",
+      "battery_wh": 134.0,
+      "battery_pct": 26.8,
+      "temperature_c": 18.045,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 133,
+      "mode": "normal",
+      "battery_wh": 132.0,
+      "battery_pct": 26.4,
+      "temperature_c": 18.03,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 134,
+      "mode": "normal",
+      "battery_wh": 130.0,
+      "battery_pct": 26.0,
+      "temperature_c": 18.015,
+      "solar_w": 0.0,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": [
+        "eclipse"
+      ]
+    },
+    {
+      "minute": 135,
+      "mode": "normal",
+      "battery_wh": 130.5,
+      "battery_pct": 26.1,
+      "temperature_c": 18.0,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 136,
+      "mode": "normal",
+      "battery_wh": 131.0,
+      "battery_pct": 26.2,
+      "temperature_c": 17.986,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 137,
+      "mode": "normal",
+      "battery_wh": 131.5,
+      "battery_pct": 26.3,
+      "temperature_c": 17.972,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 138,
+      "mode": "normal",
+      "battery_wh": 132.0,
+      "battery_pct": 26.4,
+      "temperature_c": 17.958,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 139,
+      "mode": "normal",
+      "battery_wh": 132.5,
+      "battery_pct": 26.5,
+      "temperature_c": 17.944,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 140,
+      "mode": "normal",
+      "battery_wh": 133.0,
+      "battery_pct": 26.6,
+      "temperature_c": 17.93,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 141,
+      "mode": "normal",
+      "battery_wh": 133.5,
+      "battery_pct": 26.7,
+      "temperature_c": 17.917,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 142,
+      "mode": "normal",
+      "battery_wh": 134.0,
+      "battery_pct": 26.8,
+      "temperature_c": 17.903,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 143,
+      "mode": "normal",
+      "battery_wh": 134.5,
+      "battery_pct": 26.9,
+      "temperature_c": 17.89,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 144,
+      "mode": "normal",
+      "battery_wh": 135.0,
+      "battery_pct": 27.0,
+      "temperature_c": 17.877,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 145,
+      "mode": "normal",
+      "battery_wh": 135.5,
+      "battery_pct": 27.1,
+      "temperature_c": 17.864,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 146,
+      "mode": "normal",
+      "battery_wh": 136.0,
+      "battery_pct": 27.2,
+      "temperature_c": 17.851,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 147,
+      "mode": "normal",
+      "battery_wh": 136.5,
+      "battery_pct": 27.3,
+      "temperature_c": 17.839,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 148,
+      "mode": "normal",
+      "battery_wh": 137.0,
+      "battery_pct": 27.4,
+      "temperature_c": 17.826,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 149,
+      "mode": "normal",
+      "battery_wh": 137.5,
+      "battery_pct": 27.5,
+      "temperature_c": 17.814,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 150,
+      "mode": "normal",
+      "battery_wh": 138.0,
+      "battery_pct": 27.6,
+      "temperature_c": 17.802,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 151,
+      "mode": "normal",
+      "battery_wh": 138.5,
+      "battery_pct": 27.7,
+      "temperature_c": 17.79,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 152,
+      "mode": "normal",
+      "battery_wh": 139.0,
+      "battery_pct": 27.8,
+      "temperature_c": 17.778,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 153,
+      "mode": "normal",
+      "battery_wh": 139.5,
+      "battery_pct": 27.9,
+      "temperature_c": 17.766,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 154,
+      "mode": "normal",
+      "battery_wh": 140.0,
+      "battery_pct": 28.0,
+      "temperature_c": 17.754,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 155,
+      "mode": "normal",
+      "battery_wh": 140.5,
+      "battery_pct": 28.1,
+      "temperature_c": 17.743,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 156,
+      "mode": "normal",
+      "battery_wh": 141.0,
+      "battery_pct": 28.2,
+      "temperature_c": 17.732,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 157,
+      "mode": "normal",
+      "battery_wh": 141.5,
+      "battery_pct": 28.3,
+      "temperature_c": 17.72,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 158,
+      "mode": "normal",
+      "battery_wh": 142.0,
+      "battery_pct": 28.4,
+      "temperature_c": 17.709,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 159,
+      "mode": "normal",
+      "battery_wh": 142.5,
+      "battery_pct": 28.5,
+      "temperature_c": 17.698,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 160,
+      "mode": "normal",
+      "battery_wh": 143.0,
+      "battery_pct": 28.6,
+      "temperature_c": 17.688,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 161,
+      "mode": "normal",
+      "battery_wh": 143.5,
+      "battery_pct": 28.7,
+      "temperature_c": 17.677,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 162,
+      "mode": "normal",
+      "battery_wh": 144.0,
+      "battery_pct": 28.8,
+      "temperature_c": 17.667,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 163,
+      "mode": "normal",
+      "battery_wh": 144.5,
+      "battery_pct": 28.9,
+      "temperature_c": 17.656,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 164,
+      "mode": "normal",
+      "battery_wh": 145.0,
+      "battery_pct": 29.0,
+      "temperature_c": 17.646,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 165,
+      "mode": "normal",
+      "battery_wh": 145.5,
+      "battery_pct": 29.1,
+      "temperature_c": 17.636,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 166,
+      "mode": "normal",
+      "battery_wh": 146.0,
+      "battery_pct": 29.2,
+      "temperature_c": 17.626,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 167,
+      "mode": "normal",
+      "battery_wh": 146.5,
+      "battery_pct": 29.3,
+      "temperature_c": 17.616,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 168,
+      "mode": "normal",
+      "battery_wh": 147.0,
+      "battery_pct": 29.4,
+      "temperature_c": 17.606,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 169,
+      "mode": "normal",
+      "battery_wh": 147.5,
+      "battery_pct": 29.5,
+      "temperature_c": 17.596,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 170,
+      "mode": "normal",
+      "battery_wh": 148.0,
+      "battery_pct": 29.6,
+      "temperature_c": 17.587,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 171,
+      "mode": "normal",
+      "battery_wh": 148.5,
+      "battery_pct": 29.7,
+      "temperature_c": 17.577,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 172,
+      "mode": "normal",
+      "battery_wh": 149.0,
+      "battery_pct": 29.8,
+      "temperature_c": 17.568,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 173,
+      "mode": "normal",
+      "battery_wh": 149.5,
+      "battery_pct": 29.9,
+      "temperature_c": 17.559,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 174,
+      "mode": "normal",
+      "battery_wh": 150.0,
+      "battery_pct": 30.0,
+      "temperature_c": 17.55,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 175,
+      "mode": "normal",
+      "battery_wh": 150.5,
+      "battery_pct": 30.1,
+      "temperature_c": 17.541,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 176,
+      "mode": "normal",
+      "battery_wh": 151.0,
+      "battery_pct": 30.2,
+      "temperature_c": 17.532,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 177,
+      "mode": "normal",
+      "battery_wh": 151.5,
+      "battery_pct": 30.3,
+      "temperature_c": 17.523,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 178,
+      "mode": "normal",
+      "battery_wh": 152.0,
+      "battery_pct": 30.4,
+      "temperature_c": 17.514,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 179,
+      "mode": "normal",
+      "battery_wh": 152.5,
+      "battery_pct": 30.5,
+      "temperature_c": 17.506,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 180,
+      "mode": "normal",
+      "battery_wh": 153.0,
+      "battery_pct": 30.6,
+      "temperature_c": 17.497,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 181,
+      "mode": "normal",
+      "battery_wh": 153.5,
+      "battery_pct": 30.7,
+      "temperature_c": 17.489,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 182,
+      "mode": "normal",
+      "battery_wh": 154.0,
+      "battery_pct": 30.8,
+      "temperature_c": 17.481,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 183,
+      "mode": "normal",
+      "battery_wh": 154.5,
+      "battery_pct": 30.9,
+      "temperature_c": 17.472,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 184,
+      "mode": "normal",
+      "battery_wh": 155.0,
+      "battery_pct": 31.0,
+      "temperature_c": 17.464,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 185,
+      "mode": "normal",
+      "battery_wh": 155.5,
+      "battery_pct": 31.1,
+      "temperature_c": 17.456,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 186,
+      "mode": "normal",
+      "battery_wh": 156.0,
+      "battery_pct": 31.2,
+      "temperature_c": 17.449,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 187,
+      "mode": "normal",
+      "battery_wh": 156.5,
+      "battery_pct": 31.3,
+      "temperature_c": 17.441,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 188,
+      "mode": "normal",
+      "battery_wh": 157.0,
+      "battery_pct": 31.4,
+      "temperature_c": 17.433,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 189,
+      "mode": "normal",
+      "battery_wh": 157.5,
+      "battery_pct": 31.5,
+      "temperature_c": 17.425,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 190,
+      "mode": "normal",
+      "battery_wh": 158.0,
+      "battery_pct": 31.6,
+      "temperature_c": 17.418,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 191,
+      "mode": "normal",
+      "battery_wh": 158.5,
+      "battery_pct": 31.7,
+      "temperature_c": 17.411,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 192,
+      "mode": "normal",
+      "battery_wh": 159.0,
+      "battery_pct": 31.8,
+      "temperature_c": 17.403,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 193,
+      "mode": "normal",
+      "battery_wh": 159.5,
+      "battery_pct": 31.9,
+      "temperature_c": 17.396,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 194,
+      "mode": "normal",
+      "battery_wh": 160.0,
+      "battery_pct": 32.0,
+      "temperature_c": 17.389,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 195,
+      "mode": "normal",
+      "battery_wh": 160.5,
+      "battery_pct": 32.1,
+      "temperature_c": 17.382,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 196,
+      "mode": "normal",
+      "battery_wh": 161.0,
+      "battery_pct": 32.2,
+      "temperature_c": 17.375,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 197,
+      "mode": "normal",
+      "battery_wh": 161.5,
+      "battery_pct": 32.3,
+      "temperature_c": 17.368,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 198,
+      "mode": "normal",
+      "battery_wh": 162.0,
+      "battery_pct": 32.4,
+      "temperature_c": 17.361,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 199,
+      "mode": "normal",
+      "battery_wh": 162.5,
+      "battery_pct": 32.5,
+      "temperature_c": 17.354,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 200,
+      "mode": "normal",
+      "battery_wh": 163.0,
+      "battery_pct": 32.6,
+      "temperature_c": 17.348,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 201,
+      "mode": "normal",
+      "battery_wh": 163.5,
+      "battery_pct": 32.7,
+      "temperature_c": 17.341,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 202,
+      "mode": "normal",
+      "battery_wh": 164.0,
+      "battery_pct": 32.8,
+      "temperature_c": 17.335,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 203,
+      "mode": "normal",
+      "battery_wh": 164.5,
+      "battery_pct": 32.9,
+      "temperature_c": 17.328,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 204,
+      "mode": "normal",
+      "battery_wh": 165.0,
+      "battery_pct": 33.0,
+      "temperature_c": 17.322,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 205,
+      "mode": "normal",
+      "battery_wh": 165.5,
+      "battery_pct": 33.1,
+      "temperature_c": 17.316,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 206,
+      "mode": "normal",
+      "battery_wh": 166.0,
+      "battery_pct": 33.2,
+      "temperature_c": 17.309,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 207,
+      "mode": "normal",
+      "battery_wh": 166.5,
+      "battery_pct": 33.3,
+      "temperature_c": 17.303,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 208,
+      "mode": "normal",
+      "battery_wh": 167.0,
+      "battery_pct": 33.4,
+      "temperature_c": 17.297,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 209,
+      "mode": "normal",
+      "battery_wh": 167.5,
+      "battery_pct": 33.5,
+      "temperature_c": 17.291,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 210,
+      "mode": "normal",
+      "battery_wh": 168.0,
+      "battery_pct": 33.6,
+      "temperature_c": 17.285,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 211,
+      "mode": "normal",
+      "battery_wh": 168.5,
+      "battery_pct": 33.7,
+      "temperature_c": 17.28,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 212,
+      "mode": "normal",
+      "battery_wh": 169.0,
+      "battery_pct": 33.8,
+      "temperature_c": 17.274,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 213,
+      "mode": "normal",
+      "battery_wh": 169.5,
+      "battery_pct": 33.9,
+      "temperature_c": 17.268,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 214,
+      "mode": "normal",
+      "battery_wh": 170.0,
+      "battery_pct": 34.0,
+      "temperature_c": 17.263,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 215,
+      "mode": "normal",
+      "battery_wh": 170.5,
+      "battery_pct": 34.1,
+      "temperature_c": 17.257,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 216,
+      "mode": "normal",
+      "battery_wh": 171.0,
+      "battery_pct": 34.2,
+      "temperature_c": 17.251,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 217,
+      "mode": "normal",
+      "battery_wh": 171.5,
+      "battery_pct": 34.3,
+      "temperature_c": 17.246,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 218,
+      "mode": "normal",
+      "battery_wh": 172.0,
+      "battery_pct": 34.4,
+      "temperature_c": 17.241,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 219,
+      "mode": "normal",
+      "battery_wh": 172.5,
+      "battery_pct": 34.5,
+      "temperature_c": 17.235,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 220,
+      "mode": "normal",
+      "battery_wh": 173.0,
+      "battery_pct": 34.6,
+      "temperature_c": 17.23,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 221,
+      "mode": "normal",
+      "battery_wh": 173.5,
+      "battery_pct": 34.7,
+      "temperature_c": 17.225,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 222,
+      "mode": "normal",
+      "battery_wh": 174.0,
+      "battery_pct": 34.8,
+      "temperature_c": 17.22,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 223,
+      "mode": "normal",
+      "battery_wh": 174.5,
+      "battery_pct": 34.9,
+      "temperature_c": 17.215,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 224,
+      "mode": "normal",
+      "battery_wh": 175.0,
+      "battery_pct": 35.0,
+      "temperature_c": 17.21,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 225,
+      "mode": "normal",
+      "battery_wh": 175.5,
+      "battery_pct": 35.1,
+      "temperature_c": 17.205,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 226,
+      "mode": "normal",
+      "battery_wh": 176.0,
+      "battery_pct": 35.2,
+      "temperature_c": 17.2,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 227,
+      "mode": "normal",
+      "battery_wh": 176.5,
+      "battery_pct": 35.3,
+      "temperature_c": 17.195,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 228,
+      "mode": "normal",
+      "battery_wh": 177.0,
+      "battery_pct": 35.4,
+      "temperature_c": 17.191,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 229,
+      "mode": "normal",
+      "battery_wh": 177.5,
+      "battery_pct": 35.5,
+      "temperature_c": 17.186,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 230,
+      "mode": "normal",
+      "battery_wh": 178.0,
+      "battery_pct": 35.6,
+      "temperature_c": 17.181,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 231,
+      "mode": "normal",
+      "battery_wh": 178.5,
+      "battery_pct": 35.7,
+      "temperature_c": 17.177,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 232,
+      "mode": "normal",
+      "battery_wh": 179.0,
+      "battery_pct": 35.8,
+      "temperature_c": 17.172,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 233,
+      "mode": "normal",
+      "battery_wh": 179.5,
+      "battery_pct": 35.9,
+      "temperature_c": 17.168,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 234,
+      "mode": "normal",
+      "battery_wh": 180.0,
+      "battery_pct": 36.0,
+      "temperature_c": 17.163,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 235,
+      "mode": "normal",
+      "battery_wh": 180.5,
+      "battery_pct": 36.1,
+      "temperature_c": 17.159,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 236,
+      "mode": "normal",
+      "battery_wh": 181.0,
+      "battery_pct": 36.2,
+      "temperature_c": 17.155,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 237,
+      "mode": "normal",
+      "battery_wh": 181.5,
+      "battery_pct": 36.3,
+      "temperature_c": 17.15,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 238,
+      "mode": "normal",
+      "battery_wh": 182.0,
+      "battery_pct": 36.4,
+      "temperature_c": 17.146,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    },
+    {
+      "minute": 239,
+      "mode": "normal",
+      "battery_wh": 182.5,
+      "battery_pct": 36.5,
+      "temperature_c": 17.142,
+      "solar_w": 150,
+      "load_w": 120.0,
+      "comms_up": true,
+      "attitude_ok": true,
+      "active_faults": []
+    }
+  ],
+  "disclaimer": "Simplified deterministic educational model; not validated spacecraft flight software."
+}

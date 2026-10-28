@@ -1,0 +1,7 @@
+{
+  "name": "Nominal SmallSat Operations",
+  "description": "Reference scenario with adequate solar generation and no injected faults",
+  "duration_minutes": 120,
+  "seed": 42,
+  "faults": []
+}
