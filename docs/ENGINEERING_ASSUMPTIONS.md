@@ -30,7 +30,7 @@ Confusion counts are fault-channel samples. Truth excludes manifestations masked
 
 No multi-node conduction, battery voltage/aging/electrochemistry, orbital propagator, eclipse ephemeris, RF link budget, rigid-body attitude dynamics, radiation damage, processor reboot, bus topology, hardware-in-the-loop, real telemetry or independent spacecraft-model validation. Actuator isolation is idealized. There is no uncertainty calibration against measurements, authenticated service, operational command link, real-time guarantee or flight qualification.
 
-The future Spacecraft Health Control Center should consume versioned reports through a separate rendering layer: spacecraft/subsystem selection, power-flow and temperature plots, fault timeline, deterministic pause/replay and editable scenarios. Every displayed state should come from telemetry, with units, synthetic labels, seed/model identity and visible invariant failures. A browser UI, live controls and 3D spacecraft visualization remain unimplemented; they must not imply real hardware operations.
+The local Spacecraft Health Control Center now consumes versioned reports through a separate browser rendering layer: subsystem selection, telemetry plots, fault timeline, deterministic pause/replay, policy comparison and editable scenarios. Every changing spacecraft state comes from recorded telemetry, with units, synthetic labels, seed/model identity and visible invariant failures. It displays a schematic of one reference satellite. Multi-spacecraft selection, live physics stepping, persisted experiments and 3D spacecraft visualization remain unimplemented; the interface does not issue hardware commands.
 
 ## Release gates
 
@@ -41,4 +41,5 @@ The future Spacecraft Health Control Center should consume versioned reports thr
 - Implemented input hardening: 256,000-byte JSON limit, duplicate-key/nonfinite rejection, strict bounded new-engine configuration. No network attack surface added. Legacy direct-call malformed-fault parsing remains technical debt; only its CLI file boundary was hardened.
 - Passed locally on arm64 with Python 3.12.8; standard-library Python has no GPU requirement.
 - Unavailable: empirical spacecraft hardware validation and independent high-fidelity model comparison.
-- Not implemented: dashboard, live synchronization, authenticated transport and flight certification. No deployment performed.
+- Added local dashboard verification: HTTP integration tests, real paired-engine results, deterministic replay, invalid input and local-origin restrictions. The original M1 test count above is historical; see the control-center verification report for the expanded suite.
+- Not implemented: live synchronization, authenticated transport and flight certification. No deployment performed.

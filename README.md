@@ -15,7 +15,19 @@ python3 run_engineering.py scenarios/engineering_multifault.json --policy assist
 python3 benchmark_engineering.py scenarios/engineering_multifault.json --seeds 0 1 2 3 4 --out artifacts/engineering-benchmark.json
 ```
 
-There is currently **no browser dashboard**. Reports include replayable configuration, telemetry, events, conservation checks and synthetic provenance. See [audit and milestone](docs/ENGINEERING_MILESTONE.md), [equations, limitations and future control center](docs/ENGINEERING_ASSUMPTIONS.md), and the [saved benchmark](examples/engineering-benchmark.json). These are engineering reference simulations, never flight certification.
+## Local Spacecraft Health Control Center
+
+```bash
+python3 -m spacecraft_lab.control_center --port 8014
+```
+
+Open **http://127.0.0.1:8014/**. Keep the terminal running; Ctrl+C stops the server. If the port is occupied, choose another with `--port`. No installation or frontend build is needed.
+
+The interface runs both engineering policies, displays telemetry-driven subsystem states, plots and decision history, and supports play/pause, seek, replay speed, editable JSON scenarios, three presets and full paired-report export. Seed edits and scenario changes take effect on **Run experiment**. Failed edits retain the previous report with an explicit error. Replay shows recorded intervals, not a live hardware connection. Larger studies and identical-telemetry diagnostic replay remain available through the benchmark CLI.
+
+The server binds only to loopback, checks Host/Origin, serves explicit asset routes and caps JSON bodies and compute samples. It is a personal local tool, without authentication, persistence, or production availability guarantees. Socket access must be allowed to run its HTTP tests. The interface is a responsive SVG schematic, not a 3D physical spacecraft model.
+
+Reports include replayable configuration, telemetry, events, conservation checks and synthetic provenance. See [audit and milestone](docs/ENGINEERING_MILESTONE.md), [equations and limitations](docs/ENGINEERING_ASSUMPTIONS.md), and the [saved benchmark](examples/engineering-benchmark.json). These are engineering reference simulations, never flight certification.
 
 ## Preserved original integration documentation
 
