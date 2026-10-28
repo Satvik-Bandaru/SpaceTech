@@ -1,0 +1,696 @@
+{
+  "schema_version": "engineering-benchmark-0.2",
+  "model_version": "spacecraft-reference-v0.2",
+  "data_provenance": "SYNTHETIC",
+  "model_validated_for_flight": false,
+  "base_config": {
+    "duration_seconds": 5400,
+    "dt_seconds": 10,
+    "seed": 7,
+    "battery_capacity_wh": 240,
+    "initial_battery_wh": 140,
+    "normal_load_w": 120,
+    "safe_load_w": 35,
+    "radio_load_w": 5,
+    "solar_generation_w": 180,
+    "charge_efficiency": 0.92,
+    "discharge_efficiency": 0.9,
+    "charge_limit_w": 120,
+    "discharge_limit_w": 150,
+    "initial_temperature_k": 293.15,
+    "sink_temperature_k": 250,
+    "thermal_capacity_j_per_k": 20000,
+    "emissivity": 0.75,
+    "radiator_area_m2": 0.5,
+    "absorbed_solar_w": 40,
+    "internal_heat_fraction": 0.85,
+    "heater_w": 40,
+    "heater_on_below_k": 283.15,
+    "low_temperature_k": 263.15,
+    "high_temperature_k": 333.15,
+    "sensor_noise_k": 0.002,
+    "solar_noise_w": 0.5,
+    "battery_noise_wh": 0.002,
+    "attitude_noise_deg": 0.1,
+    "orbit_period_seconds": 5400,
+    "eclipse_seconds": 1800,
+    "faults": [
+      {
+        "kind": "solar_array_loss",
+        "start_seconds": 300,
+        "duration_seconds": 2400,
+        "severity": 0.35
+      },
+      {
+        "kind": "heater_stuck_on",
+        "start_seconds": 600,
+        "duration_seconds": 1800,
+        "severity": 0.65
+      },
+      {
+        "kind": "attitude_fault",
+        "start_seconds": 900,
+        "duration_seconds": 1200,
+        "severity": 0.5
+      },
+      {
+        "kind": "comms_loss",
+        "start_seconds": 1500,
+        "duration_seconds": 900,
+        "severity": 1
+      },
+      {
+        "kind": "battery_leak",
+        "start_seconds": 2100,
+        "duration_seconds": 900,
+        "severity": 0.8
+      }
+    ]
+  },
+  "calibration": {
+    "method": "independent_binary_nearest_centroid",
+    "training_seed": 9001,
+    "samples_per_class_per_channel": 256,
+    "data_provenance": "SYNTHETIC_ANALYTIC_SIGNATURES",
+    "centers": {
+      "solar_array_loss": {
+        "healthy": -0.0008104987685589069,
+        "fault": 0.5523608819694328
+      },
+      "heater_stuck_on": {
+        "healthy": -0.09033607978081155,
+        "fault": 88.94063940456202
+      },
+      "comms_loss": {
+        "healthy": 0.0,
+        "fault": 1.0
+      },
+      "attitude_fault": {
+        "healthy": 0.001409647112577737,
+        "fault": 44.672443096824914
+      },
+      "battery_leak": {
+        "healthy": -0.09548178366928452,
+        "fault": 25.5648773527698
+      }
+    },
+    "warning": "Synthetic calibration only; no operational accuracy or general superiority claim"
+  },
+  "engine_source_sha256": {
+    "__init__.py": "3efd0b201c06c68b9ea0f0a00d37644746d9ce49f256b6b366f7f93e88464552",
+    "benchmarks.py": "94a615af2160963fce7dcb50583bc25df02d1643ae50b897337a9ec575183d4f",
+    "config.py": "a3cceb05063695e56956cc45239915cd6b54e4e16b1ab2750141d1fd7f63077d",
+    "controller.py": "d087c61d57dd33b2de0a37e06ce58f81d5872f63cdee8a96a0341c9670a5068a",
+    "diagnostics.py": "87d92186871890e51979e3adabdf11cb2f857e4e8553f38feea24e941d95d594",
+    "model.py": "fbdde06c6a0fb11acfe6fa3caa66d5fa8822a359c7e391a4f4219fdc8a71e904",
+    "physics.py": "64704472b68cb67704145bc7e82d4cfcb0329ec8bb4c1b9495e4d0504dbe0fa3"
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "diagnostic_replay": {
+        "baseline": {
+          "samples": 540,
+          "true_positive_samples": 117,
+          "false_positive_samples": 0,
+          "false_negative_samples": 484,
+          "precision": 1.0,
+          "recall": 0.194675540765391,
+          "false_positive_rate": 0.0,
+          "detected_episode_mean_latency_s": 63.333333333333336,
+          "missed_injected_episodes": 2
+        },
+        "assisted": {
+          "samples": 540,
+          "true_positive_samples": 543,
+          "false_positive_samples": 0,
+          "false_negative_samples": 58,
+          "precision": 1.0,
+          "recall": 0.9034941763727121,
+          "false_positive_rate": 0.0,
+          "detected_episode_mean_latency_s": 30,
+          "missed_injected_episodes": 0
+        }
+      },
+      "baseline": {
+        "run_id": "eng-3d68954d577d8a8a08544c9c",
+        "scenario_sha256": "517d79314ec3fb44f5ffdfd7eab533c51d1a55e332fa7c0a163f982daa368ecf",
+        "metrics": {
+          "safe_mode_seconds": 2070,
+          "comms_availability_pct": 82.77777777777777,
+          "min_battery_pct": 39.162834880986495,
+          "max_temperature_k": 304.5541894649695,
+          "unserved_energy_wh": 0.0,
+          "curtailed_energy_wh": 3.2191742760857,
+          "conversion_loss_wh": 11.672888197824928,
+          "isolation_count": 0,
+          "heater_retries": 0,
+          "radio_reset_attempts": 2
+        },
+        "violations": []
+      },
+      "assisted": {
+        "run_id": "eng-d22c57b146cb3219a33f665d",
+        "scenario_sha256": "517d79314ec3fb44f5ffdfd7eab533c51d1a55e332fa7c0a163f982daa368ecf",
+        "metrics": {
+          "safe_mode_seconds": 2970,
+          "comms_availability_pct": 82.77777777777777,
+          "min_battery_pct": 57.55901399843918,
+          "max_temperature_k": 299.95393208803983,
+          "unserved_energy_wh": 0.0,
+          "curtailed_energy_wh": 3.2191742760857,
+          "conversion_loss_wh": 13.183169427049371,
+          "isolation_count": 3,
+          "heater_retries": 2,
+          "radio_reset_attempts": 2
+        },
+        "violations": []
+      }
+    },
+    {
+      "seed": 1,
+      "diagnostic_replay": {
+        "baseline": {
+          "samples": 540,
+          "true_positive_samples": 133,
+          "false_positive_samples": 0,
+          "false_negative_samples": 468,
+          "precision": 1.0,
+          "recall": 0.22129783693843594,
+          "false_positive_rate": 0.0,
+          "detected_episode_mean_latency_s": 33.333333333333336,
+          "missed_injected_episodes": 2
+        },
+        "assisted": {
+          "samples": 540,
+          "true_positive_samples": 548,
+          "false_positive_samples": 0,
+          "false_negative_samples": 53,
+          "precision": 1.0,
+          "recall": 0.9118136439267887,
+          "false_positive_rate": 0.0,
+          "detected_episode_mean_latency_s": 30,
+          "missed_injected_episodes": 0
+        }
+      },
+      "baseline": {
+        "run_id": "eng-4c98f1286423632f7be3f7f0",
+        "scenario_sha256": "b5d68d53f6cf3094f2e774159583d54454ffccd3cf5a1d59d93e31433a5b89d9",
+        "metrics": {
+          "safe_mode_seconds": 2070,
+          "comms_availability_pct": 82.77777777777777,
+          "min_battery_pct": 39.162834880986495,
+          "max_temperature_k": 304.5541894649695,
+          "unserved_energy_wh": 0.0,
+          "curtailed_energy_wh": 3.2191742760857,
+          "conversion_loss_wh": 11.672888197824928,
+          "isolation_count": 0,
+          "heater_retries": 0,
+          "radio_reset_attempts": 2
+        },
+        "violations": []
+      },
+      "assisted": {
+        "run_id": "eng-3fa2dc8e3dff1b4ef1ad612e",
+        "scenario_sha256": "b5d68d53f6cf3094f2e774159583d54454ffccd3cf5a1d59d93e31433a5b89d9",
+        "metrics": {
+          "safe_mode_seconds": 2970,
+          "comms_availability_pct": 82.77777777777777,
+          "min_battery_pct": 57.22679177621696,
+          "max_temperature_k": 300.04534443485255,
+          "unserved_energy_wh": 0.0,
+          "curtailed_energy_wh": 3.2191742760857,
+          "conversion_loss_wh": 13.113836093716039,
+          "isolation_count": 3,
+          "heater_retries": 2,
+          "radio_reset_attempts": 2
+        },
+        "violations": []
+      }
+    },
+    {
+      "seed": 2,
+      "diagnostic_replay": {
+        "baseline": {
+          "samples": 540,
+          "true_positive_samples": 146,
+          "false_positive_samples": 0,
+          "false_negative_samples": 455,
+          "precision": 1.0,
+          "recall": 0.24292845257903495,
+          "false_positive_rate": 0.0,
+          "detected_episode_mean_latency_s": 30,
+          "missed_injected_episodes": 2
+        },
+        "assisted": {
+          "samples": 540,
+          "true_positive_samples": 526,
+          "false_positive_samples": 0,
+          "false_negative_samples": 75,
+          "precision": 1.0,
+          "recall": 0.8752079866888519,
+          "false_positive_rate": 0.0,
+          "detected_episode_mean_latency_s": 36,
+          "missed_injected_episodes": 0
+        }
+      },
+      "baseline": {
+        "run_id": "eng-de0ae5d98ecce73f2ee2836e",
+        "scenario_sha256": "7ca46f246c584a19c319547beb2933c3a7f49ef63ed1060e44b7421366283093",
+        "metrics": {
+          "safe_mode_seconds": 2070,
+          "comms_availability_pct": 82.77777777777777,
+          "min_battery_pct": 39.162834880986495,
+          "max_temperature_k": 304.5541894649695,
+          "unserved_energy_wh": 0.0,
+          "curtailed_energy_wh": 3.2191742760857,
+          "conversion_loss_wh": 11.672888197824928,
+          "isolation_count": 0,
+          "heater_retries": 0,
+          "radio_reset_attempts": 2
+        },
+        "violations": []
+      },
+      "assisted": {
+        "run_id": "eng-5849339411c7fdb31d2ef3e8",
+        "scenario_sha256": "7ca46f246c584a19c319547beb2933c3a7f49ef63ed1060e44b7421366283093",
+        "metrics": {
+          "safe_mode_seconds": 2970,
+          "comms_availability_pct": 82.77777777777777,
+          "min_battery_pct": 57.50364362806881,
+          "max_temperature_k": 299.96626457015384,
+          "unserved_energy_wh": 0.0,
+          "curtailed_energy_wh": 3.2191742760857,
+          "conversion_loss_wh": 13.171613871493816,
+          "isolation_count": 3,
+          "heater_retries": 2,
+          "radio_reset_attempts": 2
+        },
+        "violations": []
+      }
+    },
+    {
+      "seed": 3,
+      "diagnostic_replay": {
+        "baseline": {
+          "samples": 540,
+          "true_positive_samples": 137,
+          "false_positive_samples": 0,
+          "false_negative_samples": 464,
+          "precision": 1.0,
+          "recall": 0.22795341098169716,
+          "false_positive_rate": 0.0,
+          "detected_episode_mean_latency_s": 30,
+          "missed_injected_episodes": 2
+        },
+        "assisted": {
+          "samples": 540,
+          "true_positive_samples": 545,
+          "false_positive_samples": 0,
+          "false_negative_samples": 56,
+          "precision": 1.0,
+          "recall": 0.9068219633943427,
+          "false_positive_rate": 0.0,
+          "detected_episode_mean_latency_s": 30,
+          "missed_injected_episodes": 1
+        }
+      },
+      "baseline": {
+        "run_id": "eng-74f3172c1495caeb17438256",
+        "scenario_sha256": "f3c1786dd82ca801d14d2a729ed51ea4353e0bbae7796bb44dec806f2a3dccc3",
+        "metrics": {
+          "safe_mode_seconds": 2070,
+          "comms_availability_pct": 82.77777777777777,
+          "min_battery_pct": 39.162834880986495,
+          "max_temperature_k": 304.5541894649695,
+          "unserved_energy_wh": 0.0,
+          "curtailed_energy_wh": 3.2191742760857,
+          "conversion_loss_wh": 11.672888197824928,
+          "isolation_count": 0,
+          "heater_retries": 0,
+          "radio_reset_attempts": 2
+        },
+        "violations": []
+      },
+      "assisted": {
+        "run_id": "eng-9237b33219ead601e3722966",
+        "scenario_sha256": "f3c1786dd82ca801d14d2a729ed51ea4353e0bbae7796bb44dec806f2a3dccc3",
+        "metrics": {
+          "safe_mode_seconds": 2970,
+          "comms_availability_pct": 82.5925925925926,
+          "min_battery_pct": 57.66074547480135,
+          "max_temperature_k": 299.9233769237055,
+          "unserved_energy_wh": 0.0,
+          "curtailed_energy_wh": 3.2191742760857,
+          "conversion_loss_wh": 13.20440034385539,
+          "isolation_count": 3,
+          "heater_retries": 2,
+          "radio_reset_attempts": 2
+        },
+        "violations": []
+      }
+    },
+    {
+      "seed": 4,
+      "diagnostic_replay": {
+        "baseline": {
+          "samples": 540,
+          "true_positive_samples": 137,
+          "false_positive_samples": 0,
+          "false_negative_samples": 464,
+          "precision": 1.0,
+          "recall": 0.22795341098169716,
+          "false_positive_rate": 0.0,
+          "detected_episode_mean_latency_s": 43.333333333333336,
+          "missed_injected_episodes": 2
+        },
+        "assisted": {
+          "samples": 540,
+          "true_positive_samples": 537,
+          "false_positive_samples": 0,
+          "false_negative_samples": 64,
+          "precision": 1.0,
+          "recall": 0.8935108153078203,
+          "false_positive_rate": 0.0,
+          "detected_episode_mean_latency_s": 32,
+          "missed_injected_episodes": 0
+        }
+      },
+      "baseline": {
+        "run_id": "eng-0013fb11b17fa58de9dd6157",
+        "scenario_sha256": "470b4c105106d804f8c120a577d546abc94ef8cfc25a785971fe0d9a97e6a665",
+        "metrics": {
+          "safe_mode_seconds": 2070,
+          "comms_availability_pct": 82.77777777777777,
+          "min_battery_pct": 39.162834880986495,
+          "max_temperature_k": 304.5541894649695,
+          "unserved_energy_wh": 0.0,
+          "curtailed_energy_wh": 3.2191742760857,
+          "conversion_loss_wh": 11.672888197824928,
+          "isolation_count": 0,
+          "heater_retries": 0,
+          "radio_reset_attempts": 2
+        },
+        "violations": []
+      },
+      "assisted": {
+        "run_id": "eng-3213655159577f26d02a6029",
+        "scenario_sha256": "470b4c105106d804f8c120a577d546abc94ef8cfc25a785971fe0d9a97e6a665",
+        "metrics": {
+          "safe_mode_seconds": 2970,
+          "comms_availability_pct": 82.77777777777777,
+          "min_battery_pct": 57.614384368809546,
+          "max_temperature_k": 299.9377962794174,
+          "unserved_energy_wh": 0.0,
+          "curtailed_energy_wh": 3.2191742760857,
+          "conversion_loss_wh": 13.194724982604928,
+          "isolation_count": 3,
+          "heater_retries": 2,
+          "radio_reset_attempts": 2
+        },
+        "violations": []
+      }
+    }
+  ],
+  "summary": {
+    "baseline": {
+      "safe_mode_seconds": {
+        "n": 5,
+        "mean": 2070,
+        "sample_sd": 0.0,
+        "minimum": 2070,
+        "maximum": 2070
+      },
+      "comms_availability_pct": {
+        "n": 5,
+        "mean": 82.77777777777777,
+        "sample_sd": 0.0,
+        "minimum": 82.77777777777777,
+        "maximum": 82.77777777777777
+      },
+      "min_battery_pct": {
+        "n": 5,
+        "mean": 39.162834880986495,
+        "sample_sd": 0.0,
+        "minimum": 39.162834880986495,
+        "maximum": 39.162834880986495
+      },
+      "max_temperature_k": {
+        "n": 5,
+        "mean": 304.5541894649695,
+        "sample_sd": 0.0,
+        "minimum": 304.5541894649695,
+        "maximum": 304.5541894649695
+      },
+      "unserved_energy_wh": {
+        "n": 5,
+        "mean": 0.0,
+        "sample_sd": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      },
+      "curtailed_energy_wh": {
+        "n": 5,
+        "mean": 3.2191742760857,
+        "sample_sd": 0.0,
+        "minimum": 3.2191742760857,
+        "maximum": 3.2191742760857
+      },
+      "conversion_loss_wh": {
+        "n": 5,
+        "mean": 11.672888197824928,
+        "sample_sd": 0.0,
+        "minimum": 11.672888197824928,
+        "maximum": 11.672888197824928
+      },
+      "isolation_count": {
+        "n": 5,
+        "mean": 0,
+        "sample_sd": 0.0,
+        "minimum": 0,
+        "maximum": 0
+      },
+      "heater_retries": {
+        "n": 5,
+        "mean": 0,
+        "sample_sd": 0.0,
+        "minimum": 0,
+        "maximum": 0
+      },
+      "radio_reset_attempts": {
+        "n": 5,
+        "mean": 2,
+        "sample_sd": 0.0,
+        "minimum": 2,
+        "maximum": 2
+      }
+    },
+    "assisted": {
+      "safe_mode_seconds": {
+        "n": 5,
+        "mean": 2970,
+        "sample_sd": 0.0,
+        "minimum": 2970,
+        "maximum": 2970
+      },
+      "comms_availability_pct": {
+        "n": 5,
+        "mean": 82.74074074074073,
+        "sample_sd": 0.08281733249998821,
+        "minimum": 82.5925925925926,
+        "maximum": 82.77777777777777
+      },
+      "min_battery_pct": {
+        "n": 5,
+        "mean": 57.512915849267166,
+        "sample_sd": 0.17046074127608837,
+        "minimum": 57.22679177621696,
+        "maximum": 57.66074547480135
+      },
+      "max_temperature_k": {
+        "n": 5,
+        "mean": 299.96534285923383,
+        "sample_sd": 0.04756905810526773,
+        "minimum": 299.9233769237055,
+        "maximum": 300.04534443485255
+      },
+      "unserved_energy_wh": {
+        "n": 5,
+        "mean": 0.0,
+        "sample_sd": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      },
+      "curtailed_energy_wh": {
+        "n": 5,
+        "mean": 3.2191742760857,
+        "sample_sd": 0.0,
+        "minimum": 3.2191742760857,
+        "maximum": 3.2191742760857
+      },
+      "conversion_loss_wh": {
+        "n": 5,
+        "mean": 13.173548943743908,
+        "sample_sd": 0.035574415570662536,
+        "minimum": 13.113836093716039,
+        "maximum": 13.20440034385539
+      },
+      "isolation_count": {
+        "n": 5,
+        "mean": 3,
+        "sample_sd": 0.0,
+        "minimum": 3,
+        "maximum": 3
+      },
+      "heater_retries": {
+        "n": 5,
+        "mean": 2,
+        "sample_sd": 0.0,
+        "minimum": 2,
+        "maximum": 2
+      },
+      "radio_reset_attempts": {
+        "n": 5,
+        "mean": 2,
+        "sample_sd": 0.0,
+        "minimum": 2,
+        "maximum": 2
+      }
+    }
+  },
+  "paired_assisted_minus_baseline": {
+    "safe_mode_seconds": {
+      "n": 5,
+      "mean": 900,
+      "sample_sd": 0.0,
+      "minimum": 900,
+      "maximum": 900
+    },
+    "comms_availability_pct": {
+      "n": 5,
+      "mean": -0.037037037037035245,
+      "sample_sd": 0.08281733249998821,
+      "minimum": -0.18518518518517624,
+      "maximum": 0.0
+    },
+    "min_battery_pct": {
+      "n": 5,
+      "mean": 18.350080968280675,
+      "sample_sd": 0.17046074127608837,
+      "minimum": 18.06395689523047,
+      "maximum": 18.497910593814858
+    },
+    "max_temperature_k": {
+      "n": 5,
+      "mean": -4.588846605735682,
+      "sample_sd": 0.04756905810526773,
+      "minimum": -4.630812541263992,
+      "maximum": -4.508845030116959
+    },
+    "unserved_energy_wh": {
+      "n": 5,
+      "mean": 0.0,
+      "sample_sd": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    "curtailed_energy_wh": {
+      "n": 5,
+      "mean": 0.0,
+      "sample_sd": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    "conversion_loss_wh": {
+      "n": 5,
+      "mean": 1.5006607459189805,
+      "sample_sd": 0.035574415570662536,
+      "minimum": 1.4409478958911102,
+      "maximum": 1.5315121460304617
+    },
+    "isolation_count": {
+      "n": 5,
+      "mean": 3,
+      "sample_sd": 0.0,
+      "minimum": 3,
+      "maximum": 3
+    },
+    "heater_retries": {
+      "n": 5,
+      "mean": 2,
+      "sample_sd": 0.0,
+      "minimum": 2,
+      "maximum": 2
+    },
+    "radio_reset_attempts": {
+      "n": 5,
+      "mean": 0,
+      "sample_sd": 0.0,
+      "minimum": 0,
+      "maximum": 0
+    }
+  },
+  "diagnostic_replay_summary": {
+    "baseline": {
+      "true_positive_samples": {
+        "n": 5,
+        "mean": 134,
+        "sample_sd": 10.63014581273465,
+        "minimum": 117,
+        "maximum": 146
+      },
+      "false_positive_samples": {
+        "n": 5,
+        "mean": 0,
+        "sample_sd": 0.0,
+        "minimum": 0,
+        "maximum": 0
+      },
+      "false_negative_samples": {
+        "n": 5,
+        "mean": 467,
+        "sample_sd": 10.63014581273465,
+        "minimum": 455,
+        "maximum": 484
+      },
+      "missed_injected_episodes": {
+        "n": 5,
+        "mean": 2,
+        "sample_sd": 0.0,
+        "minimum": 2,
+        "maximum": 2
+      }
+    },
+    "assisted": {
+      "true_positive_samples": {
+        "n": 5,
+        "mean": 539.8,
+        "sample_sd": 8.700574693662482,
+        "minimum": 526,
+        "maximum": 548
+      },
+      "false_positive_samples": {
+        "n": 5,
+        "mean": 0,
+        "sample_sd": 0.0,
+        "minimum": 0,
+        "maximum": 0
+      },
+      "false_negative_samples": {
+        "n": 5,
+        "mean": 61.2,
+        "sample_sd": 8.700574693662482,
+        "minimum": 53,
+        "maximum": 75
+      },
+      "missed_injected_episodes": {
+        "n": 5,
+        "mean": 0.2,
+        "sample_sd": 0.4472135954999579,
+        "minimum": 0,
+        "maximum": 1
+      }
+    }
+  },
+  "interpretation": "Closed-loop policies share exogenous seeds but may produce different plant histories. Diagnostic replay separately compares both detectors on the identical baseline-controlled trace. Seeds vary sensor noise, not independent spacecraft designs. Synthetic calibration and small descriptive studies establish no flight accuracy or general AI superiority. No significance test is claimed."
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Synthetic relay: overlapping EPS, thermal, ADCS and radio faults",
+  "duration_seconds": 5400,
+  "dt_seconds": 10,
+  "seed": 7,
+  "initial_battery_wh": 140,
+  "faults": [
+    {"kind":"solar_array_loss","start_seconds":300,"duration_seconds":2400,"severity":0.35},
+    {"kind":"heater_stuck_on","start_seconds":600,"duration_seconds":1800,"severity":0.65},
+    {"kind":"attitude_fault","start_seconds":900,"duration_seconds":1200,"severity":0.5},
+    {"kind":"comms_loss","start_seconds":1500,"duration_seconds":900,"severity":1},
+    {"kind":"battery_leak","start_seconds":2100,"duration_seconds":900,"severity":0.8}
+  ]
+}

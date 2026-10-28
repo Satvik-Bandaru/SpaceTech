@@ -1,4 +1,23 @@
-# Spacecraft Reliability & Autonomy Lab — Codex companion for Lunar Ops
+# Spacecraft Reliability & Autonomy Lab
+
+## Current independent engineering milestone — 2026-10-28
+
+This local project remains independent of Lunar Ops, ChainMind and the robotics/swarm lab, following the user's direct request. The supplied integration roadmap below is historical context. The existing offline adapter remains available; no live synchronization, network service or deployment is configured.
+
+The additive **spacecraft-reference-v0.2** engine implements efficiency- and power-limited electrical storage, radiative thermal energy balance, overlapping subsystem faults, telemetry-based diagnostics, bounded recovery and autonomous safe-mode hysteresis. A threshold baseline is compared with experimental nearest-centroid assistance fitted to synthetic signatures. The legacy simulator and v1.0 handoff retain their numerical behavior.
+
+Run locally with Python 3.10+ (standard library only; no GPU):
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 run_engineering.py scenarios/engineering_multifault.json --policy baseline --out artifacts/engineering-baseline.json
+python3 run_engineering.py scenarios/engineering_multifault.json --policy assisted --out artifacts/engineering-assisted.json
+python3 benchmark_engineering.py scenarios/engineering_multifault.json --seeds 0 1 2 3 4 --out artifacts/engineering-benchmark.json
+```
+
+There is currently **no browser dashboard**. Reports include replayable configuration, telemetry, events, conservation checks and synthetic provenance. See [audit and milestone](docs/ENGINEERING_MILESTONE.md), [equations, limitations and future control center](docs/ENGINEERING_ASSUMPTIONS.md), and the [saved benchmark](examples/engineering-benchmark.json). These are engineering reference simulations, never flight certification.
+
+## Preserved original integration documentation
 
 This is the **Codex-owned spacecraft health and fault-simulation service**. It is **not** a second Lunar Ops. It is intended to exchange mission data with **Lunar Ops**, which is developed using Claude Code and contains or directly integrates the **Virtual Space Robotics Lab**. The **AI Swarm Lab** is an agent coordination layer using the **Swarms.ai** Python framework; its proposed tasks must be verified by the Lunar Ops/robotics constraint checker.
 

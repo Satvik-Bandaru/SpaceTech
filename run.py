@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from spacecraft_lab.simulator import config_from_dict, run
+from spacecraft_lab.io import load_json
 
 
 def main():
@@ -11,8 +12,11 @@ def main():
     parser.add_argument("scenario", type=Path, help="Input JSON scenario")
     parser.add_argument("--out", type=Path, default=None, help="Optional JSON report output path")
     args = parser.parse_args()
-    scenario = json.loads(args.scenario.read_text(encoding="utf-8"))
-    cfg = config_from_dict(scenario)
+    try:
+        scenario = load_json(args.scenario)
+        cfg = config_from_dict(scenario)
+    except (OSError,ValueError,TypeError,KeyError,RecursionError) as exc:
+        parser.error(f'Scenario refused: {exc}')
     result = run(cfg, name=scenario.get("name", args.scenario.stem))
     print(json.dumps({"name": result["name"], "metrics": result["metrics"], "events": result["events"]}, indent=2))
     if args.out:

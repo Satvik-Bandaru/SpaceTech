@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from spacecraft_lab.integration import run_mission
+from spacecraft_lab.io import load_json
 
 
 def main() -> None:
@@ -14,7 +15,7 @@ def main() -> None:
     parser.add_argument("--out", type=Path, required=True, help="Output result JSON path for Lunar Ops import")
     args = parser.parse_args()
     try:
-        payload = json.loads(args.request.read_text(encoding="utf-8"))
+        payload = load_json(args.request)
         response = run_mission(payload)
     except (OSError, ValueError, TypeError, KeyError) as exc:
         parser.error(f"Mission refused: {exc}")

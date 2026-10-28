@@ -1,5 +1,12 @@
 # Codex repository instructions — Spacecraft Reliability Lab
 
+## Current user scope override (2026-10-28)
+
+The user's direct request keeps this lab independent of Lunar Ops, ChainMind and the Virtual Space Robotics + AI
+Swarm Lab. Preserve the existing offline adapter for compatibility; the integration roadmap below is historical
+context, not permission for live synchronization or edits to other repositories. Develop engineering models and FDIR
+locally, with no deployment. The isolated workspace copy preserves the supplied Downloads folder and ZIP unchanged.
+
 This is a **separate Codex-maintained component that must sync with Lunar Ops**, not a competing or disconnected space startup. The architectural source of truth for lunar mission planning is **Lunar Ops in Claude Code**, which also integrates the **Virtual Space Robotics Lab**. A separate **AI Swarm Lab** uses **Swarms.ai** for multi-agent task coordination; Swarms itself does not simulate physics or provide a robotics scene.
 
 ## Required boundaries
