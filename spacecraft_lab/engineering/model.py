@@ -16,7 +16,9 @@ def _hash(value):
     return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
 
 
-def run_engineering(data,policy='baseline',training_seed=9001):
+def run_engineering(data,policy='baseline',training_seed=9001, recovery_enabled=True):
+    if type(recovery_enabled) is not bool:
+        raise ValueError('recovery_enabled must be Boolean')
     if policy not in ('baseline','assisted'):
         raise ValueError('Unknown diagnostic policy')
     raw=asdict(data) if isinstance(data,EngineeringConfig) else data
@@ -46,14 +48,14 @@ def run_engineering(data,policy='baseline',training_seed=9001):
         # Exogenous draws have fixed count/order across policies: paired common random numbers.
         noise=[rng.gauss(0,1) for _ in range(6)]
         sensed_temp=temp+noise[1]*cfg.sensor_noise_k
-        if heater_isolated_since is not None and t-heater_isolated_since>=300 and heater_attempts<2 and sensed_temp<cfg.high_temperature_k-3:
+        if recovery_enabled and heater_isolated_since is not None and t-heater_isolated_since>=300 and heater_attempts<2 and sensed_temp<cfg.high_temperature_k-3:
             heater_isolated_since=None;heater_attempts+=1
             emit(t,'RETRY_HEATER',attempt=heater_attempts)
-        if 'heater_stuck_on' in alarms and heater_isolated_since is None:
+        if recovery_enabled and 'heater_stuck_on' in alarms and heater_isolated_since is None:
             heater_isolated_since=t;emit(t,'ISOLATE_HEATER',retry_budget_remaining=2-heater_attempts)
-        if 'attitude_fault' in alarms and not adcs_redundant:
+        if recovery_enabled and 'attitude_fault' in alarms and not adcs_redundant:
             adcs_redundant=True;emit(t,'SWITCH_REDUNDANT_ADCS')
-        if 'comms_loss' in alarms and radio_attempts<2 and t-last_radio_attempt>=120:
+        if recovery_enabled and 'comms_loss' in alarms and radio_attempts<2 and t-last_radio_attempt>=120:
             radio_attempts+=1;last_radio_attempt=t;radio_reset_until=t+dt
             emit(t,'RESET_RADIO_ATTEMPT',attempt=radio_attempts,note='Does not cure an injected external outage')
         pointing=(5 if adcs_redundant else min(85,45*magnitude['attitude_fault']))
@@ -145,6 +147,8 @@ def run_engineering(data,policy='baseline',training_seed=9001):
         missed+=int(latency is None and fault.severity>0)
     config=asdict(cfg);config['faults']=list(config['faults']);scenario_hash=_hash(config)
     identity=_hash(dict(model=MODEL_VERSION,scenario=config,policy=policy,calibration=calibration))
+    if not recovery_enabled:
+        identity=_hash(dict(base_identity=identity,recovery_enabled=False))
     metrics=dict(safe_mode_seconds=sum(r['mode']=='safe' for r in telemetry)*cfg.dt_seconds,
         comms_availability_pct=100*sum(r['comms_up'] for r in telemetry)/len(telemetry),
         min_battery_pct=min(r['battery_pct'] for r in telemetry),max_temperature_k=max(r['temperature_k'] for r in telemetry),

@@ -1,0 +1,14 @@
+const assert = require('node:assert/strict');
+const ui = require('../spacecraft_lab/web/ui-core.js');
+assert.equal(ui.intervalDelay(10, 1), 10000);
+assert.equal(ui.intervalDelay(10, 20), 500);
+assert.equal(ui.replayIndex(999, 10), 9);
+assert.equal(ui.replayIndex(-1, 10), 0);
+assert.throws(()=>ui.intervalDelay(10, 0));
+const scene=ui.sceneState({battery_pct:12,temperature_k:350,solar_w:0,comms_up:false,operating_mode:'SAFE_MODE',pointing_error_deg:45,sunlit:false}, {high_temperature_k:333});
+assert.equal(scene.eclipse,true);
+assert.equal(scene.hot,true);
+assert.equal(scene.link,false);
+assert.equal(scene.lowBattery,true);
+assert.equal(scene.yaw,Math.PI/4);
+console.log('Frontend replay timing, seek bounds and telemetry-to-scene mapping passed');

@@ -1,5 +1,13 @@
 # Lunar Ops ↔ Spacecraft Reliability Lab contract v1.0
 
+## Optional independent v2 health exchange
+
+V1.0 below is preserved. The V2 research increment adds `health-v2.schema.json` and `spacecraft_lab.health_exchange.export_health/validate_health`. Export a selected strategy with `python3 research.py scenarios/engineering_multifault.json --strategy enhanced --mission-id demo --out artifacts/health-v2.json`; validate/read with `python3 read_health.py artifacts/health-v2.json`. No other process or mission data is changed.
+
+The v2 packet carries explicit seconds, Wh, watts and Kelvin, synthetic provenance, health/link availability, deterministic event IDs, operational assessment transitions, recovery outcomes and a declared mission-success proxy. JSON Schema describes the envelope; the Python validator additionally requires exact current-model replay of the embedded report, identities and content fingerprint. Hashes are not authentication. Only the explicitly supported model is accepted; future migrations need version compatibility work. The local reader bounds input to 32 MB and rejects duplicate keys and nonfinite values.
+
+The Lunar Ops-side importer has not been implemented/tested in this repository. There is no live synchronization or automatic planning adjustment. The exported data is advisory synthetic input only.
+
 **Status: implemented as offline JSON file exchange ONLY.** This provides a real, testable data handoff today, not a live automatic network synchronization. The Lunar Ops application must implement its own compatible import/export to complete end-to-end integration.
 
 ## Request: `lunar_ops_satellite_request.json`

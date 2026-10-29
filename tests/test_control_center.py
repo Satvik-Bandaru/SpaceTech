@@ -86,3 +86,18 @@ class ControlCenterTests(unittest.TestCase):
                     accepted.close()
         finally:
             server.server_close()
+
+    def test_research_routes_run_study_and_health_exchange(self):
+        data={'scenario':{'duration_seconds':120,'seed':3}}
+        status,_,raw=self.request('POST','/api/research/run',data)
+        self.assertEqual(status,200)
+        reports=json.loads(raw)
+        self.assertEqual(set(reports),{'none','basic','enhanced'})
+        status,_,raw=self.request('POST','/api/research/study',{**data,'seeds':[1,2,3]})
+        self.assertEqual(status,200)
+        self.assertEqual(json.loads(raw)['summary']['basic']['safe_mode_seconds']['n'],3)
+        status,_,raw=self.request('POST','/api/research/health',{**data,'strategy':'basic','mission_id':'demo','asset_id':'relay'})
+        self.assertEqual(status,200)
+        self.assertEqual(json.loads(raw)['schema_version'],'2.0')
+        self.assertEqual(self.request('POST','/api/research/study',{**data,'seeds':list(range(13))})[0],400)
+        self.assertEqual(self.request('POST','/api/research/study',{'scenario':{'dt_seconds':1,'duration_seconds':2000},'seeds':[1,2,3]})[0],400)

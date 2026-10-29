@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Synthetic spacecraft advisory health exchange 2.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version","source","target","mission_id","asset_id","run_id","data_provenance","model_validated_for_flight","advisory_only","health","events","mode_transitions","recovery_outcomes","mission_status","report","packet_sha256"],
+  "properties": {
+    "schema_version": {"const":"2.0"},
+    "source": {"const":"spacecraft-reliability-lab"},
+    "target": {"const":"lunar-ops"},
+    "mission_id": {"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"},
+    "asset_id": {"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"},
+    "run_id": {"type":"string","pattern":"^research-[a-f0-9]{24}$"},
+    "data_provenance": {"const":"SYNTHETIC"},
+    "model_validated_for_flight": {"const":false},
+    "advisory_only": {"const":true},
+    "health": {"type":"array","minItems":1,"maxItems":10000,"items":{
+      "type":"object","additionalProperties":false,
+      "required":["time_seconds","battery_wh","battery_pct","temperature_k","solar_w","served_w","unserved_w","comms_up","operating_mode"],
+      "properties":{
+        "time_seconds":{"type":"integer","minimum":1},"battery_wh":{"type":"number","minimum":0},
+        "battery_pct":{"type":"number","minimum":0,"maximum":100},"temperature_k":{"type":"number","exclusiveMinimum":0},
+        "solar_w":{"type":"number","minimum":0},"served_w":{"type":"number","minimum":0},"unserved_w":{"type":"number","minimum":0},
+        "comms_up":{"type":"boolean"},"operating_mode":{"enum":["NORMAL","DEGRADED","SAFE_MODE","RECOVERY","FAILED"]}
+      }}},
+    "events":{"type":"array","items":{"type":"object","required":["event_id","event","time_seconds"],"properties":{"event_id":{"type":"string","pattern":"^evt-[a-f0-9]{24}$"},"event":{"type":"string"},"time_seconds":{"type":"integer","minimum":0}}}},
+    "mode_transitions":{"type":"array","items":{"type":"object"}},
+    "recovery_outcomes":{"type":"array","items":{"type":"object"}},
+    "mission_status":{"type":"integer","enum":[0,1]},
+    "report":{"type":"object"},
+    "packet_sha256":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  }
+}

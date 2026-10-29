@@ -1,5 +1,20 @@
 # Spacecraft Reliability & Autonomy Lab
 
+## V2 research increment — 2026-10-29
+
+The existing local app now includes **three recovery strategies**, a fault-injection form, seven presets, telemetry-driven **3D inspection with 2D fallback**, explainable protection/recovery records, a paired-seed research workspace with confidence intervals, and an optional offline v2 health exchange. No other app or repository is modified or contacted.
+
+See the [implemented / partial / planned feature table](docs/V2_STATUS.md) for precise scope, statistical definitions and remaining spacecraft-model limitations. This is a complete research increment, not implementation of every item in the V2 roadmap. Battery voltage/aging, wheel dynamics, payload/data buffers, multispacecraft and an optional grounded LLM remain future work.
+
+```bash
+python3 -m spacecraft_lab.control_center --port 8014
+python3 research.py scenarios/engineering_multifault.json --seeds 0 1 2 3 4 --out artifacts/reliability-study-v2.json
+python3 research.py scenarios/engineering_multifault.json --strategy enhanced --mission-id portfolio-demo --out artifacts/health-v2.json
+python3 read_health.py artifacts/health-v2.json
+```
+
+Open **http://127.0.0.1:8014/**. No dependency installation, API key or GPU is needed. Node is used only by the optional frontend helper tests. Drag the 3D view to rotate; wheel or +/− to zoom. Its geometry and orbit inset are illustrative, with state and illumination taken from recorded intervals. Core numerical tests and old commands below remain supported.
+
 ## Current independent engineering milestone — 2026-10-28
 
 This local project remains independent of Lunar Ops, ChainMind and the robotics/swarm lab, following the user's direct request. The supplied integration roadmap below is historical context. The existing offline adapter remains available; no live synchronization, network service or deployment is configured.
@@ -23,9 +38,9 @@ python3 -m spacecraft_lab.control_center --port 8014
 
 Open **http://127.0.0.1:8014/**. Keep the terminal running; Ctrl+C stops the server. If the port is occupied, choose another with `--port`. No installation or frontend build is needed.
 
-The interface runs both engineering policies, displays telemetry-driven subsystem states, plots and decision history, and supports play/pause, seek, replay speed, editable JSON scenarios, three presets and full paired-report export. Seed edits and scenario changes take effect on **Run experiment**. Failed edits retain the previous report with an explicit error. Replay shows recorded intervals, not a live hardware connection. Larger studies and identical-telemetry diagnostic replay remain available through the benchmark CLI.
+The interface runs three research strategies over the existing engineering policies, displays telemetry-driven subsystem states, plots and decision history, and supports play/pause, seek, replay speed, editable JSON scenarios and export. Seed edits and scenario changes take effect on **Run experiment**. Failed edits retain the previous report with an explicit error. Replay shows recorded intervals, not a live hardware connection. Larger studies and identical-telemetry diagnostic replay remain available through the benchmark CLI.
 
-The server binds only to loopback, checks Host/Origin, serves explicit asset routes and caps JSON bodies and compute samples. It is a personal local tool, without authentication, persistence, or production availability guarantees. Socket access must be allowed to run its HTTP tests. The interface is a responsive SVG schematic, not a 3D physical spacecraft model.
+The server binds only to loopback, checks Host/Origin, serves explicit asset routes and caps JSON bodies and compute samples. It is a personal local tool, without authentication, persistence, or production availability guarantees. Socket access must be allowed to run its HTTP tests. SVG and WebGL views are inspection schematics, not a physically validated 3D spacecraft model.
 
 Reports include replayable configuration, telemetry, events, conservation checks and synthetic provenance. See [audit and milestone](docs/ENGINEERING_MILESTONE.md), [equations and limitations](docs/ENGINEERING_ASSUMPTIONS.md), and the [saved benchmark](examples/engineering-benchmark.json). These are engineering reference simulations, never flight certification.
 

@@ -2,11 +2,15 @@
 import argparse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+import logging
 from pathlib import Path
 
 from .engineering.config import engineering_config
 from .engineering.model import run_engineering
 from .io import load_json
+from .reliability import run_strategy, run_study, STRATEGIES
+from .health_exchange import export_health
+from .presets import presets
 
 ROOT = Path(__file__).resolve().parent.parent
 WEB = Path(__file__).resolve().parent / 'web'
@@ -41,6 +45,7 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(content)
         self.close_connection = True
+        logging.getLogger('spacecraft.http').info(json.dumps({'method':self.command,'route':self.path[:100],'status':status,'response_bytes':len(content)}))
 
     def trusted(self):
         port = self.server.server_address[1]
@@ -59,20 +64,23 @@ class Handler(BaseHTTPRequestHandler):
             return
         routes = {'/': ('index.html', 'text/html; charset=utf-8'),
                   '/app.js': ('app.js', 'text/javascript; charset=utf-8'),
-                  '/style.css': ('style.css', 'text/css; charset=utf-8')}
+                  '/style.css': ('style.css', 'text/css; charset=utf-8'),
+                  '/scene.js': ('scene.js', 'text/javascript; charset=utf-8'),
+                  '/research.css': ('research.css', 'text/css; charset=utf-8'),
+                  '/ui-core.js': ('ui-core.js', 'text/javascript; charset=utf-8')}
         if self.path in routes:
             name, mime = routes[self.path]
             self.send(200, (WEB / name).read_bytes(), mime)
         elif self.path == '/api/bootstrap':
             self.send(200, {'scenario': load_json(ROOT / 'scenarios/engineering_multifault.json'),
-                            'max_samples': 2000, 'model_version': 'spacecraft-reference-v0.2'})
+                            'max_samples': 2000, 'model_version': 'spacecraft-reference-v0.2', 'presets':presets()})
         else:
             self.send(404, {'error': 'Route not found'})
 
     def do_POST(self):
         if not self.trusted():
             return
-        if self.path != '/api/run':
+        if self.path not in ('/api/run','/api/research/run','/api/research/study','/api/research/health'):
             self.send(404, {'error': 'Route not found'})
             return
         try:
@@ -89,12 +97,24 @@ class Handler(BaseHTTPRequestHandler):
                 raise ValueError('Incomplete request')
             data = json.loads(raw, object_pairs_hook=unique_object,
                               parse_constant=lambda value: (_ for _ in ()).throw(ValueError('Nonfinite JSON')))
-            if not isinstance(data, dict) or set(data) != {'scenario'}:
-                raise ValueError('Request must contain only scenario')
+            allowed={'/api/run':{'scenario'},'/api/research/run':{'scenario'},
+                     '/api/research/study':{'scenario','seeds'},'/api/research/health':{'scenario','strategy','mission_id','asset_id'}}[self.path]
+            if not isinstance(data, dict) or set(data) != allowed:
+                raise ValueError('Unexpected or missing request fields')
             cfg = engineering_config(data['scenario'])
             if cfg.duration_seconds // cfg.dt_seconds > 2000:
                 raise ValueError('Browser runs allow at most 2000 samples per policy; use the CLI for larger studies')
-            reports = {policy: run_engineering(cfg, policy) for policy in ('baseline', 'assisted')}
+            if self.path=='/api/run':
+                reports = {policy: run_engineering(cfg, policy) for policy in ('baseline', 'assisted')}
+            elif self.path=='/api/research/run':
+                reports = {s:run_strategy(data['scenario'],s) for s in STRATEGIES}
+            elif self.path=='/api/research/study':
+                seeds=data['seeds']
+                if not isinstance(seeds,list) or len(seeds)>12 or len(seeds)*3*cfg.duration_seconds//cfg.dt_seconds>12000:
+                    raise ValueError('Browser studies allow <=12 seeds and <=12000 aggregate engine intervals')
+                reports=run_study(data['scenario'],seeds)
+            else:
+                reports=export_health(run_strategy(data['scenario'],data['strategy']),data['mission_id'],data['asset_id'])
             self.send(200, reports)
         except (ValueError, TypeError, KeyError, RecursionError, TimeoutError, OverflowError) as exc:
             self.send(400, {'error': str(exc)})
@@ -115,6 +135,7 @@ def create_server(port=8014):
 
 
 def main():
+    logging.basicConfig(level=logging.INFO,format='%(message)s')
     parser = argparse.ArgumentParser(description='Local synthetic Spacecraft Health Control Center')
     parser.add_argument('--port', type=int, default=8014)
     args = parser.parse_args()

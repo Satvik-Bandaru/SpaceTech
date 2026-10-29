@@ -2,6 +2,8 @@
 
 ## Current user scope override (2026-10-28)
 
+Update 2026-10-29: the direct V2 request authorizes an optional local JSON health adapter and research/UI extensions inside this existing project. Preserve v1.0. No live connection or mutation of any other project is authorized or implemented. See docs/V2_STATUS.md for actual versus planned capability.
+
 The user's direct request keeps this lab independent of Lunar Ops, ChainMind and the Virtual Space Robotics + AI
 Swarm Lab. Preserve the existing offline adapter for compatibility; the integration roadmap below is historical
 context, not permission for live synchronization or edits to other repositories. Develop engineering models and FDIR
