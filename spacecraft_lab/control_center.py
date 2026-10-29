@@ -5,6 +5,7 @@ import json
 import logging
 import sqlite3
 from pathlib import Path
+from urllib.parse import urlsplit,parse_qs
 
 from .engineering.config import engineering_config
 from .engineering.model import run_engineering
@@ -71,6 +72,8 @@ class Handler(BaseHTTPRequestHandler):
                   '/research.css': ('research.css', 'text/css; charset=utf-8'),
                   '/assurance.js': ('assurance.js', 'text/javascript; charset=utf-8'),
                   '/assurance.css': ('assurance.css', 'text/css; charset=utf-8'),
+                  '/campaign.js': ('campaign.js', 'text/javascript; charset=utf-8'),
+                  '/campaign.css': ('campaign.css', 'text/css; charset=utf-8'),
                   '/ui-core.js': ('ui-core.js', 'text/javascript; charset=utf-8')}
         if self.path in routes:
             name, mime = routes[self.path]
@@ -78,6 +81,14 @@ class Handler(BaseHTTPRequestHandler):
         elif self.path == '/api/bootstrap':
             self.send(200, {'scenario': load_json(ROOT / 'scenarios/engineering_multifault.json'),
                             'max_samples': 2000, 'model_version': 'spacecraft-reference-v0.2', 'presets':presets()})
+        elif urlsplit(self.path).path=='/api/jobs':
+            try:
+                query=parse_qs(urlsplit(self.path).query,keep_blank_values=True)
+                if set(query)-{'limit'} or any(len(v)!=1 for v in query.values()):raise ValueError('History accepts one optional limit')
+                limit=int(query.get('limit',['20'])[0])
+                self.send(200,self.server.assurance_store().list_jobs(limit))
+            except (ValueError,TypeError,KeyError) as exc:self.send(400,{'error':str(exc)})
+            except (sqlite3.Error,OSError):self.send(503,{'error':'Local workflow store unavailable'})
         elif self.path.startswith('/api/assurance/jobs/'):
             parts=self.path.split('/')
             try:
@@ -96,7 +107,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if not self.trusted():
             return
-        if self.path not in ('/api/run','/api/research/run','/api/research/study','/api/research/health','/api/assurance/prepare','/api/assurance/approve','/api/assurance/cancel'):
+        if self.path not in ('/api/run','/api/research/run','/api/research/study','/api/research/health','/api/assurance/prepare','/api/assurance/approve','/api/assurance/cancel','/api/campaigns/prepare'):
             self.send(404, {'error': 'Route not found'})
             return
         try:
@@ -113,6 +124,8 @@ class Handler(BaseHTTPRequestHandler):
                 raise ValueError('Incomplete request')
             data = json.loads(raw, object_pairs_hook=unique_object,
                               parse_constant=lambda value: (_ for _ in ()).throw(ValueError('Nonfinite JSON')))
+            if self.path=='/api/campaigns/prepare':
+                self.send(200,self.server.assurance_store().prepare_campaign(data));return
             allowed={'/api/run':{'scenario'},'/api/research/run':{'scenario'},
                      '/api/research/study':{'scenario','seeds'},'/api/research/health':{'scenario','strategy','mission_id','asset_id'},
                      '/api/assurance/prepare':{'scenario','options'},'/api/assurance/approve':{'job_id','plan_sha256'},

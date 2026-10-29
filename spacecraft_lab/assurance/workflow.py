@@ -32,6 +32,7 @@ class WorkflowStore:
         with self._db() as db:
             db.execute('CREATE TABLE IF NOT EXISTS jobs (id TEXT PRIMARY KEY, plan TEXT NOT NULL, plan_sha TEXT NOT NULL, status TEXT NOT NULL, result TEXT, result_sha TEXT, checkpoint TEXT, error TEXT, audit TEXT NOT NULL)')
             if 'owner_id' not in [row[1] for row in db.execute('PRAGMA table_info(jobs)')]:db.execute('ALTER TABLE jobs ADD COLUMN owner_id TEXT')
+            if 'progress' not in [row[1] for row in db.execute('PRAGMA table_info(jobs)')]:db.execute('ALTER TABLE jobs ADD COLUMN progress TEXT')
             db.execute('CREATE TABLE IF NOT EXISTS owners (id TEXT PRIMARY KEY, pid INTEGER NOT NULL, active INTEGER NOT NULL)')
             db.execute('INSERT INTO owners VALUES(?,?,1)',(self.owner_id,os.getpid()))
             interrupted=db.execute("SELECT jobs.id, owners.pid, owners.active FROM jobs LEFT JOIN owners ON jobs.owner_id=owners.id WHERE status IN ('RUNNING','QUEUED','CANCEL_REQUESTED')").fetchall()
@@ -81,6 +82,22 @@ class WorkflowStore:
             objective='Evaluate rule-based recovery through an independent safety kernel, against protected no-actuator recovery',
             limits=dict(max_wall_seconds=30,engine_intervals=2*cfg.duration_seconds//cfg.dt_seconds),
             approval_scope='Simulated actions only; no source changes, external tools or hardware access')
+        return self._prepare_plan(plan)
+
+    def prepare_campaign(self,request):
+        from ..campaigns import normalize_campaign
+        normalized=normalize_campaign(request)
+        configs=[normalized['scenario'],*[{**normalized['scenario'],**v['changes']} for v in normalized['variants']]]
+        weighted=sum(c['duration_seconds']//c['dt_seconds'] for c in configs)*len(normalized['seeds'])*sum(2 if s=='assured' else 1 for s in normalized['strategies'])
+        plan=dict(schema_version='campaign-plan-1.0',kind='campaign',request=normalized,
+            implementation_sha256=implementation_manifest(),
+            objective='Paired initial-condition counterfactual reruns and recorded strategy comparisons',
+            limits=dict(max_wall_seconds=30,engine_intervals=weighted,
+                primary_runs=len(configs)*len(normalized['seeds'])*len(normalized['strategies'])),
+            approval_scope='Bounded local synthetic simulations only; no hardware or external tools')
+        return self._prepare_plan(plan)
+
+    def _prepare_plan(self,plan):
         job_id=uuid.uuid4().hex
         with self._db() as db:
             db.execute('BEGIN IMMEDIATE')
@@ -88,6 +105,22 @@ class WorkflowStore:
             db.execute('INSERT INTO jobs(id,plan,plan_sha,status,audit) VALUES(?,?,?,?,?)',
                 (job_id,json.dumps(plan),digest(plan),'PREPARED',json.dumps([dict(previous=None,status='PREPARED',at_utc=utc())])))
         return self.get(job_id)
+
+    def list_jobs(self,limit=20):
+        if type(limit) is not int or not 1<=limit<=64:raise ValueError('History limit must be an integer from 1 to 64')
+        with self._db() as db:
+            total=db.execute('SELECT COUNT(*) FROM jobs').fetchone()[0]
+            rows=db.execute('SELECT id,plan,plan_sha,status,audit,progress,error FROM jobs ORDER BY rowid DESC LIMIT ?',(limit,)).fetchall()
+        jobs=[]
+        for row in rows:
+            plan=json.loads(row['plan'])
+            if digest(plan)!=row['plan_sha']:raise ValueError('Stored plan content-integrity check failed')
+            audit=json.loads(row['audit'])
+            jobs.append(dict(job_id=row['id'],kind=plan.get('kind','assurance'),
+                name=plan.get('request',{}).get('name','Mission assurance'),status=row['status'],
+                created_at=audit[0]['at_utc'],updated_at=audit[-1]['at_utc'],
+                progress=json.loads(row['progress']) if row['progress'] else None,error=row['error']))
+        return dict(jobs=jobs,total=total)
 
     def approve(self,job_id,plan_sha256,background=True):
         row=self._row(job_id)
@@ -120,14 +153,22 @@ class WorkflowStore:
             return False
         try:
             if plan['implementation_sha256']!=implementation_manifest():raise ValueError('Model implementation changed after approval')
-            result=run_assurance(plan['scenario'],plan['options'],cancelled)
+            if plan.get('kind')=='campaign':
+                from ..campaigns import run_campaign
+                def progress(value):
+                    with self._db() as db:db.execute("UPDATE jobs SET progress=? WHERE id=? AND status='RUNNING'",(json.dumps(value,allow_nan=False),job_id))
+                result=run_campaign(plan['request'],cancelled=cancelled,progress=progress)
+                last_time=max(v['config']['duration_seconds'] for v in result['variants'])
+            else:
+                result=run_assurance(plan['scenario'],plan['options'],cancelled)
+                last_time=result['telemetry'][-1]['time_seconds']
             if self._row(job_id)['status']=='CANCEL_REQUESTED':
-                self._change(job_id,'CANCELLED',checkpoint=json.dumps(dict(last_time_seconds=result['telemetry'][-1]['time_seconds'],replay_from_seed_required=True)))
+                self._change(job_id,'CANCELLED',checkpoint=json.dumps(dict(last_time_seconds=last_time,replay_from_seed_required=True)))
                 return
-            if result['checks']['violations'] or result['baseline']['checks']['violations']:raise ValueError('Numerical invariant violation')
+            if result['checks']['violations'] or result.get('baseline',{}).get('checks',{}).get('violations'):raise ValueError('Numerical invariant violation')
             fingerprint=digest(result)
             if time.monotonic()-started>30:raise ValueError('30-second workflow deadline exceeded before completion')
-            checkpoint=dict(schema_version='workflow-checkpoint-1.0',last_time_seconds=result['telemetry'][-1]['time_seconds'],
+            checkpoint=dict(schema_version='workflow-checkpoint-1.0',last_time_seconds=last_time,
                 result_sha256=fingerprint,completed=True,limitation='Durable complete-run restore; mid-integrator restore is not implemented')
             completed=self._change(job_id,'COMPLETE',expected={'RUNNING'},result=json.dumps(result,allow_nan=False),result_sha=fingerprint,checkpoint=json.dumps(checkpoint))
             if not completed:self._change(job_id,'CANCELLED',expected={'CANCEL_REQUESTED'},checkpoint=json.dumps(checkpoint))
@@ -148,7 +189,9 @@ class WorkflowStore:
     def get(self,job_id,include_result=False):
         row=self._row(job_id)
         result=dict(job_id=job_id,plan=json.loads(row['plan']),plan_sha256=row['plan_sha'],status=row['status'],
-            checkpoint=json.loads(row['checkpoint']) if row['checkpoint'] else None,error=row['error'],audit=json.loads(row['audit']))
+            checkpoint=json.loads(row['checkpoint']) if row['checkpoint'] else None,error=row['error'],audit=json.loads(row['audit']),
+            progress=json.loads(row['progress']) if row['progress'] else None)
+        result['kind']=result['plan'].get('kind','assurance')
         if include_result:
             report=json.loads(row['result']) if row['result'] else None
             if report is not None and digest(report)!=row['result_sha']:raise ValueError('Stored result content-integrity check failed')

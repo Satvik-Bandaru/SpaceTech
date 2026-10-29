@@ -24,6 +24,7 @@ function renderAssuranceJob(job){
   $('assurance-cancel').disabled=['COMPLETE','FAILED','CANCELLED'].includes(job.status);
 }
 function renderAssuranceResult(result,jobId){
+  if(result.schema_version!=='mission-assurance-1.0'||!result.assurance||!Array.isArray(result.assurance.agents)||!Array.isArray(result.assurance.decisions))throw new Error('Saved result is not a supported assurance report');
   assuranceResult=result;assuranceResultJobId=jobId;const audit=result.assurance;
   $('assurance-replay').disabled=false;$('assurance-export').disabled=false;
   $('assurance-totals').textContent=`${audit.safety_summary.proposals} proposals · ${audit.safety_summary.rejected} rejected · ${audit.safety_summary.executed} executed`;
@@ -53,6 +54,11 @@ async function inspectAssuranceJob(id){
   const inspection=++assuranceInspection;
   const job=await assuranceRequest(`/api/assurance/jobs/${encodeURIComponent(id)}`);
   if(inspection!==assuranceInspection)return;
+  if(job.kind==='campaign'){
+    if(!window.CampaignUI?.openJob)throw new Error('Open this campaign from Counterfactual studio');
+    document.querySelector('[data-view="campaign"]').click();await window.CampaignUI.openJob(id);return;
+  }
+  if(job.kind&&job.kind!=='assurance')throw new Error('Unsupported saved job kind');
   renderAssuranceJob(job);
   if(job.status==='COMPLETE'){
     const result=await assuranceRequest(`/api/assurance/jobs/${job.job_id}/result`);
@@ -86,8 +92,5 @@ $('assurance-restore').addEventListener('click',()=>inspectAssuranceJob($('assur
 $('assurance-export').addEventListener('click',()=>{if(assuranceResult)download(assuranceResult,'mission-assurance-evidence.json');});
 $('assurance-replay').addEventListener('click',()=>{
   if(!assuranceResult)return;
-  pause();assuredReplay=assuranceResult;index=0;$('policy').disabled=true;
-  $('scrubber').max=assuredReplay.telemetry.length-1;$('scrubber').disabled=false;$('play').disabled=false;
-  message('Assurance replay active · kernel interventions appear in the journal. Standard comparisons return to their own experiment.');
-  document.querySelector('[data-view="overview"]').click();render();
+  window.replayRecordedReport(assuranceResult,'Assured recovery');
 });

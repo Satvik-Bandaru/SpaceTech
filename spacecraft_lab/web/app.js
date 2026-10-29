@@ -3,6 +3,7 @@ const $ = id => document.getElementById(id);
 let reports = null, example = null, index = 0, playing = false, timer = null;
 let subsystem = 'eps', busy = false;
 let assuredReplay=null;
+let recordedReplayLabel='Assured recovery';
 let presetLibrary={}, study=null, scene=null, view3d=false;
 const strategyName={none:'No actuator recovery',basic:'Basic',enhanced:'Enhanced'};
 const fmt = (n, digits = 1) => Number(n).toFixed(digits);
@@ -119,11 +120,18 @@ function render() {
   $('clock').textContent=`T+ ${time(row.time_seconds)} / ${time(report.config.duration_seconds)}`;
   $('scrubber').value=index;
   $('run-id').textContent=report.run_id.toUpperCase();
-  $('chart-policy').textContent=assuredReplay?'Assured recovery':strategyName[$('policy').value];
+  $('chart-policy').textContent=assuredReplay?recordedReplayLabel:strategyName[$('policy').value];
   $('illumination').textContent=row.sunlit?'SUNLIT INTERVAL':'ECLIPSE INTERVAL';
   $('orbit-marker').setAttribute('cx',65+53*Math.cos(row.illustrative_orbit_phase_rad));
   $('orbit-marker').setAttribute('cy',30+22*Math.sin(row.illustrative_orbit_phase_rad));
-  if(scene&&view3d)scene.update(row,report.config);
+  if(scene&&view3d){
+    scene.update(row,report.config);
+    const measured=LabUI.inspectionState(row,report.config);
+    const value=n=>Number.isFinite(n)?fmt(n):'unknown';
+    const overlay=$('inspection-overlay').value;
+    const note=overlay==='thermal'?`Single-node color scale ${fmt(report.config.low_temperature_k)}–${fmt(report.config.high_temperature_k)} K · `:overlay==='power'?'Bars top to bottom: solar, served, unserved; scaled to the largest current value · ':'';
+    $('inspection-legend').textContent=`${note}Battery fill ${value(measured.batteryPct)}% · Solar ${value(measured.solarW)} W · Served ${value(measured.servedW)} W · Unserved ${value(measured.unservedW)} W. Exploded positions are inspection geometry.`;
+  }
   $('briefing').textContent=report.briefing.statements.join(' ');
   $('actions').replaceChildren();
   const visibleActions=report.autonomy_decisions.filter(a=>a.time_seconds<=row.time_seconds);
@@ -189,7 +197,7 @@ function preset(name) {
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{
   if(assuredReplay&&['comparison','research'].includes(button.dataset.view)){
     assuredReplay=null;$('policy').disabled=false;index=LabUI.replayIndex(index,current().telemetry.length);$('scrubber').max=current().telemetry.length-1;
-    message('Showing the standard three-strategy experiment. Assured run remains available in Mission assurance.');
+    message('Showing the standard three-strategy experiment. Saved replay remains available in its experiment workspace.');
   }
   document.querySelectorAll('.view').forEach(view=>view.hidden=view.id!==button.dataset.view);
   document.querySelectorAll('[data-view]').forEach(nav=>nav.classList.toggle('active',nav===button));
@@ -197,6 +205,7 @@ document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener
 }));
 document.querySelectorAll('[data-subsystem]').forEach(button=>button.addEventListener('click',()=>{
   subsystem=button.dataset.subsystem;
+  if(scene)scene.setInspection({selected:subsystem});
   document.querySelectorAll('[data-subsystem]').forEach(b=>b.classList.toggle('selected',b===button));render();
 }));
 $('run').addEventListener('click',run);
@@ -223,7 +232,7 @@ $('seed').addEventListener('input',()=>{
 });
 $('export').addEventListener('click',()=>{
   if (!reports) return;
-  if(assuredReplay){download(assuredReplay,'spacecraft-mission-assurance.json');return;}
+  if(assuredReplay){download(assuredReplay,'spacecraft-recorded-run.json');return;}
   download(reports,`spacecraft-three-strategies-seed-${reports.basic.config.seed}.json`);
 });
 (async()=>{
@@ -240,6 +249,14 @@ function download(data,name){
   const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
   const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
+window.replayRecordedReport=function(report,label='Recorded simulation'){
+  if(!report||!Array.isArray(report.telemetry)||!report.telemetry.length||!report.config)throw new Error('A complete recorded run is required for replay');
+  pause();assuredReplay=report;recordedReplayLabel=String(label).slice(0,200);index=0;
+  $('policy').disabled=true;$('scrubber').max=report.telemetry.length-1;
+  $('scrubber').disabled=false;$('play').disabled=false;$('export').disabled=false;
+  document.querySelector('[data-view="overview"]').click();render();
+  message(`${recordedReplayLabel} · replay uses this saved run. Standard comparisons return to their own experiment.`);
+};
 $('add-fault').addEventListener('click',()=>{
   try{
     const scenario=JSON.parse($('scenario-json').value);
@@ -282,6 +299,7 @@ $('health-export').addEventListener('click',async()=>{
 });
 function show2d(hint='ILLUSTRATIVE GEOMETRY · RECORDED STATE'){
   view3d=false;$('scene-3d').hidden=true;$('spacecraft').removeAttribute('hidden');$('scene-hint').textContent=hint;
+  $('inspection-tools').hidden=true;$('inspection-legend').hidden=true;
 }
 $('view-2d').addEventListener('click',()=>show2d());
 $('view-3d').addEventListener('click',()=>{
@@ -289,5 +307,14 @@ $('view-3d').addEventListener('click',()=>{
   if(!scene)scene=createSpacecraftScene($('scene-3d'),hint=>{scene=null;show2d(hint);});
   if(!scene)return;
   view3d=true;$('scene-3d').hidden=false;$('spacecraft').setAttribute('hidden','');
+  $('inspection-tools').hidden=false;$('inspection-legend').hidden=false;
+  scene.setInspection({exploded:$('inspection-exploded').checked,overlay:$('inspection-overlay').value,selected:subsystem});
   $('scene-hint').textContent='DRAG TO ROTATE · WHEEL / + − TO ZOOM';render();
 });
+for(const id of ['inspection-exploded','inspection-overlay'])$(id).addEventListener('change',()=>{
+  if(!scene)return;scene.setInspection({exploded:$('inspection-exploded').checked,overlay:$('inspection-overlay').value});render();
+});
+$('inspection-camera').addEventListener('change',()=>{if(scene)scene.setView($('inspection-camera').value);});
+$('inspection-reset').addEventListener('click',()=>{if(scene)scene.resetCamera();$('inspection-camera').value='isometric';});
+$('inspection-zoom-in').addEventListener('click',()=>{if(scene)scene.zoom(-.5);});
+$('inspection-zoom-out').addEventListener('click',()=>{if(scene)scene.zoom(.5);});

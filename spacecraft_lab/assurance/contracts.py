@@ -63,7 +63,7 @@ def validate_proposal(p):
 
 def _disk_manifest():
     root=Path(__file__).resolve().parents[1]
-    paths=[*sorted((root/'engineering').glob('*.py')),*sorted((root/'assurance').glob('*.py')),root/'reliability.py']
+    paths=[*sorted((root/'engineering').glob('*.py')),*sorted((root/'assurance').glob('*.py')),root/'reliability.py',root/'campaigns.py']
     return {str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
 
 

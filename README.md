@@ -1,5 +1,19 @@
 # Spacecraft Reliability & Autonomy Lab
 
+## Advanced counterfactual studio — 2026-10-29
+
+The local app now includes **controlled what-if variants, four-strategy paired campaigns, confidence-interval plots, paired differences, saved job history, case-level replay and JSON/CSV/Markdown exports**. Spacecraft inspection adds camera presets/reset/zoom, an exploded schematic, continuous battery fill and telemetry-linked thermal/power overlays. Existing physics, safety and offline contracts are preserved.
+
+Open **http://127.0.0.1:8014/** and select **Counterfactual studio**. The default campaign runs 24 cases across three configurations, two noise seeds and four strategies after explicit plan approval. Every case is scored against the same reference success criteria; original reports remain unchanged. All **110 tests pass**. See [verified capabilities and limits](docs/ADVANCED_STUDIO_STATUS.md), [actual results and reproduction](docs/ADVANCED_STUDIO_VERIFICATION.md), and [resume state](docs/BUILD_STATE.md).
+
+```bash
+python3 -m spacecraft_lab.control_center --port 8014
+python3 assurance.py prepare-campaign examples/counterfactual_campaign.json
+python3 assurance.py history --limit 20
+```
+
+Campaigns are bounded initial-condition reruns, not mid-mission state clones. Two noise seeds do not establish real-world reliability or general AI superiority. All seven deterministic roles remain; fleet dynamics, RL, external LLMs and flight qualification are not implemented.
+
 ## V4/V5 mission-assurance increment — 2026-10-29
 
 The existing local app now has an optional **mission-assurance workspace**: a finite validated registry defines seven bounded deterministic roles, a Mission Intelligence Orchestrator coordinates finite simulated recovery proposals, an independent verifier checks current run/state evidence, and a separate safety kernel authorizes actions **before actuation**. The plant records actual modeled outcomes. Experiments use a durable SQLite prepare → exact-plan approval → run workflow, with cancellation, completed-result restore, export and replay. The comparator retains hard safe-mode protection with actuator recovery disabled. No LLM, API key or new dependency is required.

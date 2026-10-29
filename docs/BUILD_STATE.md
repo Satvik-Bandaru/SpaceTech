@@ -1,4 +1,14 @@
-# Resume checkpoint — mission assurance, 2026-10-29
+# Current resume checkpoint — advanced studio, 2026-10-29
+
+- Branch `feature/counterfactual-mission-studio`; restore point `279ce6d`. **110 tests passed**; 16 default-engine reports exactly match the restore point. Python/JS checks, compilation and independent review passed.
+- New same-app Counterfactual studio: up to three variants, 2–4 existing strategies, paired noise seeds, honest common-reference evaluation, statistical plots/deltas, full case reports/replay, text exports, durable progress/cancel/restore/history.
+- Inspection: measured battery/thermal/power state, schematic explosion, camera presets/reset/zoom; retained 2D. No new physical dynamics or LLM/provider.
+- Verified browser job `acdacdec56904722ab0303654192f457`:24 primary cases/30 checked reports/10,800 intervals, zero conservation violations. Full JSON/CSV/MD under `artifacts/advanced-campaign.*`; committed summary/performance under `examples/advanced_campaign_*`. Three full reruns exactly equal, 0.5943–0.6831 s in-process.
+- Source: `campaigns.py`, extended workflow/API/CLI, `web/campaign.js`/`.css`, inspection/replay additions. Startup unchanged: `python3 -m spacecraft_lab.control_center --port 8014`. CLI `assurance.py prepare-campaign examples/counterfactual_campaign.json`, then explicit digest approval; `history` lists both job kinds.
+- Read [advanced scope/assumptions](ADVANCED_STUDIO_STATUS.md) and [verification](ADVANCED_STUDIO_VERIFICATION.md). Next: uncertain/delayed observations and targeted deadline/resource/crash cases. Frozen mid-integrator counterfactuals, fleet, optimization/RL, full20 roles and operational control remain absent.
+- Earlier saved assurance summaries below are historical source identities, not outputs of the new manifest. Completed records remain readable; prepared plans with changed source require re-preparation. No deployment, push or other-project edits.
+
+# Historical checkpoint — mission assurance, 2026-10-29
 
 - Repository: `spacecraft-reliability-lab`; branch: `feature/mission-assurance-kernel`.
 - Baseline restore point: `f2d1a2c`; 64 tests passed before this increment. Python 3.12.8 / Node 24 / Apple Silicon were recorded during the baseline audit.

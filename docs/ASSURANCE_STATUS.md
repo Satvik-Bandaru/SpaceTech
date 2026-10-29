@@ -1,5 +1,7 @@
 # Mission assurance capability and evidence — 2026-10-29
 
+This records the earlier assurance increment. The later [advanced studio status](ADVANCED_STUDIO_STATUS.md) supersedes its counterfactual/history/inspection gaps and extends the implementation manifest to `campaigns.py`; original kernel/physics assumptions remain applicable.
+
 The V4/V5 increment is an **optional, same-application deterministic recovery vertical slice**. It adds an independent pre-execution safety gate, seven bounded runtime roles, durable approved experiments and an assurance workspace to the existing engineering simulator. It does not implement the whole V5 platform or all 20 requested specialist agents. All telemetry and comparisons remain `SYNTHETIC`; `model_validated_for_flight=false`.
 
 Baseline: commit `f2d1a2c`, 64 tests passed before this increment, on branch `feature/mission-assurance-kernel`. See [BUILD_STATE.md](BUILD_STATE.md) for the current verification checkpoint, [ASSURANCE_PLAN.md](ASSURANCE_PLAN.md) for the selected scope, and [V2_STATUS.md](V2_STATUS.md) for preserved research features. Earlier milestone documents describe their own historical increments.

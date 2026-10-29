@@ -1,0 +1,19 @@
+{
+  "name": "Solar and thermal reserve counterfactuals",
+  "scenario": {
+    "duration_seconds": 3600,
+    "dt_seconds": 10,
+    "initial_battery_wh": 40,
+    "faults": [
+      {"kind": "solar_array_loss", "start_seconds": 0, "duration_seconds": 600, "severity": 0.8},
+      {"kind": "heater_stuck_on", "start_seconds": 100, "duration_seconds": 900, "severity": 1}
+    ]
+  },
+  "variants": [
+    {"name": "More solar", "changes": {"solar_generation_w": 220}},
+    {"name": "Lower safe load", "changes": {"safe_load_w": 25}}
+  ],
+  "seeds": [0, 1],
+  "strategies": ["none", "basic", "enhanced", "assured"],
+  "assurance_options": {}
+}

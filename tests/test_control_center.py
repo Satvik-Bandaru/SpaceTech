@@ -41,7 +41,7 @@ class ControlCenterTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertIn(b'Spacecraft Health', body)
         self.assertIn("default-src 'self'", headers['Content-Security-Policy'])
-        for path in ('/app.js','/style.css','/scene.js','/ui-core.js','/assurance.js','/assurance.css'):
+        for path in ('/app.js','/style.css','/scene.js','/ui-core.js','/assurance.js','/assurance.css','/campaign.js','/campaign.css'):
             self.assertEqual(self.request('GET', path)[0], 200)
         for path in ('/../AGENTS.md', '/spacecraft_lab/model.py', '/unknown'):
             self.assertEqual(self.request('GET', path)[0], 404)
@@ -134,3 +134,30 @@ class ControlCenterTests(unittest.TestCase):
         self.assertEqual(len(report['telemetry']),18)
         self.assertTrue(any(not d['safety_check_result']['approved'] for d in report['assurance']['decisions']))
         self.assertFalse(report['checks']['violations'])
+
+    def test_counterfactual_campaign_routes_and_history(self):
+        payload=dict(name='HTTP paired campaign',scenario={'duration_seconds':120},
+            variants=[{'name':'More solar','changes':{'solar_generation_w':220}}],seeds=[1,2],strategies=['basic','assured'])
+        status,_,raw=self.request('POST','/api/campaigns/prepare',payload)
+        self.assertEqual(status,200)
+        job=json.loads(raw);self.assertEqual(job['status'],'PREPARED')
+        self.assertEqual(self.request('GET',f"/api/assurance/jobs/{job['job_id']}/result")[0],409)
+        self.assertEqual(self.request('POST','/api/assurance/approve',{'job_id':job['job_id'],'plan_sha256':job['plan_sha256']})[0],200)
+        deadline=time.monotonic()+5
+        while time.monotonic()<deadline:
+            _,_,raw=self.request('GET',f"/api/assurance/jobs/{job['job_id']}")
+            state=json.loads(raw)
+            if state['status'] in ('COMPLETE','FAILED','CANCELLED'):break
+            time.sleep(.005)
+        self.assertEqual(state['status'],'COMPLETE',state.get('error'))
+        status,_,raw=self.request('GET',f"/api/assurance/jobs/{job['job_id']}/result")
+        self.assertEqual(status,200);result=json.loads(raw)
+        self.assertEqual(result['schema_version'],'counterfactual-campaign-1.0')
+        self.assertEqual(len(result['runs']),8)
+        status,_,raw=self.request('GET','/api/jobs?limit=20')
+        self.assertEqual(status,200)
+        item=next(j for j in json.loads(raw)['jobs'] if j['job_id']==job['job_id'])
+        self.assertEqual(item['kind'],'campaign');self.assertNotIn('result',item)
+        for path in ('/api/jobs?limit=0','/api/jobs?limit=65','/api/jobs?limit=1&limit=2','/api/jobs?arbitrary=1'):
+            self.assertEqual(self.request('GET',path)[0],400)
+        self.assertEqual(self.request('POST','/api/campaigns/prepare',{**payload,'arbitrary_tool':'shell'})[0],400)

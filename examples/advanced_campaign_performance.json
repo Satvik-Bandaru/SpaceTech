@@ -1,0 +1,38 @@
+{
+  "python": "3.12.8",
+  "machine": "arm64",
+  "repetitions": 3,
+  "wall_seconds": [
+    0.5943257499998253,
+    0.6831152909999219,
+    0.631357332999869
+  ],
+  "min_seconds": 0.5943257499998253,
+  "mean_seconds": 0.6362661246665388,
+  "max_seconds": 0.6831152909999219,
+  "primary_runs": 24,
+  "checked_reports": 30,
+  "weighted_engine_intervals": 10800,
+  "campaign_id": "campaign-d5ea1e89600b9a6dfb669424",
+  "source_sha256": {
+    "engineering/__init__.py": "3efd0b201c06c68b9ea0f0a00d37644746d9ce49f256b6b366f7f93e88464552",
+    "engineering/benchmarks.py": "94a615af2160963fce7dcb50583bc25df02d1643ae50b897337a9ec575183d4f",
+    "engineering/config.py": "a3cceb05063695e56956cc45239915cd6b54e4e16b1ab2750141d1fd7f63077d",
+    "engineering/controller.py": "d087c61d57dd33b2de0a37e06ce58f81d5872f63cdee8a96a0341c9670a5068a",
+    "engineering/diagnostics.py": "87d92186871890e51979e3adabdf11cb2f857e4e8553f38feea24e941d95d594",
+    "engineering/model.py": "0e83274d11df73ec2abe0a050b4c02dfebfd9f7203d1a6c8448db0d5034ae9bb",
+    "engineering/physics.py": "64704472b68cb67704145bc7e82d4cfcb0329ec8bb4c1b9495e4d0504dbe0fa3",
+    "assurance/__init__.py": "ce1048ed0af3a3a05b5a5e9535e0954e4ae9140730396216e30ab59560fba95b",
+    "assurance/agents.py": "8aa14d5fb7235bc4db2b113fb451d9f9971fda82c08e112fdc7c20bf2618e0aa",
+    "assurance/contracts.py": "73e3088b34cb97ebdfcf631dea7c86bdf7d995edefb789aef6ab2fbf3e129f90",
+    "assurance/registry.py": "15ce347dfaccfbf0eda4fd72481343d56cb85de25795f6ed4e6f427a544acbb2",
+    "assurance/runner.py": "6febf152dfff57c62fbe03856fd7ec7f99a12dedcf1b3fd7972771f43a39d604",
+    "assurance/safety.py": "4dbe48cd750065e8b23a391785f321cdae1d19a2ceb63f10389e0d42d86b47fd",
+    "assurance/verification.py": "91ff9058ad8125f78d32303bc3710958844ab0e1a7bc5c11c69089d1c337c33e",
+    "assurance/workflow.py": "91a0426966260971cdc4188b76f91d93cd77d257d52c29b2094c9a2fd9fc3a1c",
+    "reliability.py": "cd17c17885963f333d8a8fdbdd70ac7817cc8736579cf65fc3835e6a7a3207b0",
+    "campaigns.py": "ebe82d485721bf2453f36a885d77490cd07a62682a14e817ff7668ab27cd52ca"
+  },
+  "all_reports_exactly_equal": true,
+  "scope": "Actual in-process simulation and statistical aggregation; excludes SQLite/JSON serialization/browser/process startup. Machine/load dependent, no FPS or flight reliability claim."
+}
