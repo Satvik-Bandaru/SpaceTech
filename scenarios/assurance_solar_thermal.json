@@ -1,0 +1,9 @@
+{
+  "name":"Mission assurance: solar loss, unsafe resume probe and heater isolation",
+  "duration_seconds":3600,"dt_seconds":10,"seed":7,"initial_battery_wh":40,
+  "faults":[
+    {"kind":"solar_array_loss","start_seconds":0,"duration_seconds":600,"severity":0.8},
+    {"kind":"heater_stuck_on","start_seconds":100,"duration_seconds":900,"severity":1},
+    {"kind":"comms_loss","start_seconds":300,"duration_seconds":600,"severity":1}
+  ]
+}

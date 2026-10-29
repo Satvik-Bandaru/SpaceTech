@@ -16,7 +16,7 @@ def _hash(value):
     return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
 
 
-def run_engineering(data,policy='baseline',training_seed=9001, recovery_enabled=True):
+def run_engineering(data,policy='baseline',training_seed=9001, recovery_enabled=True, assurance_options=None, cancelled=None):
     if type(recovery_enabled) is not bool:
         raise ValueError('recovery_enabled must be Boolean')
     if policy not in ('baseline','assisted'):
@@ -24,7 +24,17 @@ def run_engineering(data,policy='baseline',training_seed=9001, recovery_enabled=
     raw=asdict(data) if isinstance(data,EngineeringConfig) else data
     if isinstance(data,EngineeringConfig):raw['faults']=list(raw['faults'])
     cfg=engineering_config(raw)
+    commander=None
+    if assurance_options is not None:
+        from ..assurance.agents import MissionCommander
+        commander=MissionCommander(assurance_options,cancelled)
     calibration=fit_signature_model(training_seed)
+    config=asdict(cfg);config['faults']=list(config['faults'])
+    identity=_hash(dict(model=MODEL_VERSION,scenario=config,policy=policy,calibration=calibration))
+    if not recovery_enabled:
+        identity=_hash(dict(base_identity=identity,recovery_enabled=False))
+    if commander:identity=_hash(dict(base_identity=identity,assurance=commander.options,version='assurance-reference-1.0',implementation=commander.implementation_sha256))
+    run_id='eng-'+identity[:24]
     diag=Diagnoser(policy,calibration)
     safety=SafeManager(cfg.low_temperature_k,cfg.high_temperature_k)
     rng=random.Random(cfg.seed)
@@ -36,26 +46,53 @@ def run_engineering(data,policy='baseline',training_seed=9001, recovery_enabled=
     events=[];telemetry=[]
     tp=fp=fn=0
     confusion={name:dict(tp=0,fp=0,fn=0) for name in FAULTS}
+    applied=set()
 
     def emit(t,event,**detail):
         events.append(dict(time_seconds=t,event=event,**detail))
+        if commander and event in ('RETRY_HEATER','ISOLATE_HEATER','SWITCH_REDUNDANT_ADCS','RESET_RADIO_ATTEMPT'):applied.add(event)
 
     for t in range(0,cfg.duration_seconds,cfg.dt_seconds):
         dt=cfg.dt_seconds;h=dt/3600
+        if not commander and cancelled and cancelled():
+            from ..assurance.agents import MissionCancelled
+            raise MissionCancelled(dict(schema_version='baseline-checkpoint-1.0',last_time_seconds=t,
+                battery_wh=battery,temperature_k=temp,limitation='Replay from seed; no mid-integrator restore'))
         active=[f for f in cfg.faults if f.active(t) and f.severity>0]
         magnitude={name:sum(f.severity for f in active if f.kind==name) for name in FAULTS}
         sun=(t%cfg.orbit_period_seconds)<(cfg.orbit_period_seconds-cfg.eclipse_seconds)
         # Exogenous draws have fixed count/order across policies: paired common random numbers.
         noise=[rng.gauss(0,1) for _ in range(6)]
         sensed_temp=temp+noise[1]*cfg.sensor_noise_k
-        if recovery_enabled and heater_isolated_since is not None and t-heater_isolated_since>=300 and heater_attempts<2 and sensed_temp<cfg.high_temperature_k-3:
+        approved=None;applied.clear()
+        if commander:
+            prior=telemetry[-1] if telemetry else {}
+            state=dict(run_id=run_id,time_seconds=t,dt_seconds=dt,battery_wh=battery,battery_capacity_wh=cfg.battery_capacity_wh,
+                temperature_k=sensed_temp,low_temperature_k=cfg.low_temperature_k,high_temperature_k=cfg.high_temperature_k,
+                heater_on_below_k=cfg.heater_on_below_k,discharge_efficiency=cfg.discharge_efficiency,discharge_limit_w=cfg.discharge_limit_w,
+                base_load_w=cfg.safe_load_w if safety.mode=='safe' else cfg.normal_load_w,radio_load_w=cfg.radio_load_w,
+                mode=safety.mode,pointing_error_deg=prior.get('pointing_error_deg',0),comms_up=prior.get('comms_up',previous_powered),
+                unserved_w=previous_unserved,heater_isolated_since=heater_isolated_since,heater_attempts=heater_attempts,
+                adcs_redundant=adcs_redundant,radio_attempts=radio_attempts,last_radio_attempt=last_radio_attempt,
+                stable_seconds=safety.stable_seconds,alarms=sorted(alarms),unavailable_actuators=commander.options['unavailable_actuators'])
+            # Ideal instantaneous load/current observations, not injected fault labels.
+            state['normal_load_w']=cfg.normal_load_w
+            state['safe_load_w']=cfg.safe_load_w
+            state['additional_load_w']=(cfg.heater_w if sensed_temp<cfg.heater_on_below_k and heater_isolated_since is None else 0)+(
+                80*magnitude['heater_stuck_on'] if heater_isolated_since is None else 0)+(5 if t<radio_reset_until else 0)
+            state['storage_loss_w']=min(battery/h,20*magnitude['battery_leak'])
+            state['connected_heater_load_w']=(cfg.heater_w if sensed_temp<cfg.heater_on_below_k and heater_isolated_since is None else 0)+(80*magnitude['heater_stuck_on'] if heater_isolated_since is None else 0)
+            # Static configured failure envelope; never disclose which disconnected fault is active.
+            state['reconnect_heater_load_w']=(cfg.heater_w if sensed_temp<cfg.heater_on_below_k else 0)+80*sum(f.severity for f in cfg.faults if f.kind=='heater_stuck_on')
+            approved=commander.step(state)
+        if recovery_enabled and (approved is None or 'RETRY_HEATER' in approved) and heater_isolated_since is not None and t-heater_isolated_since>=300 and heater_attempts<2 and sensed_temp<cfg.high_temperature_k-3:
             heater_isolated_since=None;heater_attempts+=1
             emit(t,'RETRY_HEATER',attempt=heater_attempts)
-        if recovery_enabled and 'heater_stuck_on' in alarms and heater_isolated_since is None:
+        if recovery_enabled and (approved is None or 'ISOLATE_HEATER' in approved) and 'heater_stuck_on' in alarms and heater_isolated_since is None:
             heater_isolated_since=t;emit(t,'ISOLATE_HEATER',retry_budget_remaining=2-heater_attempts)
-        if recovery_enabled and 'attitude_fault' in alarms and not adcs_redundant:
+        if recovery_enabled and (approved is None or 'SWITCH_REDUNDANT_ADCS' in approved) and 'attitude_fault' in alarms and not adcs_redundant:
             adcs_redundant=True;emit(t,'SWITCH_REDUNDANT_ADCS')
-        if recovery_enabled and 'comms_loss' in alarms and radio_attempts<2 and t-last_radio_attempt>=120:
+        if recovery_enabled and (approved is None or 'RESET_RADIO_ATTEMPT' in approved) and 'comms_loss' in alarms and radio_attempts<2 and t-last_radio_attempt>=120:
             radio_attempts+=1;last_radio_attempt=t;radio_reset_until=t+dt
             emit(t,'RESET_RADIO_ATTEMPT',attempt=radio_attempts,note='Does not cure an injected external outage')
         pointing=(5 if adcs_redundant else min(85,45*magnitude['attitude_fault']))
@@ -66,7 +103,14 @@ def run_engineering(data,policy='baseline',training_seed=9001, recovery_enabled=
         observed=dict(battery_pct=100*sensed_battery/cfg.battery_capacity_wh,temperature_k=sensed_temp,
                       pointing_error_deg=measured_pointing,comms_up=bool(channel_up and previous_powered),unserved_w=previous_unserved)
         before_mode=safety.mode
+        before_stable=safety.stable_seconds
         mode,reasons=safety.update(observed,alarms,dt)
+        if commander and before_mode=='safe' and mode=='normal' and 'REQUEST_NORMAL_MODE' not in approved:
+            mode='safe';safety.mode='safe';safety.stable_seconds=before_stable+dt
+            reasons.append('AWAITING_KERNEL_NORMAL_MODE_APPROVAL')
+        if approved is not None and 'REQUEST_SAFE_MODE' in approved:
+            mode='safe';safety.mode='safe';safety.stable_seconds=0;reasons.append('VERIFIED_SAFE_MODE_REQUEST');applied.add('REQUEST_SAFE_MODE')
+        if approved is not None and 'REQUEST_NORMAL_MODE' in approved and mode=='normal':applied.add('REQUEST_NORMAL_MODE')
         if mode!=before_mode:emit(t,'ENTER_SAFE_MODE' if mode=='safe' else 'RETURN_TO_NORMAL',reasons=reasons)
         base_load=cfg.safe_load_w if mode=='safe' else cfg.normal_load_w
         heater_command=cfg.heater_w if sensed_temp<cfg.heater_on_below_k and heater_isolated_since is None else 0
@@ -136,6 +180,7 @@ def run_engineering(data,policy='baseline',training_seed=9001, recovery_enabled=
             pointing_error_deg=pointing,heater_isolated=heater_isolated_since is not None,
             redundant_adcs=adcs_redundant,observed_residuals=features,diagnosed_faults=sorted(detected),
             injected_faults=sorted({f.kind for f in active}),manifesting_faults=sorted(truth)))
+        if commander:commander.observe(telemetry[-1],applied)
         temp=next_temp
     checks=check_report(cfg,telemetry)
     latencies=[];missed=0
@@ -145,10 +190,7 @@ def run_engineering(data,policy='baseline',training_seed=9001, recovery_enabled=
         latency=min(detections)-fault.start_seconds if detections else None
         latencies.append(dict(fault=fault.kind,start_seconds=fault.start_seconds,latency_seconds=latency,eligible=fault.severity>0))
         missed+=int(latency is None and fault.severity>0)
-    config=asdict(cfg);config['faults']=list(config['faults']);scenario_hash=_hash(config)
-    identity=_hash(dict(model=MODEL_VERSION,scenario=config,policy=policy,calibration=calibration))
-    if not recovery_enabled:
-        identity=_hash(dict(base_identity=identity,recovery_enabled=False))
+    scenario_hash=_hash(config)
     metrics=dict(safe_mode_seconds=sum(r['mode']=='safe' for r in telemetry)*cfg.dt_seconds,
         comms_availability_pct=100*sum(r['comms_up'] for r in telemetry)/len(telemetry),
         min_battery_pct=min(r['battery_pct'] for r in telemetry),max_temperature_k=max(r['temperature_k'] for r in telemetry),
@@ -157,13 +199,17 @@ def run_engineering(data,policy='baseline',training_seed=9001, recovery_enabled=
         conversion_loss_wh=sum(r['conversion_loss_wh'] for r in telemetry),
         isolation_count=sum(e['event']=='ISOLATE_HEATER' for e in events),
         heater_retries=heater_attempts,radio_reset_attempts=radio_attempts)
-    return dict(schema_version='engineering-0.2',model_version=MODEL_VERSION,run_id='eng-'+identity[:24],
+    report=dict(schema_version='engineering-0.2',model_version=MODEL_VERSION,run_id=run_id,
         scenario_sha256=scenario_hash,policy=policy,config=config,data_provenance='SYNTHETIC',
         model_validated_for_flight=False,operational_status='advisory_only',calibration=calibration,
         metrics=metrics,events=events,telemetry=telemetry,checks=checks,
         diagnostics=dict(true_positive_samples=tp,false_positive_samples=fp,false_negative_samples=fn,
                          per_fault=confusion,episode_latencies=latencies,missed_injected_episodes=missed),
         disclaimer='Engineering reference prototype with synthetic inputs; not flight software, qualified hardware or certified predictions.')
+    if commander:
+        report['assurance']=commander.report()
+        report['schema_version']='engineering-assured-1.0'
+    return report
 
 
 def check_report(cfg,rows):

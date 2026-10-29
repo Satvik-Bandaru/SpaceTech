@@ -2,11 +2,12 @@
 const $ = id => document.getElementById(id);
 let reports = null, example = null, index = 0, playing = false, timer = null;
 let subsystem = 'eps', busy = false;
+let assuredReplay=null;
 let presetLibrary={}, study=null, scene=null, view3d=false;
 const strategyName={none:'No actuator recovery',basic:'Basic',enhanced:'Enhanced'};
 const fmt = (n, digits = 1) => Number(n).toFixed(digits);
 const time = seconds => `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
-const current = () => reports?.[$('policy').value];
+const current = () => assuredReplay||reports?.[$('policy').value];
 const words = value => value.replaceAll('_', ' ').toLowerCase();
 
 function message(text, error = false) {
@@ -72,7 +73,8 @@ function drawChart(report) {
 }
 
 function renderEvents(report, row) {
-  const events = report.events.filter(event => event.time_seconds <= row.time_seconds).slice().reverse();
+  const interventions=(report.assurance?.decisions||[]).filter(d=>!d.safety_check_result.approved).map(d=>({time_seconds:d.time_seconds,event:'SAFETY_KERNEL_REJECTED',note:`${d.action}: ${d.safety_check_result.reasons.join(', ')}`}));
+  const events = [...report.events,...interventions].filter(event => event.time_seconds <= row.time_seconds).sort((a,b)=>b.time_seconds-a.time_seconds);
   $('event-count').textContent = events.length;
   $('events').replaceChildren();
   if (!events.length) {
@@ -117,7 +119,7 @@ function render() {
   $('clock').textContent=`T+ ${time(row.time_seconds)} / ${time(report.config.duration_seconds)}`;
   $('scrubber').value=index;
   $('run-id').textContent=report.run_id.toUpperCase();
-  $('chart-policy').textContent=strategyName[$('policy').value];
+  $('chart-policy').textContent=assuredReplay?'Assured recovery':strategyName[$('policy').value];
   $('illumination').textContent=row.sunlit?'SUNLIT INTERVAL':'ECLIPSE INTERVAL';
   $('orbit-marker').setAttribute('cx',65+53*Math.cos(row.illustrative_orbit_phase_rad));
   $('orbit-marker').setAttribute('cy',30+22*Math.sin(row.illustrative_orbit_phase_rad));
@@ -163,7 +165,7 @@ async function run() {
     const response=await fetch('/api/research/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scenario})});
     const result=await response.json();
     if (!response.ok) throw new Error(result.error || 'Simulation refused');
-    reports=result; index=0;
+    reports=result;assuredReplay=null;$('policy').disabled=false; index=0;
     $('seed').value=reports.basic.config.seed;
     study=null;$('study-body').replaceChildren();$('study-export').disabled=true;
     $('study-status').textContent='Uses this newly executed scenario. Select Run paired study for confidence intervals.';
@@ -185,6 +187,10 @@ function preset(name) {
 }
 
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{
+  if(assuredReplay&&['comparison','research'].includes(button.dataset.view)){
+    assuredReplay=null;$('policy').disabled=false;index=LabUI.replayIndex(index,current().telemetry.length);$('scrubber').max=current().telemetry.length-1;
+    message('Showing the standard three-strategy experiment. Assured run remains available in Mission assurance.');
+  }
   document.querySelectorAll('.view').forEach(view=>view.hidden=view.id!==button.dataset.view);
   document.querySelectorAll('[data-view]').forEach(nav=>nav.classList.toggle('active',nav===button));
   render();
@@ -217,6 +223,7 @@ $('seed').addEventListener('input',()=>{
 });
 $('export').addEventListener('click',()=>{
   if (!reports) return;
+  if(assuredReplay){download(assuredReplay,'spacecraft-mission-assurance.json');return;}
   download(reports,`spacecraft-three-strategies-seed-${reports.basic.config.seed}.json`);
 });
 (async()=>{
@@ -266,6 +273,7 @@ $('study-run').addEventListener('click',async()=>{
 $('study-export').addEventListener('click',()=>{if(study)download(study,'spacecraft-reliability-study.json');});
 $('health-export').addEventListener('click',async()=>{
   if(!reports||busy)return;
+  if(assuredReplay){message('Export this assured run from Mission assurance; it is not a v2 health packet.',true);return;}
   try{
     const response=await fetch('/api/research/health',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scenario:current().config,strategy:$('policy').value,mission_id:$('mission-id').value,asset_id:$('asset-id').value})});
     const packet=await response.json();if(!response.ok)throw new Error(packet.error);

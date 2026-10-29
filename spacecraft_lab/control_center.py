@@ -3,6 +3,7 @@ import argparse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import logging
+import sqlite3
 from pathlib import Path
 
 from .engineering.config import engineering_config
@@ -11,6 +12,7 @@ from .io import load_json
 from .reliability import run_strategy, run_study, STRATEGIES
 from .health_exchange import export_health
 from .presets import presets
+from .assurance.workflow import WorkflowStore
 
 ROOT = Path(__file__).resolve().parent.parent
 WEB = Path(__file__).resolve().parent / 'web'
@@ -67,6 +69,8 @@ class Handler(BaseHTTPRequestHandler):
                   '/style.css': ('style.css', 'text/css; charset=utf-8'),
                   '/scene.js': ('scene.js', 'text/javascript; charset=utf-8'),
                   '/research.css': ('research.css', 'text/css; charset=utf-8'),
+                  '/assurance.js': ('assurance.js', 'text/javascript; charset=utf-8'),
+                  '/assurance.css': ('assurance.css', 'text/css; charset=utf-8'),
                   '/ui-core.js': ('ui-core.js', 'text/javascript; charset=utf-8')}
         if self.path in routes:
             name, mime = routes[self.path]
@@ -74,13 +78,25 @@ class Handler(BaseHTTPRequestHandler):
         elif self.path == '/api/bootstrap':
             self.send(200, {'scenario': load_json(ROOT / 'scenarios/engineering_multifault.json'),
                             'max_samples': 2000, 'model_version': 'spacecraft-reference-v0.2', 'presets':presets()})
+        elif self.path.startswith('/api/assurance/jobs/'):
+            parts=self.path.split('/')
+            try:
+                if len(parts) not in (5,6) or (len(parts)==6 and parts[5]!='result'):raise ValueError('Invalid job route')
+                job=self.server.assurance_store().get(parts[4],include_result=len(parts)==6)
+                if len(parts)==6:
+                    if job['status']!='COMPLETE' or job['result'] is None:
+                        self.send(409,{'error':'Job has no complete result','status':job['status']});return
+                    self.send(200,job['result'])
+                else:self.send(200,job)
+            except (ValueError,TypeError,KeyError) as exc:self.send(400,{'error':str(exc)})
+            except (sqlite3.Error,OSError):self.send(503,{'error':'Local workflow store unavailable'})
         else:
             self.send(404, {'error': 'Route not found'})
 
     def do_POST(self):
         if not self.trusted():
             return
-        if self.path not in ('/api/run','/api/research/run','/api/research/study','/api/research/health'):
+        if self.path not in ('/api/run','/api/research/run','/api/research/study','/api/research/health','/api/assurance/prepare','/api/assurance/approve','/api/assurance/cancel'):
             self.send(404, {'error': 'Route not found'})
             return
         try:
@@ -98,9 +114,20 @@ class Handler(BaseHTTPRequestHandler):
             data = json.loads(raw, object_pairs_hook=unique_object,
                               parse_constant=lambda value: (_ for _ in ()).throw(ValueError('Nonfinite JSON')))
             allowed={'/api/run':{'scenario'},'/api/research/run':{'scenario'},
-                     '/api/research/study':{'scenario','seeds'},'/api/research/health':{'scenario','strategy','mission_id','asset_id'}}[self.path]
+                     '/api/research/study':{'scenario','seeds'},'/api/research/health':{'scenario','strategy','mission_id','asset_id'},
+                     '/api/assurance/prepare':{'scenario','options'},'/api/assurance/approve':{'job_id','plan_sha256'},
+                     '/api/assurance/cancel':{'job_id'}}[self.path]
             if not isinstance(data, dict) or set(data) != allowed:
                 raise ValueError('Unexpected or missing request fields')
+            if self.path.startswith('/api/assurance/'):
+                store=self.server.assurance_store()
+                if self.path.endswith('/prepare'):
+                    cfg=engineering_config(data['scenario'])
+                    if cfg.duration_seconds//cfg.dt_seconds>2000:raise ValueError('Browser assurance plans allow <=2000 intervals per strategy')
+                    result=store.prepare(data['scenario'],data['options'])
+                elif self.path.endswith('/approve'):result=store.approve(data['job_id'],data['plan_sha256'])
+                else:result=store.cancel(data['job_id'])
+                self.send(200,result);return
             cfg = engineering_config(data['scenario'])
             if cfg.duration_seconds // cfg.dt_seconds > 2000:
                 raise ValueError('Browser runs allow at most 2000 samples per policy; use the CLI for larger studies')
@@ -118,19 +145,30 @@ class Handler(BaseHTTPRequestHandler):
             self.send(200, reports)
         except (ValueError, TypeError, KeyError, RecursionError, TimeoutError, OverflowError) as exc:
             self.send(400, {'error': str(exc)})
+        except (sqlite3.Error,OSError):self.send(503,{'error':'Local workflow store unavailable'})
 
 
 class LocalServer(HTTPServer):
+    def assurance_store(self):
+        if self.workflow is None:self.workflow=WorkflowStore(self.workflow_path)
+        return self.workflow
+
+    def server_close(self):
+        if getattr(self,'workflow',None) is not None:self.workflow.close()
+        super().server_close()
+
     def get_request(self):
         connection, address = super().get_request()
         connection.settimeout(5)
         return connection, address
 
 
-def create_server(port=8014):
+def create_server(port=8014,workflow_path=None):
     # Serial server bounds compute concurrency for this personal local application.
     server = LocalServer(('127.0.0.1', port), Handler)
     server.timeout = 5
+    server.workflow=None
+    server.workflow_path=Path(workflow_path) if workflow_path else ROOT/'artifacts'/'assurance.sqlite'
     return server
 
 

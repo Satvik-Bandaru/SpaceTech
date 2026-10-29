@@ -1,5 +1,7 @@
 # V2 research increment — implementation status
 
+Historical V2 milestone. The later [mission-assurance status](ASSURANCE_STATUS.md) supersedes its persistence, agent and optional actuation-path limitations; this document retains the original V2 scope.
+
 2026-10-29. Implemented in the existing project, branch `feature/v2-reliability-research`. Read the complete source/test inventory and existing architecture/contracts before changes. Baseline: 52 passing tests; original conceptual simulator and v1 integration preserved. No migration, runtime installation, new application, live integration or deployment.
 
 | V2 request | Status | Actual scope / remaining work |

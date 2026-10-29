@@ -71,11 +71,12 @@ def assess_modes(rows,cfg):
     return transitions
 
 
-def run_strategy(scenario,strategy='basic'):
+def run_strategy(scenario,strategy='basic',assurance_options=None,cancelled=None):
     if not isinstance(strategy,str) or strategy not in STRATEGIES:
         raise ValueError('Strategy must be none, basic or enhanced')
     policy,recovery=STRATEGIES[strategy]
-    report=run_engineering(scenario,policy,recovery_enabled=recovery)
+    report=run_engineering(scenario,policy,recovery_enabled=recovery,assurance_options=assurance_options,cancelled=cancelled)
+    if assurance_options is not None:report['engine_run_id']=report['run_id']
     report['engine_schema_version']=report['schema_version']; report['schema_version']='research-2.0'
     report['strategy']=strategy
     report['run_id']='research-'+fingerprint(dict(engine_run=report['run_id'],strategy=strategy,revision='2.0'))[:24]

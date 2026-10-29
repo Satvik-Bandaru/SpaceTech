@@ -2,6 +2,9 @@ import http.client
 import json
 import socket
 import threading
+import tempfile
+import time
+from pathlib import Path
 import unittest
 
 from spacecraft_lab.control_center import create_server
@@ -10,7 +13,8 @@ from spacecraft_lab.control_center import create_server
 class ControlCenterTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.server = create_server(0)
+        cls.folder=tempfile.TemporaryDirectory()
+        cls.server = create_server(0,workflow_path=Path(cls.folder.name)/'jobs.sqlite')
         cls.thread = threading.Thread(target=cls.server.serve_forever, daemon=True)
         cls.thread.start()
         cls.port = cls.server.server_address[1]
@@ -20,6 +24,7 @@ class ControlCenterTests(unittest.TestCase):
         cls.server.shutdown()
         cls.server.server_close()
         cls.thread.join()
+        cls.folder.cleanup()
 
     def request(self, method, path, data=None, headers=None):
         connection = http.client.HTTPConnection('127.0.0.1', self.port, timeout=10)
@@ -36,7 +41,7 @@ class ControlCenterTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertIn(b'Spacecraft Health', body)
         self.assertIn("default-src 'self'", headers['Content-Security-Policy'])
-        for path in ('/app.js', '/style.css'):
+        for path in ('/app.js','/style.css','/scene.js','/ui-core.js','/assurance.js','/assurance.css'):
             self.assertEqual(self.request('GET', path)[0], 200)
         for path in ('/../AGENTS.md', '/spacecraft_lab/model.py', '/unknown'):
             self.assertEqual(self.request('GET', path)[0], 404)
@@ -101,3 +106,31 @@ class ControlCenterTests(unittest.TestCase):
         self.assertEqual(json.loads(raw)['schema_version'],'2.0')
         self.assertEqual(self.request('POST','/api/research/study',{**data,'seeds':list(range(13))})[0],400)
         self.assertEqual(self.request('POST','/api/research/study',{'scenario':{'dt_seconds':1,'duration_seconds':2000},'seeds':[1,2,3]})[0],400)
+
+    def test_assurance_requires_explicit_plan_approval(self):
+        status,_,raw=self.request('POST','/api/assurance/prepare',{'scenario':{'duration_seconds':120},'options':{'probe_unsafe':True}})
+        self.assertEqual(status,200)
+        job=json.loads(raw);self.assertEqual(job['status'],'PREPARED')
+        self.assertEqual(self.request('POST','/api/assurance/approve',{'job_id':job['job_id'],'plan_sha256':'forged'})[0],400)
+        self.assertEqual(self.request('GET',f"/api/assurance/jobs/{job['job_id']}")[0],200)
+        self.assertEqual(self.request('POST','/api/assurance/cancel',{'job_id':job['job_id']})[0],200)
+        self.assertEqual(self.request('GET',f"/api/assurance/jobs/{job['job_id']}/result")[0],409)
+        self.assertEqual(self.request('GET','/api/assurance/jobs/invalid')[0],400)
+
+    def test_background_assurance_run_returns_real_complete_evidence(self):
+        status,_,raw=self.request('POST','/api/assurance/prepare',{'scenario':{'duration_seconds':180,'initial_battery_wh':40},'options':{'probe_unsafe':True}})
+        self.assertEqual(status,200);job=json.loads(raw)
+        status,_,_=self.request('POST','/api/assurance/approve',{'job_id':job['job_id'],'plan_sha256':job['plan_sha256']})
+        self.assertEqual(status,200)
+        deadline=time.monotonic()+5
+        while time.monotonic()<deadline:
+            _,_,raw=self.request('GET',f"/api/assurance/jobs/{job['job_id']}")
+            state=json.loads(raw)
+            if state['status'] in ('COMPLETE','FAILED','CANCELLED'):break
+            time.sleep(.005)
+        self.assertEqual(state['status'],'COMPLETE',state.get('error'))
+        status,_,raw=self.request('GET',f"/api/assurance/jobs/{job['job_id']}/result")
+        self.assertEqual(status,200);report=json.loads(raw)
+        self.assertEqual(len(report['telemetry']),18)
+        self.assertTrue(any(not d['safety_check_result']['approved'] for d in report['assurance']['decisions']))
+        self.assertFalse(report['checks']['violations'])

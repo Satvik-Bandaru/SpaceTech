@@ -2,6 +2,12 @@
 
 ## Current user scope override (2026-10-28)
 
+Update 2026-10-29, V4/V5: the direct request authorizes an additive, optional mission-assurance mode in this same application. Keep the existing engineering/research/UI paths and offline v1/v2 contracts working. Current scope is seven bounded deterministic runtime roles, finite structured proposals, an independent pre-execution safety kernel, local SQLite approval/results workflow and same-app evidence/replay UI. The complete V5 vision names 20 specialist roles; it does not make unimplemented roles or phases complete. Read `docs/ASSURANCE_STATUS.md`, `docs/ASSURANCE_PLAN.md` and `docs/BUILD_STATE.md` before resuming.
+
+Assurance specialists may propose only the implemented simulated action vocabulary; the finite Agent Registry cannot grant expanded tools or permissions. They cannot change source or call arbitrary tools, shell, networks or hardware. `MissionIntelligenceOrchestrator` coordinates independent pre-execution proposal-evidence checks; the separate deterministic kernel remains final recovery authorization and existing hard safe-mode protection remains active. Bind new `proposal-2.0` messages to run ID and exact original observation digest; record `verification_result`, rejected proposals and actual observed outcomes. Source/plan/result digests are content-integrity checks, not authentication. Durable restore means completed reports, not integrator/RNG continuation. Document ideal current/loss telemetry, sensed-temperature margins, static heater reconnect envelope and conservative zero solar credit. Never portray these checks as formal proof or flight validation.
+
+No cross-project coupling, live Lunar Ops sync, deployment, external LLM service, real spacecraft command path or changes to another repository are authorized by this increment. Historical integration instructions below remain context only where they conflict with this override.
+
 Update 2026-10-29: the direct V2 request authorizes an optional local JSON health adapter and research/UI extensions inside this existing project. Preserve v1.0. No live connection or mutation of any other project is authorized or implemented. See docs/V2_STATUS.md for actual versus planned capability.
 
 The user's direct request keeps this lab independent of Lunar Ops, ChainMind and the Virtual Space Robotics + AI
@@ -9,7 +15,7 @@ Swarm Lab. Preserve the existing offline adapter for compatibility; the integrat
 context, not permission for live synchronization or edits to other repositories. Develop engineering models and FDIR
 locally, with no deployment. The isolated workspace copy preserves the supplied Downloads folder and ZIP unchanged.
 
-This is a **separate Codex-maintained component that must sync with Lunar Ops**, not a competing or disconnected space startup. The architectural source of truth for lunar mission planning is **Lunar Ops in Claude Code**, which also integrates the **Virtual Space Robotics Lab**. A separate **AI Swarm Lab** uses **Swarms.ai** for multi-agent task coordination; Swarms itself does not simulate physics or provide a robotics scene.
+Historical integration intent: this was described as a **separate Codex-maintained component that must sync with Lunar Ops**. That intent does not override the current independent local scope. The earlier architecture names **Lunar Ops in Claude Code** for lunar mission planning, its **Virtual Space Robotics Lab**, and a separate **AI Swarm Lab** using **Swarms.ai** for task coordination; Swarms itself does not simulate physics or provide a robotics scene.
 
 ## Required boundaries
 - Codex owns satellite/orbital relay fault injection, subsystem health, safe-mode simulation and telemetry reports **in this repository**.

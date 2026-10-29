@@ -1,5 +1,7 @@
 # Engineering reference v0.2: assumptions and evidence
 
+The optional assurance extension adds independent pre-execution action gates and durable workflow records. See [its assumptions and limits](ASSURANCE_STATUS.md); statements below about unavailable persistence describe the original v0.2 milestone.
+
 ## Model and units
 
 All parameters are hypothetical research inputs, not identified spacecraft hardware. Time is seconds, power watts, battery energy watt-hours and temperature Kelvin. Defaults are listed in `spacecraft_lab/engineering/config.py`. The example runs 5,400 seconds in 10-second steps. Fault windows are half-open intervals, aligned to the step; a measurement and detection for an interval are available at its end. Recovery acts on the following step.

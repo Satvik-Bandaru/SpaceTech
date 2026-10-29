@@ -1,5 +1,30 @@
 # Spacecraft Reliability & Autonomy Lab
 
+## V4/V5 mission-assurance increment — 2026-10-29
+
+The existing local app now has an optional **mission-assurance workspace**: a finite validated registry defines seven bounded deterministic roles, a Mission Intelligence Orchestrator coordinates finite simulated recovery proposals, an independent verifier checks current run/state evidence, and a separate safety kernel authorizes actions **before actuation**. The plant records actual modeled outcomes. Experiments use a durable SQLite prepare → exact-plan approval → run workflow, with cancellation, completed-result restore, export and replay. The comparator retains hard safe-mode protection with actuator recovery disabled. No LLM, API key or new dependency is required.
+
+```bash
+python3 -m spacecraft_lab.control_center --port 8014
+python3 -m unittest discover -s tests -v
+python3 assurance.py prepare scenarios/assurance_solar_thermal.json --probe-unsafe
+```
+
+Open **http://127.0.0.1:8014/** and select the assurance workspace. Prepare the built-in solar/thermal demonstration, inspect its plan, then approve that exact plan. Preparation alone does not run it. The interface shows rejected and executed actions, evidence, seven role records and the protected comparison; completed reports can be replayed in the existing telemetry/3D view. An explicit unsafe probe is a research input, with no hardcoded approval or outcome.
+
+The CLI prints a `job_id` and `plan_sha256`; use those actual values below:
+
+```bash
+python3 assurance.py approve JOB_ID --digest PLAN_SHA256
+python3 assurance.py status JOB_ID
+python3 assurance.py export JOB_ID --out artifacts/mission-assurance.json
+python3 assurance.py cancel JOB_ID
+```
+
+CLI approval runs synchronously. The default store is `artifacts/assurance.sqlite`; choose another with `python3 assurance.py --store PATH ...`. Restore retrieves complete reports; cancellation checkpoints cannot resume the integrator/RNG. SHA-256 binds content and implementation, not user identity. The local workflow has bounded jobs, time and report admission; it is not a production service.
+
+The verified increment passes **93 tests**. The connected seed-7 example records 34 rejected proposals, heater isolation at 130 s, approved normal recovery at 2,770 s and zero unserved energy. See [actual verification and reproduction commands](docs/ASSURANCE_VERIFICATION.md), the precise [capability matrix, assumptions, FMEA and requirements-to-tests crosswalk](docs/ASSURANCE_STATUS.md), [selected implementation plan](docs/ASSURANCE_PLAN.md), and [resume checkpoint](docs/BUILD_STATE.md). This is a bounded vertical slice of the complete 20-role V5 vision. Orbital dynamics, fleet agents, optimization, RL, online LLM/RAG and formal safety proofs remain future work. Current thermal/resource checks are conservative model guards; simulated outcomes are never flight reliability evidence.
+
 ## V2 research increment — 2026-10-29
 
 The existing local app now includes **three recovery strategies**, a fault-injection form, seven presets, telemetry-driven **3D inspection with 2D fallback**, explainable protection/recovery records, a paired-seed research workspace with confidence intervals, and an optional offline v2 health exchange. No other app or repository is modified or contacted.
@@ -40,7 +65,7 @@ Open **http://127.0.0.1:8014/**. Keep the terminal running; Ctrl+C stops the ser
 
 The interface runs three research strategies over the existing engineering policies, displays telemetry-driven subsystem states, plots and decision history, and supports play/pause, seek, replay speed, editable JSON scenarios and export. Seed edits and scenario changes take effect on **Run experiment**. Failed edits retain the previous report with an explicit error. Replay shows recorded intervals, not a live hardware connection. Larger studies and identical-telemetry diagnostic replay remain available through the benchmark CLI.
 
-The server binds only to loopback, checks Host/Origin, serves explicit asset routes and caps JSON bodies and compute samples. It is a personal local tool, without authentication, persistence, or production availability guarantees. Socket access must be allowed to run its HTTP tests. SVG and WebGL views are inspection schematics, not a physically validated 3D spacecraft model.
+The server binds only to loopback, checks Host/Origin, serves explicit asset routes and caps JSON bodies and compute samples. It is a personal local tool without authentication or production availability guarantees. The optional assurance workflow persists plans, status, audit and complete reports in local SQLite; ordinary replay remains report-based. Socket access must be allowed to run its HTTP tests. SVG and WebGL views are inspection schematics, not a physically validated 3D spacecraft model.
 
 Reports include replayable configuration, telemetry, events, conservation checks and synthetic provenance. See [audit and milestone](docs/ENGINEERING_MILESTONE.md), [equations and limitations](docs/ENGINEERING_ASSUMPTIONS.md), and the [saved benchmark](examples/engineering-benchmark.json). These are engineering reference simulations, never flight certification.
 

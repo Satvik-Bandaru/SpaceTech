@@ -1,0 +1,1477 @@
+{
+  "schema_version": "mission-assurance-1.0",
+  "assurance_version": "assurance-reference-1.0",
+  "engine_run_id": "eng-9cfa497ac32c1a63a283cc5b",
+  "run_id": "research-137e9dbd3501bbde828d0c83",
+  "scenario_sha256": "29f7537dcef872f2dcbc00bb3b5d4ee95274161fdfa83bdb265d50ff29d401b0",
+  "implementation_sha256": {
+    "engineering/__init__.py": "3efd0b201c06c68b9ea0f0a00d37644746d9ce49f256b6b366f7f93e88464552",
+    "engineering/benchmarks.py": "94a615af2160963fce7dcb50583bc25df02d1643ae50b897337a9ec575183d4f",
+    "engineering/config.py": "a3cceb05063695e56956cc45239915cd6b54e4e16b1ab2750141d1fd7f63077d",
+    "engineering/controller.py": "d087c61d57dd33b2de0a37e06ce58f81d5872f63cdee8a96a0341c9670a5068a",
+    "engineering/diagnostics.py": "87d92186871890e51979e3adabdf11cb2f857e4e8553f38feea24e941d95d594",
+    "engineering/model.py": "0e83274d11df73ec2abe0a050b4c02dfebfd9f7203d1a6c8448db0d5034ae9bb",
+    "engineering/physics.py": "64704472b68cb67704145bc7e82d4cfcb0329ec8bb4c1b9495e4d0504dbe0fa3",
+    "assurance/__init__.py": "ce1048ed0af3a3a05b5a5e9535e0954e4ae9140730396216e30ab59560fba95b",
+    "assurance/agents.py": "8aa14d5fb7235bc4db2b113fb451d9f9971fda82c08e112fdc7c20bf2618e0aa",
+    "assurance/contracts.py": "ee33e106795428498bc7e02caf73651ae77ad53f38190da6c16a8690f314e763",
+    "assurance/registry.py": "15ce347dfaccfbf0eda4fd72481343d56cb85de25795f6ed4e6f427a544acbb2",
+    "assurance/runner.py": "6febf152dfff57c62fbe03856fd7ec7f99a12dedcf1b3fd7972771f43a39d604",
+    "assurance/safety.py": "4dbe48cd750065e8b23a391785f321cdae1d19a2ceb63f10389e0d42d86b47fd",
+    "assurance/verification.py": "91ff9058ad8125f78d32303bc3710958844ab0e1a7bc5c11c69089d1c337c33e",
+    "assurance/workflow.py": "c1a52db8ba49d60609f9c21c7c0e83eb0a5ef0d43c9443b4e24d94eca0ef97a0",
+    "reliability.py": "cd17c17885963f333d8a8fdbdd70ac7817cc8736579cf65fc3835e6a7a3207b0"
+  },
+  "data_provenance": "SYNTHETIC",
+  "model_validated_for_flight": false,
+  "metrics": {
+    "safe_mode_seconds": 2770,
+    "comms_availability_pct": 83.33333333333333,
+    "min_battery_pct": 16.04938271604932,
+    "max_temperature_k": 297.1471669628864,
+    "unserved_energy_wh": 0.0,
+    "curtailed_energy_wh": 12.055555555555555,
+    "conversion_loss_wh": 6.94925925925926,
+    "isolation_count": 1,
+    "heater_retries": 0,
+    "radio_reset_attempts": 0
+  },
+  "checks": {
+    "violations": [],
+    "max_power_residual_wh": 5.3013149425851225e-15,
+    "max_thermal_residual_j": 5.684341886080801e-10
+  },
+  "comparison": {
+    "safe_mode_seconds": -580,
+    "comms_availability_pct": 0.0,
+    "min_battery_pct": 4.835390946502011,
+    "max_temperature_k": -0.7389716020808805,
+    "unserved_energy_wh": 0.0,
+    "curtailed_energy_wh": -1.0,
+    "conversion_loss_wh": -1.4649382716049386,
+    "isolation_count": 1,
+    "heater_retries": 0,
+    "radio_reset_attempts": 0
+  },
+  "baseline_metrics": {
+    "safe_mode_seconds": 3350,
+    "comms_availability_pct": 83.33333333333333,
+    "min_battery_pct": 11.213991769547308,
+    "max_temperature_k": 297.88613856496727,
+    "unserved_energy_wh": 0.0,
+    "curtailed_energy_wh": 13.055555555555555,
+    "conversion_loss_wh": 8.414197530864199,
+    "isolation_count": 0,
+    "heater_retries": 0,
+    "radio_reset_attempts": 0
+  },
+  "safety_summary": {
+    "proposals": 37,
+    "approved": 3,
+    "rejected": 34,
+    "executed": 3
+  },
+  "audit_sha256": "ffbe85e0d3c35efe6ff76cfdecfe86e88d0d3789af2093c620c0abb7647a112b",
+  "result_sha256": "81b18f7ca5e1e98b63b134ef8afda871e7a5a9bd1f950e0a20d08aadea0e92a5",
+  "configuration": {
+    "duration_seconds": 3600,
+    "dt_seconds": 10,
+    "seed": 7,
+    "battery_capacity_wh": 240,
+    "initial_battery_wh": 40,
+    "normal_load_w": 120,
+    "safe_load_w": 35,
+    "radio_load_w": 5,
+    "solar_generation_w": 180,
+    "charge_efficiency": 0.92,
+    "discharge_efficiency": 0.9,
+    "charge_limit_w": 120,
+    "discharge_limit_w": 150,
+    "initial_temperature_k": 293.15,
+    "sink_temperature_k": 250,
+    "thermal_capacity_j_per_k": 20000,
+    "emissivity": 0.75,
+    "radiator_area_m2": 0.5,
+    "absorbed_solar_w": 40,
+    "internal_heat_fraction": 0.85,
+    "heater_w": 40,
+    "heater_on_below_k": 283.15,
+    "low_temperature_k": 263.15,
+    "high_temperature_k": 333.15,
+    "sensor_noise_k": 0.002,
+    "solar_noise_w": 0.5,
+    "battery_noise_wh": 0.002,
+    "attitude_noise_deg": 0.1,
+    "orbit_period_seconds": 5400,
+    "eclipse_seconds": 1800,
+    "faults": [
+      {
+        "kind": "solar_array_loss",
+        "start_seconds": 0,
+        "duration_seconds": 600,
+        "severity": 0.8
+      },
+      {
+        "kind": "heater_stuck_on",
+        "start_seconds": 100,
+        "duration_seconds": 900,
+        "severity": 1
+      },
+      {
+        "kind": "comms_loss",
+        "start_seconds": 300,
+        "duration_seconds": 600,
+        "severity": 1
+      }
+    ]
+  },
+  "agent_ids": [
+    "power",
+    "thermal",
+    "diagnostic",
+    "recovery",
+    "commander",
+    "safety",
+    "validation"
+  ],
+  "decisions": [
+    {
+      "proposal_id": "proposal-dae7c96f6958db8abe55d281",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "08710b1fa182c31f4ffccc1d3c0f882f5f14116400a4a75dbef77c0f89103e75",
+      "time_seconds": 0,
+      "source_agent": "power",
+      "action": "REQUEST_SAFE_MODE",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 0,
+        "state_sha256": "08710b1fa182c31f4ffccc1d3c0f882f5f14116400a4a75dbef77c0f89103e75",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": true,
+        "reasons": [
+          "ALL_MODELED_CONSTRAINTS_PASS"
+        ],
+        "state_sha256": "08710b1fa182c31f4ffccc1d3c0f882f5f14116400a4a75dbef77c0f89103e75",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "08710b1fa182c31f4ffccc1d3c0f882f5f14116400a4a75dbef77c0f89103e75",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "EXECUTED",
+      "observed_outcome": {
+        "time_seconds": 10,
+        "field": "mode",
+        "value": "safe",
+        "expected": "safe",
+        "status": "ACHIEVED",
+        "interpretation": "Observed modeled effect; not a lasting repair or causal mission benefit"
+      }
+    },
+    {
+      "proposal_id": "proposal-4546df136bb8297a6f158c5e",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "08710b1fa182c31f4ffccc1d3c0f882f5f14116400a4a75dbef77c0f89103e75",
+      "time_seconds": 0,
+      "source_agent": "recovery",
+      "action": "REQUEST_NORMAL_MODE",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 0,
+        "state_sha256": "08710b1fa182c31f4ffccc1d3c0f882f5f14116400a4a75dbef77c0f89103e75",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "NORMAL_MODE_PRECONDITIONS",
+          "HEALTHY_DWELL_NOT_MET",
+          "NORMAL_POWER_BUDGET_INFEASIBLE"
+        ],
+        "state_sha256": "85b6fdcbf2f17dd1389873cde92e1bd34ca1dd4786a6392b6cba0d876c6c3e75",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "08710b1fa182c31f4ffccc1d3c0f882f5f14116400a4a75dbef77c0f89103e75",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-d530001c6e3ee310377ce6a7",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "2bffc7a765cbcd03e560df4914a4e1981b8bb34390317055c358f527b8f26834",
+      "time_seconds": 120,
+      "source_agent": "recovery",
+      "action": "REQUEST_NORMAL_MODE",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 120,
+        "state_sha256": "2bffc7a765cbcd03e560df4914a4e1981b8bb34390317055c358f527b8f26834",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "NORMAL_MODE_PRECONDITIONS",
+          "HEALTHY_DWELL_NOT_MET",
+          "NORMAL_POWER_BUDGET_INFEASIBLE"
+        ],
+        "state_sha256": "2bffc7a765cbcd03e560df4914a4e1981b8bb34390317055c358f527b8f26834",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "2bffc7a765cbcd03e560df4914a4e1981b8bb34390317055c358f527b8f26834",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-a36ee64b7e4b979e492f075a",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "e1fb3c9e5d1579cb9e13343c636032dd578da343c4870ee66b5f5ef27c379c28",
+      "time_seconds": 130,
+      "source_agent": "recovery",
+      "action": "ISOLATE_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 130,
+        "state_sha256": "e1fb3c9e5d1579cb9e13343c636032dd578da343c4870ee66b5f5ef27c379c28",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": true,
+        "reasons": [
+          "ALL_MODELED_CONSTRAINTS_PASS"
+        ],
+        "state_sha256": "e1fb3c9e5d1579cb9e13343c636032dd578da343c4870ee66b5f5ef27c379c28",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "e1fb3c9e5d1579cb9e13343c636032dd578da343c4870ee66b5f5ef27c379c28",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "EXECUTED",
+      "observed_outcome": {
+        "time_seconds": 140,
+        "field": "heater_isolated",
+        "value": true,
+        "expected": true,
+        "status": "ACHIEVED",
+        "interpretation": "Observed modeled effect; not a lasting repair or causal mission benefit"
+      }
+    },
+    {
+      "proposal_id": "proposal-8b6c239639b9f5950407d13e",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "3532169ff7c030ba0d19e9d01e46597fce13eddae41ce3012ed4651821c4c174",
+      "time_seconds": 330,
+      "source_agent": "recovery",
+      "action": "RESET_RADIO_ATTEMPT",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 330,
+        "state_sha256": "3532169ff7c030ba0d19e9d01e46597fce13eddae41ce3012ed4651821c4c174",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "RESOURCE_OR_THERMAL_MARGIN",
+          "POWER_BUDGET_INFEASIBLE"
+        ],
+        "state_sha256": "3532169ff7c030ba0d19e9d01e46597fce13eddae41ce3012ed4651821c4c174",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "3532169ff7c030ba0d19e9d01e46597fce13eddae41ce3012ed4651821c4c174",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-68d904a50e1951f68f1b7646",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "5a2c6274613a6cca54bdf3cc975c93c12c835e26324eb9ab2cd0e3bc56d6eecb",
+      "time_seconds": 430,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 430,
+        "state_sha256": "5a2c6274613a6cca54bdf3cc975c93c12c835e26324eb9ab2cd0e3bc56d6eecb",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE",
+          "HEATER_RECONNECT_POWER_BUDGET"
+        ],
+        "state_sha256": "5a2c6274613a6cca54bdf3cc975c93c12c835e26324eb9ab2cd0e3bc56d6eecb",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "5a2c6274613a6cca54bdf3cc975c93c12c835e26324eb9ab2cd0e3bc56d6eecb",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-a047544ab6f9844222b80740",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "afa0bdd98981f64421923467b80a106ae468a52b12092199875b84209612f9c8",
+      "time_seconds": 450,
+      "source_agent": "recovery",
+      "action": "RESET_RADIO_ATTEMPT",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 450,
+        "state_sha256": "afa0bdd98981f64421923467b80a106ae468a52b12092199875b84209612f9c8",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "RESOURCE_OR_THERMAL_MARGIN",
+          "POWER_BUDGET_INFEASIBLE"
+        ],
+        "state_sha256": "afa0bdd98981f64421923467b80a106ae468a52b12092199875b84209612f9c8",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "afa0bdd98981f64421923467b80a106ae468a52b12092199875b84209612f9c8",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-62dbe34170a4dea5918b9158",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "a5e82acdd9798c67fee10b73125ad8263e63494ab07bcebc33351f3b019bdea9",
+      "time_seconds": 550,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 550,
+        "state_sha256": "a5e82acdd9798c67fee10b73125ad8263e63494ab07bcebc33351f3b019bdea9",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE",
+          "HEATER_RECONNECT_POWER_BUDGET"
+        ],
+        "state_sha256": "a5e82acdd9798c67fee10b73125ad8263e63494ab07bcebc33351f3b019bdea9",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "a5e82acdd9798c67fee10b73125ad8263e63494ab07bcebc33351f3b019bdea9",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-2c38ed627bf75bfd7a5716e7",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "cf00b988cbc793118ff99ea2dc4355c03086e7efb4c09dd1ad39c7548493f7a3",
+      "time_seconds": 570,
+      "source_agent": "recovery",
+      "action": "RESET_RADIO_ATTEMPT",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 570,
+        "state_sha256": "cf00b988cbc793118ff99ea2dc4355c03086e7efb4c09dd1ad39c7548493f7a3",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "RESOURCE_OR_THERMAL_MARGIN",
+          "POWER_BUDGET_INFEASIBLE"
+        ],
+        "state_sha256": "cf00b988cbc793118ff99ea2dc4355c03086e7efb4c09dd1ad39c7548493f7a3",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "cf00b988cbc793118ff99ea2dc4355c03086e7efb4c09dd1ad39c7548493f7a3",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-d3767fe7ec810bd331cc1691",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "53bc74b1b401cc0ad43e1f29483c8dda999ea5510fccb58843614ff7b329483d",
+      "time_seconds": 670,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 670,
+        "state_sha256": "53bc74b1b401cc0ad43e1f29483c8dda999ea5510fccb58843614ff7b329483d",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE",
+          "HEATER_RECONNECT_POWER_BUDGET"
+        ],
+        "state_sha256": "53bc74b1b401cc0ad43e1f29483c8dda999ea5510fccb58843614ff7b329483d",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "53bc74b1b401cc0ad43e1f29483c8dda999ea5510fccb58843614ff7b329483d",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-f98d75031acd5ec092e8d656",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "ee87cf538fe3e4e09846947b8d05507ab5ce7e112fe189a8e9e28d7408e8a696",
+      "time_seconds": 690,
+      "source_agent": "recovery",
+      "action": "RESET_RADIO_ATTEMPT",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 690,
+        "state_sha256": "ee87cf538fe3e4e09846947b8d05507ab5ce7e112fe189a8e9e28d7408e8a696",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "RESOURCE_OR_THERMAL_MARGIN",
+          "POWER_BUDGET_INFEASIBLE"
+        ],
+        "state_sha256": "ee87cf538fe3e4e09846947b8d05507ab5ce7e112fe189a8e9e28d7408e8a696",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "ee87cf538fe3e4e09846947b8d05507ab5ce7e112fe189a8e9e28d7408e8a696",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-709ed89904e90f685e63436f",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "eeccf37e3e2863bfd89c595e9e01a6d07c87c6b4c0f7c818250bc209cffc75c7",
+      "time_seconds": 790,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 790,
+        "state_sha256": "eeccf37e3e2863bfd89c595e9e01a6d07c87c6b4c0f7c818250bc209cffc75c7",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE",
+          "HEATER_RECONNECT_POWER_BUDGET"
+        ],
+        "state_sha256": "eeccf37e3e2863bfd89c595e9e01a6d07c87c6b4c0f7c818250bc209cffc75c7",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "eeccf37e3e2863bfd89c595e9e01a6d07c87c6b4c0f7c818250bc209cffc75c7",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-508016f0e53e6d14a6bcefb0",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "fbec9ad24f9411e3dabf8157c30cd3fe91111d1fdd18f5ca006da604ca45d148",
+      "time_seconds": 810,
+      "source_agent": "recovery",
+      "action": "RESET_RADIO_ATTEMPT",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 810,
+        "state_sha256": "fbec9ad24f9411e3dabf8157c30cd3fe91111d1fdd18f5ca006da604ca45d148",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "RESOURCE_OR_THERMAL_MARGIN",
+          "POWER_BUDGET_INFEASIBLE"
+        ],
+        "state_sha256": "fbec9ad24f9411e3dabf8157c30cd3fe91111d1fdd18f5ca006da604ca45d148",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "fbec9ad24f9411e3dabf8157c30cd3fe91111d1fdd18f5ca006da604ca45d148",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-7b819270e8e0ced88d9278eb",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "b37d38a423ff5955055eed9909da809a8e90d30f827ad06ebf8d8b0210de327e",
+      "time_seconds": 910,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 910,
+        "state_sha256": "b37d38a423ff5955055eed9909da809a8e90d30f827ad06ebf8d8b0210de327e",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE",
+          "HEATER_RECONNECT_POWER_BUDGET"
+        ],
+        "state_sha256": "b37d38a423ff5955055eed9909da809a8e90d30f827ad06ebf8d8b0210de327e",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "b37d38a423ff5955055eed9909da809a8e90d30f827ad06ebf8d8b0210de327e",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-0b861eac63b3d6e0103022f1",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "4a2522f2884c40d71113d49dad3e1b868171c23804c31dddb9ef8af4dd8145f6",
+      "time_seconds": 1030,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 1030,
+        "state_sha256": "4a2522f2884c40d71113d49dad3e1b868171c23804c31dddb9ef8af4dd8145f6",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE",
+          "HEATER_RECONNECT_POWER_BUDGET"
+        ],
+        "state_sha256": "4a2522f2884c40d71113d49dad3e1b868171c23804c31dddb9ef8af4dd8145f6",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "4a2522f2884c40d71113d49dad3e1b868171c23804c31dddb9ef8af4dd8145f6",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-8551b4c9f90b13ed362ef3f2",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "609a6def90759bcd69b529556349b50dcea04b19c0052cd4cb7f83d2d2749302",
+      "time_seconds": 1150,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 1150,
+        "state_sha256": "609a6def90759bcd69b529556349b50dcea04b19c0052cd4cb7f83d2d2749302",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE",
+          "HEATER_RECONNECT_POWER_BUDGET"
+        ],
+        "state_sha256": "609a6def90759bcd69b529556349b50dcea04b19c0052cd4cb7f83d2d2749302",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "609a6def90759bcd69b529556349b50dcea04b19c0052cd4cb7f83d2d2749302",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-3ee5ec1895537e62b8ce0722",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "958098c579bce039ff819f84487e0895956906bb18ca09aa9600630e74d76415",
+      "time_seconds": 1270,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 1270,
+        "state_sha256": "958098c579bce039ff819f84487e0895956906bb18ca09aa9600630e74d76415",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE",
+          "HEATER_RECONNECT_POWER_BUDGET"
+        ],
+        "state_sha256": "958098c579bce039ff819f84487e0895956906bb18ca09aa9600630e74d76415",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "958098c579bce039ff819f84487e0895956906bb18ca09aa9600630e74d76415",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-04f739e2b31bef036950a665",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "841130a0b6ced8561cf1dcc7bf487a58f397d988821682edb3de642c8ecbe365",
+      "time_seconds": 1390,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 1390,
+        "state_sha256": "841130a0b6ced8561cf1dcc7bf487a58f397d988821682edb3de642c8ecbe365",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE"
+        ],
+        "state_sha256": "841130a0b6ced8561cf1dcc7bf487a58f397d988821682edb3de642c8ecbe365",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "841130a0b6ced8561cf1dcc7bf487a58f397d988821682edb3de642c8ecbe365",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-e2f3aeb0f82ebe9db320f6b7",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "80ffd3ae87c1f44c1674a964ad50607c0f439a3704e2854399b47b851c4288aa",
+      "time_seconds": 1510,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 1510,
+        "state_sha256": "80ffd3ae87c1f44c1674a964ad50607c0f439a3704e2854399b47b851c4288aa",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE"
+        ],
+        "state_sha256": "80ffd3ae87c1f44c1674a964ad50607c0f439a3704e2854399b47b851c4288aa",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "80ffd3ae87c1f44c1674a964ad50607c0f439a3704e2854399b47b851c4288aa",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-2d737f319b84ffff50164f79",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "c7bf534cd5b3f738bcf947bf081cf37e12207f1922a713e996c0144fcba5f682",
+      "time_seconds": 1630,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 1630,
+        "state_sha256": "c7bf534cd5b3f738bcf947bf081cf37e12207f1922a713e996c0144fcba5f682",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE"
+        ],
+        "state_sha256": "c7bf534cd5b3f738bcf947bf081cf37e12207f1922a713e996c0144fcba5f682",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "c7bf534cd5b3f738bcf947bf081cf37e12207f1922a713e996c0144fcba5f682",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-052eae578ff7c7eef22fa846",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "5a8eb904f0621bb053723c9a26e375ed1c79d297d5b12029a77dd95628be7d15",
+      "time_seconds": 1750,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 1750,
+        "state_sha256": "5a8eb904f0621bb053723c9a26e375ed1c79d297d5b12029a77dd95628be7d15",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE"
+        ],
+        "state_sha256": "5a8eb904f0621bb053723c9a26e375ed1c79d297d5b12029a77dd95628be7d15",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "5a8eb904f0621bb053723c9a26e375ed1c79d297d5b12029a77dd95628be7d15",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-b6fd30f84e1ee6fad0bff6da",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "405f8d9900c32b908025944a9453bfd93c5f1e506c78b72cc97ee8215d48ae18",
+      "time_seconds": 1870,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 1870,
+        "state_sha256": "405f8d9900c32b908025944a9453bfd93c5f1e506c78b72cc97ee8215d48ae18",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE"
+        ],
+        "state_sha256": "405f8d9900c32b908025944a9453bfd93c5f1e506c78b72cc97ee8215d48ae18",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "405f8d9900c32b908025944a9453bfd93c5f1e506c78b72cc97ee8215d48ae18",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-aa84f418c0aa708f2de46b71",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "c539b6076986504814bb346f75831178b542e0a579d4fbc71a4229e2424d2557",
+      "time_seconds": 1990,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 1990,
+        "state_sha256": "c539b6076986504814bb346f75831178b542e0a579d4fbc71a4229e2424d2557",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE"
+        ],
+        "state_sha256": "c539b6076986504814bb346f75831178b542e0a579d4fbc71a4229e2424d2557",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "c539b6076986504814bb346f75831178b542e0a579d4fbc71a4229e2424d2557",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-1e191c58d7305eb848888f91",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "17575d08a0c0b0db2bf10e2f91ca0792d21483be6e3f1f5b739798af2e9c3114",
+      "time_seconds": 2110,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 2110,
+        "state_sha256": "17575d08a0c0b0db2bf10e2f91ca0792d21483be6e3f1f5b739798af2e9c3114",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE"
+        ],
+        "state_sha256": "17575d08a0c0b0db2bf10e2f91ca0792d21483be6e3f1f5b739798af2e9c3114",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "17575d08a0c0b0db2bf10e2f91ca0792d21483be6e3f1f5b739798af2e9c3114",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-ac1a44075105a62fdea51c00",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "c5b1ab23ae2041f5570be304bd3a1e0d1801263f79439d52731ea98f56e00998",
+      "time_seconds": 2230,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 2230,
+        "state_sha256": "c5b1ab23ae2041f5570be304bd3a1e0d1801263f79439d52731ea98f56e00998",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE"
+        ],
+        "state_sha256": "c5b1ab23ae2041f5570be304bd3a1e0d1801263f79439d52731ea98f56e00998",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "c5b1ab23ae2041f5570be304bd3a1e0d1801263f79439d52731ea98f56e00998",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-0fbdd89b2a1f579235139c2c",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "4c0cd60d52631dc33d4c5348472c5d76dafe94972bcad9f61cbacd37ba0f3874",
+      "time_seconds": 2350,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 2350,
+        "state_sha256": "4c0cd60d52631dc33d4c5348472c5d76dafe94972bcad9f61cbacd37ba0f3874",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE"
+        ],
+        "state_sha256": "4c0cd60d52631dc33d4c5348472c5d76dafe94972bcad9f61cbacd37ba0f3874",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "4c0cd60d52631dc33d4c5348472c5d76dafe94972bcad9f61cbacd37ba0f3874",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-8ad0c104987792822e169ecc",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "a0eb5aabb59e33343a87b0b0e1da194a5328605e85e2aea9ae62646c840265dc",
+      "time_seconds": 2470,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 2470,
+        "state_sha256": "a0eb5aabb59e33343a87b0b0e1da194a5328605e85e2aea9ae62646c840265dc",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "INSUFFICIENT_RECOVERY_RESERVE"
+        ],
+        "state_sha256": "a0eb5aabb59e33343a87b0b0e1da194a5328605e85e2aea9ae62646c840265dc",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "a0eb5aabb59e33343a87b0b0e1da194a5328605e85e2aea9ae62646c840265dc",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-8b7c8df84d983bd6155664f5",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "c2a649c499bd8ee309064ce6ce136ba00e538296772c6e2fa4e742f1356ead89",
+      "time_seconds": 2590,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 2590,
+        "state_sha256": "c2a649c499bd8ee309064ce6ce136ba00e538296772c6e2fa4e742f1356ead89",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN"
+        ],
+        "state_sha256": "c2a649c499bd8ee309064ce6ce136ba00e538296772c6e2fa4e742f1356ead89",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "c2a649c499bd8ee309064ce6ce136ba00e538296772c6e2fa4e742f1356ead89",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-e264b418320b83a9e45eb5a0",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "6027fe31e6ea228b268d8ee2dd5006c2dd3951460b0463a2a76b9b75a493ee6f",
+      "time_seconds": 2710,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 2710,
+        "state_sha256": "6027fe31e6ea228b268d8ee2dd5006c2dd3951460b0463a2a76b9b75a493ee6f",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN"
+        ],
+        "state_sha256": "6027fe31e6ea228b268d8ee2dd5006c2dd3951460b0463a2a76b9b75a493ee6f",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "6027fe31e6ea228b268d8ee2dd5006c2dd3951460b0463a2a76b9b75a493ee6f",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-bb769b79d4744b19dfa3214c",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "156507bd16ef3df460e7e5cc32c23a1fa3bd29458ee9238c1b9e34ad55be0a10",
+      "time_seconds": 2770,
+      "source_agent": "recovery",
+      "action": "REQUEST_NORMAL_MODE",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 2770,
+        "state_sha256": "156507bd16ef3df460e7e5cc32c23a1fa3bd29458ee9238c1b9e34ad55be0a10",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": true,
+        "reasons": [
+          "ALL_MODELED_CONSTRAINTS_PASS"
+        ],
+        "state_sha256": "156507bd16ef3df460e7e5cc32c23a1fa3bd29458ee9238c1b9e34ad55be0a10",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "156507bd16ef3df460e7e5cc32c23a1fa3bd29458ee9238c1b9e34ad55be0a10",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "EXECUTED",
+      "observed_outcome": {
+        "time_seconds": 2780,
+        "field": "mode",
+        "value": "normal",
+        "expected": "normal",
+        "status": "ACHIEVED",
+        "interpretation": "Observed modeled effect; not a lasting repair or causal mission benefit"
+      }
+    },
+    {
+      "proposal_id": "proposal-ad5c2aa65b7f5a963635b3d8",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "decb18d0fdf3db8afcb9884acab729be95882c7c4fcea7b935521c23c6c40e00",
+      "time_seconds": 2830,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 2830,
+        "state_sha256": "decb18d0fdf3db8afcb9884acab729be95882c7c4fcea7b935521c23c6c40e00",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "HEATER_RECONNECT_POWER_BUDGET"
+        ],
+        "state_sha256": "decb18d0fdf3db8afcb9884acab729be95882c7c4fcea7b935521c23c6c40e00",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "decb18d0fdf3db8afcb9884acab729be95882c7c4fcea7b935521c23c6c40e00",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-b1982aba3fc2e6495121648a",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "3f9f316286f359667412e967e61cdd441704bc9a543a0e293ef05e6f4762f0d1",
+      "time_seconds": 2950,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 2950,
+        "state_sha256": "3f9f316286f359667412e967e61cdd441704bc9a543a0e293ef05e6f4762f0d1",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "HEATER_RECONNECT_POWER_BUDGET"
+        ],
+        "state_sha256": "3f9f316286f359667412e967e61cdd441704bc9a543a0e293ef05e6f4762f0d1",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "3f9f316286f359667412e967e61cdd441704bc9a543a0e293ef05e6f4762f0d1",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-fe8a9447bfbcd6ed0d7848b2",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "bcf037664924f749e859dbea8a6d9c1671dae0121ca38ce36d8e16bfd4c0bf01",
+      "time_seconds": 3070,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 3070,
+        "state_sha256": "bcf037664924f749e859dbea8a6d9c1671dae0121ca38ce36d8e16bfd4c0bf01",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "HEATER_RECONNECT_POWER_BUDGET"
+        ],
+        "state_sha256": "bcf037664924f749e859dbea8a6d9c1671dae0121ca38ce36d8e16bfd4c0bf01",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "bcf037664924f749e859dbea8a6d9c1671dae0121ca38ce36d8e16bfd4c0bf01",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-e5cb00d6eaf75ebb190c1208",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "48b46b0b3d05fe76824945872be7d5fe9aa9138891900e52f1db5a5c1860a785",
+      "time_seconds": 3190,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 3190,
+        "state_sha256": "48b46b0b3d05fe76824945872be7d5fe9aa9138891900e52f1db5a5c1860a785",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "HEATER_RECONNECT_POWER_BUDGET"
+        ],
+        "state_sha256": "48b46b0b3d05fe76824945872be7d5fe9aa9138891900e52f1db5a5c1860a785",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "48b46b0b3d05fe76824945872be7d5fe9aa9138891900e52f1db5a5c1860a785",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-e61778cdde75fc3dd8796f81",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "635243b43c5551899313d9d334cabc502439f11c0bb5210644e35419a84a26a5",
+      "time_seconds": 3310,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 3310,
+        "state_sha256": "635243b43c5551899313d9d334cabc502439f11c0bb5210644e35419a84a26a5",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "HEATER_RECONNECT_POWER_BUDGET"
+        ],
+        "state_sha256": "635243b43c5551899313d9d334cabc502439f11c0bb5210644e35419a84a26a5",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "635243b43c5551899313d9d334cabc502439f11c0bb5210644e35419a84a26a5",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-6fa4942ee82375369a5436a6",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "0a3cc8c29c7216871351b85edc47c39416ec57cbfc65aef0e9af03925173da17",
+      "time_seconds": 3430,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 3430,
+        "state_sha256": "0a3cc8c29c7216871351b85edc47c39416ec57cbfc65aef0e9af03925173da17",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "HEATER_RECONNECT_POWER_BUDGET"
+        ],
+        "state_sha256": "0a3cc8c29c7216871351b85edc47c39416ec57cbfc65aef0e9af03925173da17",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "0a3cc8c29c7216871351b85edc47c39416ec57cbfc65aef0e9af03925173da17",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    },
+    {
+      "proposal_id": "proposal-1afd2a766395c1db4ac4301c",
+      "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+      "mission_state_sha256": "1a2a8543fdd7e14c30f5e8cf5ba0bea722b1a59f1a600ae878fde9c3f0ffa03a",
+      "time_seconds": 3550,
+      "source_agent": "recovery",
+      "action": "RETRY_HEATER",
+      "verification_result": {
+        "schema_version": "proposal-verification-1.0",
+        "verified": true,
+        "reasons": [
+          "CURRENT_CONTRACT_PERMISSION_AND_EVIDENCE_PASS"
+        ],
+        "phase": "PRE_EXECUTION",
+        "evidence_time_seconds": 3550,
+        "state_sha256": "1a2a8543fdd7e14c30f5e8cf5ba0bea722b1a59f1a600ae878fde9c3f0ffa03a",
+        "run_id": "eng-9cfa497ac32c1a63a283cc5b",
+        "authority": "Evidence verification only; independent SafetyKernel approval still required"
+      },
+      "safety_check_result": {
+        "approved": false,
+        "reasons": [
+          "HEATER_RECONNECT_THERMAL_MARGIN",
+          "HEATER_RECONNECT_POWER_BUDGET"
+        ],
+        "state_sha256": "1a2a8543fdd7e14c30f5e8cf5ba0bea722b1a59f1a600ae878fde9c3f0ffa03a",
+        "kernel_version": "safety-kernel-1.0",
+        "fallback": "Existing hard safe-mode supervisor remains active; no rejected action is applied",
+        "evidence_state_sha256": "1a2a8543fdd7e14c30f5e8cf5ba0bea722b1a59f1a600ae878fde9c3f0ffa03a",
+        "projection_basis": "Current observations plus earlier accepted proposals in this interval; no solar energy credit"
+      },
+      "execution_status": "REJECTED",
+      "observed_outcome": null
+    }
+  ],
+  "events": [
+    {
+      "time_seconds": 0,
+      "event": "ENTER_SAFE_MODE",
+      "reasons": [
+        "LOW_BATTERY",
+        "VERIFIED_SAFE_MODE_REQUEST"
+      ]
+    },
+    {
+      "time_seconds": 30,
+      "event": "FAULT_DETECTED",
+      "fault": "solar_array_loss",
+      "policy": "baseline"
+    },
+    {
+      "time_seconds": 130,
+      "event": "FAULT_DETECTED",
+      "fault": "heater_stuck_on",
+      "policy": "baseline"
+    },
+    {
+      "time_seconds": 130,
+      "event": "ISOLATE_HEATER",
+      "retry_budget_remaining": 2
+    },
+    {
+      "time_seconds": 140,
+      "event": "DIAGNOSTIC_CLEARED",
+      "fault": "heater_stuck_on"
+    },
+    {
+      "time_seconds": 330,
+      "event": "FAULT_DETECTED",
+      "fault": "comms_loss",
+      "policy": "baseline"
+    },
+    {
+      "time_seconds": 610,
+      "event": "DIAGNOSTIC_CLEARED",
+      "fault": "solar_array_loss"
+    },
+    {
+      "time_seconds": 910,
+      "event": "DIAGNOSTIC_CLEARED",
+      "fault": "comms_loss"
+    },
+    {
+      "time_seconds": 2770,
+      "event": "RETURN_TO_NORMAL",
+      "reasons": []
+    }
+  ],
+  "limitations": "Rule-based specialists, finite vocabulary, conservative guards, approximate existing plant. No orbital, propulsion, payload, fleet, LLM or arbitrary-code capabilities. Comparisons are synthetic outcomes, not evidence of general AI superiority."
+}

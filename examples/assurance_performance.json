@@ -1,0 +1,41 @@
+{
+  "schema_version": "assurance-performance-1.0",
+  "python": "3.12.8",
+  "machine": "arm64",
+  "platform": "macOS-15.1.1-arm64-arm-64bit",
+  "runs": 5,
+  "simulated_duration_seconds": 3600,
+  "dt_seconds": 10,
+  "plant_intervals_per_run": 720,
+  "scenario_sha256": "29f7537dcef872f2dcbc00bb3b5d4ee95274161fdfa83bdb265d50ff29d401b0",
+  "implementation_sha256": {
+    "engineering/__init__.py": "3efd0b201c06c68b9ea0f0a00d37644746d9ce49f256b6b366f7f93e88464552",
+    "engineering/benchmarks.py": "94a615af2160963fce7dcb50583bc25df02d1643ae50b897337a9ec575183d4f",
+    "engineering/config.py": "a3cceb05063695e56956cc45239915cd6b54e4e16b1ab2750141d1fd7f63077d",
+    "engineering/controller.py": "d087c61d57dd33b2de0a37e06ce58f81d5872f63cdee8a96a0341c9670a5068a",
+    "engineering/diagnostics.py": "87d92186871890e51979e3adabdf11cb2f857e4e8553f38feea24e941d95d594",
+    "engineering/model.py": "0e83274d11df73ec2abe0a050b4c02dfebfd9f7203d1a6c8448db0d5034ae9bb",
+    "engineering/physics.py": "64704472b68cb67704145bc7e82d4cfcb0329ec8bb4c1b9495e4d0504dbe0fa3",
+    "assurance/__init__.py": "ce1048ed0af3a3a05b5a5e9535e0954e4ae9140730396216e30ab59560fba95b",
+    "assurance/agents.py": "8aa14d5fb7235bc4db2b113fb451d9f9971fda82c08e112fdc7c20bf2618e0aa",
+    "assurance/contracts.py": "ee33e106795428498bc7e02caf73651ae77ad53f38190da6c16a8690f314e763",
+    "assurance/registry.py": "15ce347dfaccfbf0eda4fd72481343d56cb85de25795f6ed4e6f427a544acbb2",
+    "assurance/runner.py": "6febf152dfff57c62fbe03856fd7ec7f99a12dedcf1b3fd7972771f43a39d604",
+    "assurance/safety.py": "4dbe48cd750065e8b23a391785f321cdae1d19a2ceb63f10389e0d42d86b47fd",
+    "assurance/verification.py": "91ff9058ad8125f78d32303bc3710958844ab0e1a7bc5c11c69089d1c337c33e",
+    "assurance/workflow.py": "c1a52db8ba49d60609f9c21c7c0e83eb0a5ef0d43c9443b4e24d94eca0ef97a0",
+    "reliability.py": "cd17c17885963f333d8a8fdbdd70ac7817cc8736579cf65fc3835e6a7a3207b0"
+  },
+  "wall_seconds": [
+    0.059060707999947226,
+    0.055787082999927406,
+    0.0560025830000086,
+    0.0997864580000396,
+    0.05963833300006627
+  ],
+  "minimum_seconds": 0.055787082999927406,
+  "mean_seconds": 0.06605503299999782,
+  "maximum_seconds": 0.0997864580000396,
+  "all_results_exactly_equal": true,
+  "scope": "In-process assured simulation plus protected baseline; excludes workflow SQLite, JSON serialization, browser/FPS and process startup. Timing is machine/load dependent, not scientific reliability evidence."
+}
