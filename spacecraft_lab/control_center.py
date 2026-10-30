@@ -74,6 +74,10 @@ class Handler(BaseHTTPRequestHandler):
                   '/assurance.css': ('assurance.css', 'text/css; charset=utf-8'),
                   '/campaign.js': ('campaign.js', 'text/javascript; charset=utf-8'),
                   '/campaign.css': ('campaign.css', 'text/css; charset=utf-8'),
+                  '/mission-control.js': ('mission-control.js', 'text/javascript; charset=utf-8'),
+                  '/mission-data.js': ('mission-data.js', 'text/javascript; charset=utf-8'),
+                  '/mission-control.css': ('mission-control.css', 'text/css; charset=utf-8'),
+                  '/orbital-backdrop.svg': ('orbital-backdrop.svg', 'image/svg+xml'),
                   '/ui-core.js': ('ui-core.js', 'text/javascript; charset=utf-8')}
         if self.path in routes:
             name, mime = routes[self.path]

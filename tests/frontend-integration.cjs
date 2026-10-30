@@ -15,7 +15,7 @@ class Element{
 const elements=new Map(),get=id=>{if(!elements.has(id))elements.set(id,new Element());return elements.get(id);};
 get('policy').value='basic';get('metric').value='battery_pct';get('speed').value='20';
 get('assurance-source').value='demo';get('assurance-budget').value='128';get('assurance-probe').checked=true;
-const workflowPosts=[];
+const workflowPosts=[],presentationUpdates=[];
 const fakeJob={job_id:'0123456789abcdef0123456789abcdef',status:'PREPARED',plan_sha256:'a'.repeat(64),plan:{scenario:fixture.scenario,options:{probe_unsafe:true}},checkpoint:null,audit:[]};
 const context={console,structuredClone,setTimeout,clearTimeout,Blob,
   document:{getElementById:get,querySelectorAll:()=>[],querySelector:()=>get('overview-nav'),createElement:()=>new Element(),createElementNS:()=>new Element()},
@@ -29,15 +29,23 @@ const context={console,structuredClone,setTimeout,clearTimeout,Blob,
     else data=fixture.reports;
     return {ok:true,json:async()=>data};
   }};
+context.MissionControl={update:(report,index,options)=>presentationUpdates.push({report,index,options})};
 context.window=context;vm.createContext(context);
 for(const path of ['ui-core.js','app.js','assurance.js'])vm.runInContext(fs.readFileSync(`spacecraft_lab/web/${path}`,'utf8'),context);
 (async()=>{
   await new Promise(setImmediate);
   assert.match(get('status').textContent,/Experiment ready/);
   assert.equal(get('battery').textContent,fixture.reports.basic.telemetry[0].battery_pct.toFixed(1));
+  assert.equal(presentationUpdates.at(-1).report,fixture.reports.basic);
+  assert.equal(presentationUpdates.at(-1).index,0);
   get('scrubber').value='5';get('scrubber').listeners.input();
   assert.match(get('clock').textContent,/01:00/);
   assert.equal(get('battery').textContent,fixture.reports.basic.telemetry[5].battery_pct.toFixed(1));
+  assert.equal(presentationUpdates.at(-1).index,5);
+  get('play').listeners.click();
+  assert.equal(presentationUpdates.at(-1).options.playing,true);
+  get('play').listeners.click();
+  assert.equal(presentationUpdates.at(-1).options.playing,false);
   get('policy').value='enhanced';get('policy').listeners.change();
   assert.equal(get('run-id').textContent,fixture.reports.enhanced.run_id.toUpperCase());
   assert.equal(get('subsystem-detail').textContent.includes(fixture.reports.enhanced.telemetry[5].battery_wh.toFixed(1)),true);
@@ -58,6 +66,11 @@ for(const path of ['ui-core.js','app.js','assurance.js'])vm.runInContext(fs.read
   get('assurance-replay').listeners.click();
   assert.equal(get('policy').disabled,true);
   assert.equal(get('run-id').textContent,fixture.assured.run_id.toUpperCase());
+  assert.equal(presentationUpdates.at(-1).report,fixture.assured);
+  const verifierReport=structuredClone(fixture.assured);
+  verifierReport.assurance.decisions[0].safety_check_result={approved:false,kernel_status:'NOT_RUN',reasons:['evidence mismatch']};
+  context.replayRecordedReport(verifierReport,'Verifier rejection');
+  assert.ok(get('events').children.some(event=>event.children[1]?.textContent==='proposal evidence rejected'));
   assert.equal(typeof context.replayRecordedReport,'function');
   context.replayRecordedReport(fixture.reports.enhanced,'Campaign case · enhanced');
   assert.equal(get('run-id').textContent,fixture.reports.enhanced.run_id.toUpperCase());

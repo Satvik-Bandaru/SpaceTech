@@ -20,6 +20,7 @@ function pause() {
   playing = false; clearTimeout(timer); timer = null;
   $('play').textContent = '▶ Play';
   $('replay-state').textContent = 'RECORDED TELEMETRY · PAUSED';
+  if(current())window.MissionControl?.update(current(),index,{playing,busy,view3d,label:assuredReplay?recordedReplayLabel:strategyName[$('policy').value]});
 }
 function tick() {
   if (!playing || !reports) return;
@@ -74,7 +75,7 @@ function drawChart(report) {
 }
 
 function renderEvents(report, row) {
-  const interventions=(report.assurance?.decisions||[]).filter(d=>!d.safety_check_result.approved).map(d=>({time_seconds:d.time_seconds,event:'SAFETY_KERNEL_REJECTED',note:`${d.action}: ${d.safety_check_result.reasons.join(', ')}`}));
+  const interventions=(report.assurance?.decisions||[]).filter(d=>!d.safety_check_result.approved).map(d=>({time_seconds:d.time_seconds,event:d.safety_check_result.kernel_status==='NOT_RUN'?'PROPOSAL_EVIDENCE_REJECTED':'SAFETY_KERNEL_REJECTED',note:`${d.action}: ${d.safety_check_result.reasons.join(', ')}`}));
   const events = [...report.events,...interventions].filter(event => event.time_seconds <= row.time_seconds).sort((a,b)=>b.time_seconds-a.time_seconds);
   $('event-count').textContent = events.length;
   $('events').replaceChildren();
@@ -144,6 +145,7 @@ function render() {
   }
   if(!visibleActions.length)$('actions').textContent='No autonomy decisions by this replay interval. Hard safety protection remains active for every strategy.';
   renderEvents(report,row); drawChart(report);
+  window.MissionControl?.update(report,index,{playing,busy,view3d,label:assuredReplay?recordedReplayLabel:strategyName[$('policy').value]});
 }
 
 function comparison() {

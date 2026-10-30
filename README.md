@@ -1,5 +1,13 @@
 # Spacecraft Reliability & Autonomy Lab
 
+## Mission control redesign — 2026-10-30
+
+The dashboard now follows the supplied mission-control references: an orbital spacecraft viewport, compact mission controls, systems/environment cards, recorded agent decisions, miniature telemetry plots, an injection timeline and a subsystem status matrix. The detailed WebGL spacecraft retains camera presets, rotation/zoom, thermal/power overlays, exploded inspection and the 2D schematic. All six existing workspaces, scenario editing, campaigns, approvals, saved history, comparisons, replay and exports remain available through the new navigation.
+
+Start with `python3 -m spacecraft_lab.control_center --port 8014`, then open **http://127.0.0.1:8014/**. No new dependencies or external services are required. **113 tests pass**; 16 complete engineering reports exactly match the previous version. See [verification and preserved features](docs/MISSION_CONTROL_VERIFICATION.md) and [design boundaries](docs/MISSION_CONTROL_DESIGN.md).
+
+The health ring counts four explicitly defined model checks; it is not a reliability probability. Miniature histories and agent evidence follow the replay cursor. The original full-run chart remains available with its cursor. Seven role records appear for assurance reports; standard reports show their reference controllers. Spacecraft hardware geometry and Earth scenery are illustrative. No orbit propagation, LLM connection, flight certification or new physics is claimed.
+
 ## Advanced counterfactual studio — 2026-10-29
 
 The local app now includes **controlled what-if variants, four-strategy paired campaigns, confidence-interval plots, paired differences, saved job history, case-level replay and JSON/CSV/Markdown exports**. Spacecraft inspection adds camera presets/reset/zoom, an exploded schematic, continuous battery fill and telemetry-linked thermal/power overlays. Existing physics, safety and offline contracts are preserved.

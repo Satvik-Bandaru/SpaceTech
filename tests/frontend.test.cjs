@@ -51,16 +51,17 @@ assert.equal(ui.inspectionState().batteryFill,null);
 // while browser verification covers the native WebGL implementation itself.
 const fs=require('node:fs'),vm=require('node:vm');
 const frames=[],listeners={},uniforms={};
+let contextOptions,clearRgba;
 const gl={COMPILE_STATUS:1,LINK_STATUS:2,
   createShader:()=>({}),shaderSource(){},compileShader(){},getShaderParameter:()=>true,
   createProgram:()=>({}),attachShader(){},linkProgram(){},getProgramParameter:()=>true,
   useProgram(){},enable(){},createBuffer:()=>({}),bindBuffer(){},bufferData(){},
   getAttribLocation:()=>0,enableVertexAttribArray(){},vertexAttribPointer(){},
-  getUniformLocation:(_program,key)=>key,viewport(){},clearColor(){},clear(){frames.push([]);},
+  getUniformLocation:(_program,key)=>key,viewport(){},clearColor(...rgba){clearRgba=rgba;},clear(){frames.push([]);},
   uniformMatrix4fv(key,_transpose,value){uniforms[key]=Array.from(value);},
   uniform3fv(key,value){uniforms[key]=Array.from(value);},uniform1f(key,value){uniforms[key]=value;},
   drawArrays(){frames.at(-1).push(structuredClone(uniforms));}};
-const canvas={clientWidth:800,clientHeight:500,getContext:()=>gl,
+const canvas={clientWidth:800,clientHeight:500,getContext:(_kind,options)=>{contextOptions=options;return gl;},
   addEventListener:(name,fn)=>{listeners[name]=fn;},setPointerCapture(){}};
 let failure='';
 const browser={devicePixelRatio:1,addEventListener(){}};
@@ -69,6 +70,14 @@ const renderer=browser.createSpacecraftScene(canvas,message=>{failure=message;})
 const row={...telemetry,sunlit:true,comms_up:true,mode:'normal',pointing_error_deg:0};
 renderer.update(row,cfg);
 const original=structuredClone(frames.at(-1));
+// An opaque canvas would hide the illustrative horizon placed behind the spacecraft.
+assert.equal(contextOptions.alpha,true);
+assert.equal(clearRgba[3],0);
+// Illumination follows the recorded sunlight state, even with the cinematic backdrop.
+renderer.update({...row,sunlit:false},cfg);
+assert.ok(frames.at(-1)[0].sunlight<original[0].sunlight);
+renderer.update(row,cfg);
+assert.deepEqual(frames.at(-1),original);
 assert.equal(typeof renderer.setInspection,'function');
 assert.equal(typeof renderer.setView,'function');
 assert.equal(typeof renderer.resetCamera,'function');
@@ -79,6 +88,26 @@ renderer.setView('top');
 assert.notDeepEqual(frames.at(-1)[0].view,frames.at(-2)[0].view);
 renderer.resetCamera();
 assert.deepEqual(frames.at(-1)[0].view,original[0].view);
+// Project the submitted model bounds to catch undersized desktop framing and clipped mobile wings.
+const projectedBounds=frame=>{
+  const points=[];
+  for(const item of frame)for(const x of [-1,1])for(const y of [-1,1])for(const z of [-1,1]){
+    const p=[x,y,z,1],world=Array.from({length:4},(_,r)=>p.reduce((sum,v,c)=>sum+item.model[c*4+r]*v,0));
+    const clip=Array.from({length:4},(_,r)=>world.reduce((sum,v,c)=>sum+item.view[c*4+r]*v,0));
+    points.push([clip[0]/clip[3],clip[1]/clip[3]]);
+  }
+  return {left:Math.min(...points.map(p=>p[0])),right:Math.max(...points.map(p=>p[0])),
+    bottom:Math.min(...points.map(p=>p[1])),top:Math.max(...points.map(p=>p[1]))};
+};
+for(const [width,height] of [[900,345],[320,330]]){
+  canvas.clientWidth=width;canvas.clientHeight=height;renderer.resetCamera();
+  const bounds=projectedBounds(frames.at(-1));
+  assert.ok((bounds.right-bounds.left)/2>.58,'default model should fill the viewport');
+  assert.ok(bounds.left>-.96&&bounds.right<.96,'full solar wings should stay visible');
+  assert.ok(bounds.bottom>-.96&&bounds.top<.96,'default hardware should stay visible');
+}
+canvas.clientWidth=800;canvas.clientHeight=500;renderer.resetCamera();
+assert.deepEqual(frames.at(-1),original);
 renderer.zoom(1000);const farView=frames.at(-1)[0].view;
 renderer.zoom(1000);assert.deepEqual(frames.at(-1)[0].view,farView);
 renderer.zoom(-1000);const nearView=frames.at(-1)[0].view;

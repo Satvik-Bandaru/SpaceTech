@@ -1,4 +1,12 @@
-# Current resume checkpoint — advanced studio, 2026-10-29
+# Current resume checkpoint — mission control redesign, 2026-10-30
+
+- Branch `feature/mission-control-redesign`; restore point `fa76f97`. **113 tests passed**. Sixteen complete engineering reports exactly match that restore point; engine, assurance, campaign evaluation and contracts are unchanged.
+- Reference-inspired mission console: orbital WebGL scene, compact controls/navigation, actual subsystem/environment checks, recorded agent/decision rail, past-only mini charts, configured-injection timeline and status history matrix. Existing six workspaces and their controls remain available.
+- Runtime assets: `web/mission-control.js`, `mission-data.js`, `mission-control.css`, `orbital-backdrop.svg`; additive static routes and render/pause notification hooks. `scene.js` has detailed illustrative geometry and transparent compositing; its inspection/camera/state API remains.
+- Read [design](MISSION_CONTROL_DESIGN.md) and [verification/preservation map](MISSION_CONTROL_VERIFICATION.md). Start unchanged: `python3 -m spacecraft_lab.control_center --port 8014`.
+- Geometry/scenery are illustrative. Health is 0–4 explicit model checks, not a probability. Seven roles are recorded deterministic assurance evidence, never live LLMs. No new physics, other-project edits, deployment or push.
+
+# Historical checkpoint — advanced studio, 2026-10-29
 
 - Branch `feature/counterfactual-mission-studio`; restore point `279ce6d`. **110 tests passed**; 16 default-engine reports exactly match the restore point. Python/JS checks, compilation and independent review passed.
 - New same-app Counterfactual studio: up to three variants, 2–4 existing strategies, paired noise seeds, honest common-reference evaluation, statistical plots/deltas, full case reports/replay, text exports, durable progress/cancel/restore/history.

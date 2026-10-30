@@ -1,11 +1,22 @@
 <!doctype html>
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Spacecraft Health — Autonomy Lab</title><link rel="stylesheet" href="/style.css"><script defer src="/ui-core.js"></script><script defer src="/scene.js"></script><script defer src="/app.js"></script></head>
-<body><link rel="stylesheet" href="/research.css"><link rel="stylesheet" href="/assurance.css"><link rel="stylesheet" href="/campaign.css"><script defer src="/assurance.js"></script><script defer src="/campaign.js"></script>
+<body><link rel="stylesheet" href="/research.css"><link rel="stylesheet" href="/assurance.css"><link rel="stylesheet" href="/campaign.css"><link rel="stylesheet" href="/mission-control.css"><script defer src="/assurance.js"></script><script defer src="/campaign.js"></script><script defer src="/mission-data.js"></script><script defer src="/mission-control.js"></script>
 <aside class="rail">
   <a class="brand" href="/" aria-label="Spacecraft lab home"><span class="brandmark">✧</span><span>ORBITAL<span class="brand-sub">RELIABILITY LAB</span></span></a>
   <div class="rail-label">WORKSPACE / 01</div>
-  <nav aria-label="Workspace"><button class="nav active" data-view="overview"><span>◈</span> Health control</button><button class="nav" data-view="campaign"><span>⊞</span> Counterfactual studio</button><button class="nav" data-view="comparison"><span>▥</span> Policy comparison</button><button class="nav" data-view="scenario"><span>⌘</span> Scenario studio</button><button class="nav" data-view="research"><span>∿</span> Reliability research</button><button class="nav" data-view="assurance"><span>◇</span> Mission assurance</button></nav>
+  <nav aria-label="Workspace">
+    <button class="nav active" data-view="overview"><span>◈</span> Mission overview</button>
+    <button class="nav" data-view="overview" data-jump="twin"><span>⬡</span> Digital twin</button>
+    <button class="nav" data-view="overview" data-jump="systems"><span>▧</span> Spacecraft systems</button>
+    <button class="nav" data-view="overview" data-jump="telemetry"><span>⌁</span> Telemetry & analytics</button>
+    <button class="nav" data-view="scenario"><span>△</span> Fault laboratory</button>
+    <button class="nav" data-view="assurance"><span>◇</span> Agent operations</button>
+    <button class="nav" data-view="campaign"><span>⊞</span> Counterfactual studio</button>
+    <button class="nav" data-view="comparison"><span>▥</span> Policy comparison</button>
+    <button class="nav" data-view="research"><span>∿</span> Reliability research</button>
+    <button class="nav" data-view="campaign" data-jump="reports"><span>▤</span> Reports & history</button>
+  </nav>
   <div class="rail-note"><div class="tiny">REFERENCE ENGINE</div><strong>v0.2</strong><p>Deterministic simulation<br>Local compute · No GPU</p><span class="pill">SYNTHETIC ENVIRONMENT</span></div>
 </aside>
 <div class="workspace">

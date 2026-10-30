@@ -60,6 +60,22 @@ class ControlCenterTests(unittest.TestCase):
         self.assertFalse(result['baseline']['checks']['violations'])
         self.assertEqual(first[2], self.request('POST', '/api/run', payload)[2])
 
+    def test_mission_control_assets_have_browser_mime_types(self):
+        assets = {
+            '/mission-control.js': 'text/javascript; charset=utf-8',
+            '/mission-data.js': 'text/javascript; charset=utf-8',
+            '/mission-control.css': 'text/css; charset=utf-8',
+            '/orbital-backdrop.svg': 'image/svg+xml',
+        }
+        for path, mime in assets.items():
+            with self.subTest(path=path):
+                status, headers, body = self.request('GET', path)
+                self.assertEqual(status, 200)
+                self.assertEqual(headers['Content-Type'], mime)
+                self.assertGreater(len(body), 20)
+                self.assertEqual(headers['X-Content-Type-Options'], 'nosniff')
+                self.assertIn("default-src 'self'", headers['Content-Security-Policy'])
+
     def test_bad_and_expensive_scenarios_fail_closed(self):
         for scenario in ({'unknown': 1}, {'seed': True}, {'duration_seconds': 21600, 'dt_seconds': 1}, {'normal_load_w': 10**400}):
             self.assertEqual(self.request('POST', '/api/run', {'scenario': scenario})[0], 400)
