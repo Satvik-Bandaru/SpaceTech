@@ -13,7 +13,7 @@
   const value = (n, d = 1) => Number.isFinite(n) ? n.toFixed(d) : '—';
   const stamp = n => Number.isFinite(n) ? `${String(Math.floor(n / 60)).padStart(2, '0') }:${String(Math.floor(n % 60)).padStart(2,
     '0') }` : '—';
-  const words = s => String(s || 'unknown').replaceAll('_', ' ');
+  const words = s => String(s || 'unknown').replaceAll('_', ' ').toLowerCase();
   const iconPaths = {
     home: 'M3 10 12 3l9 7v11h-6v-7H9v7H3Z',
     cube: 'm12 2 9 5v10l-9 5-9-5V7Zm0 0v20M3 7l9 5 9-5',
@@ -99,7 +99,7 @@
       if (b.dataset.jump === 'twin') byId('view-3d').click();
       const targets = {
         twin: '.spacecraft-panel',
-        systems: '.mc-system-stack',
+        systems: '#mc-system-health',
         telemetry: '.telemetry-panel',
         reports: '#campaign-history'
       };
@@ -109,6 +109,20 @@
       });
     });
   });
+  const navigation = document.querySelector('.rail').querySelector('nav');
+  const navigationButtons = [...navigation.querySelectorAll('.nav')];
+  const workspaces = el('div', undefined, 'mc-nav-workspaces');
+  const shortcuts = el('div', undefined, 'mc-nav-shortcuts');
+  const savedReports = el('div', undefined, 'mc-nav-reports');
+  for (const b of navigationButtons) {
+    (b.dataset.jump === 'reports' ? savedReports : b.dataset.jump ? shortcuts : workspaces).append(b);
+    b.addEventListener('click', () => {
+      for (const link of navigationButtons) link.setAttribute('aria-current',
+        link.classList.contains('active') ? link.dataset.jump ? 'location' : 'page' : 'false');
+    });
+  }
+  navigation.replaceChildren(workspaces, el('div', 'JUMP TO OVERVIEW', 'mc-nav-heading'), shortcuts,
+    el('div', 'SAVED EXPERIMENTS', 'mc-nav-heading'), savedReports);
   const railNote = document.querySelector('.rail-note');
   railNote.replaceChildren(el('div', undefined, 'mc-orbit-thumb'), el('span', 'ACTIVE EXPERIMENT', 'tiny'),
     el('strong', 'Reference spacecraft'), identity(el('p', 'Awaiting recorded data'), 'mc-rail-context'));
@@ -125,7 +139,7 @@
   header.classList.add('mc-command-bar');
   const mission = el('div', undefined, 'mc-command-mission');
   mission.append(icon('cube'), el('div'));
-  mission.lastChild.append(el('small', 'REFERENCE MISSION'), identity(el('h1', 'Deterministic spacecraft lab'),
+  mission.lastChild.append(el('small', 'SPACECRAFT LAB'), identity(el('h1', 'Mission control'),
     'mc-mission-name'), identity(el('span', 'Local simulation · fixed seed'), 'mc-mission-context'));
   header.append(mission);
 
@@ -138,21 +152,17 @@
   chip('SPACECRAFT STATE', 'mc-state', 'Recorded operating label');
   chip('AUTONOMY', 'mc-autonomy', 'Deterministic controller');
   chip('SIMULATION TIME', 'mc-time', 'Elapsed · recorded replay');
-  const alerts = button('0 alarms', 'bolt', () => jump('overview', '.mc-alerts'), 'mc-command-alert');
+  const alerts = button('— alarms', 'bolt', () => jump('overview', '.mc-alerts'), 'mc-command-alert');
   alerts.id = 'mc-alert-button';
   header.append(alerts);
   const actions = el('div', undefined, 'mc-command-actions');
   run.replaceChildren(icon('play'), el('span', 'Run scenario'));
   run.title = 'Run the current Scenario studio draft';
   exportRun.replaceChildren(icon('file'), el('span', 'Export report'));
-  actions.append(run, button('Inject fault', 'bolt', () => {
+  actions.append(run, button('Edit scenario', 'gear', () => {
     jump('scenario');
     byId('fault-kind').focus();
-  }), button('Replay', 'orbit', () => {
-    jump('overview');
-    byId('rewind').click();
-    byId('play').click();
-  }), button('Compare', 'compare', () => jump('comparison')), exportRun);
+  }), exportRun);
   header.append(actions);
   const versionLabel = el('div', undefined, 'mc-version');
   versionLabel.append(modelVersion, el('span', 'LOCAL · SYNTHETIC'));
@@ -171,19 +181,14 @@
     rail = el('aside', undefined, 'mc-agent-rail');
   spacecraft.classList.add('mc-viewport');
   spacecraft.querySelector('h2').textContent = 'Spacecraft digital twin';
-  spacecraft.querySelector('.eyebrow').textContent = 'ILLUSTRATIVE GEOMETRY · REAL SIMULATION STATE';
+  spacecraft.querySelector('.eyebrow').textContent = 'INTERACTIVE SPACECRAFT';
   const tabs = el('div', undefined, 'mc-view-tabs');
-  tabs.append(button('3D view', 'cube', () => byId('view-3d').click(), 'mc-view-tab'), button('Systems', 'layers',
-    () => {
-    byId('view-2d').click();
-    systems.scrollIntoView({
-      block: 'nearest'
-    });
-  }, 'mc-view-tab'), button('Environment', 'orbit', () => byId('mc-environment').scrollIntoView({
-    block: 'nearest'
-  }), 'mc-view-tab'), button('Timeline', 'chart', () => byId('mc-timeline').scrollIntoView({
-    block: 'nearest'
-  }), 'mc-view-tab'));
+  const view3dButton = spacecraft.querySelector('#view-3d');
+  const view2dButton = spacecraft.querySelector('#view-2d');
+  view3dButton.replaceChildren(icon('cube'), el('span', '3D view'));
+  view2dButton.replaceChildren(icon('layers'), el('span', '2D schematic'));
+  view3dButton.className = view2dButton.className = 'button mc-view-tab';
+  tabs.append(view3dButton, view2dButton);
   const labels = el('label', undefined, 'mc-label-switch'),
     check = el('input');
   check.type = 'checkbox';
@@ -192,17 +197,51 @@
   labels.append(check, el('span', 'Labels'));
   check.addEventListener('change', () => spacecraft.classList.toggle('mc-labels-hidden', !check.checked));
   tabs.append(labels);
-  spacecraft.prepend(tabs);
-  spacecraft.querySelector('#view-2d').addEventListener('click', () => tabs.firstElementChild.classList.remove('active'));
-  spacecraft.querySelector('#view-3d').addEventListener('click', () => tabs.firstElementChild.classList.toggle('active', !byId('scene-3d').hidden));
+  const inspection = spacecraft.querySelector('#inspection-tools');
+  const inspectionSettings = el('details', undefined, 'mc-inspection-settings');
+  inspectionSettings.append(el('summary', 'Inspection settings'), inspection);
+  const cameraActions = el('div', undefined, 'mc-camera-actions');
+  for (const id of ['inspection-reset', 'inspection-zoom-in', 'inspection-zoom-out']) {
+    cameraActions.append(inspection.querySelector('#' + id));
+  }
+  const sceneHint = spacecraft.querySelector('#scene-hint');
+  sceneHint.textContent = 'Drag to rotate · Ctrl + scroll to zoom';
+  const tools = spacecraft.querySelector('.scene-toolbar');
+  tools.replaceChildren(tabs, inspectionSettings);
+  const syncView = () => {
+    const is3d = !spacecraft.querySelector('#scene-3d').hidden;
+    view3dButton.classList.toggle('active', is3d);
+    view2dButton.classList.toggle('active', !is3d);
+    view3dButton.setAttribute('aria-pressed', String(is3d));
+    view2dButton.setAttribute('aria-pressed', String(!is3d));
+    spacecraft.classList.toggle('mc-is-2d', !is3d);
+    inspectionSettings.hidden = cameraActions.hidden = !is3d;
+    if (is3d) sceneHint.textContent = 'Drag to rotate · Ctrl + scroll to zoom';
+  };
+  view2dButton.addEventListener('click', syncView);
+  view3dButton.addEventListener('click', syncView);
+  syncView();
   const space = spacecraft.querySelector('.space-scene');
   space.classList.add('mc-orbital-scene');
+  space.append(cameraActions);
+  const guidance = el('div', undefined, 'mc-scene-guidance');
+  guidance.append(sceneHint, el('span', 'Illustrative model · recorded simulation', 'mc-scene-provenance'));
+  const modelInfo = el('details', undefined, 'mc-model-info');
+  modelInfo.append(el('summary', 'Detailed telemetry & model assumptions'),
+    spacecraft.querySelector('#subsystem-detail'), spacecraft.querySelector('.orbit-state'),
+    spacecraft.querySelector('#inspection-legend'),
+    el('p', 'Synthetic research model. One thermal node, prescribed illumination and simplified power/attitude/link behavior. Geometry and Earth scenery are illustrative; no flight certification.', 'mc-caption'));
+  spacecraft.append(guidance, modelInfo);
+  spacecraft.querySelectorAll('[data-subsystem]').forEach(control => {
+    control.addEventListener('click', () => { modelInfo.open = true; });
+  });
   const hud = el('div', undefined, 'mc-scene-hud');
   hud.append(el('span', 'REFERENCE SATELLITE', 'mc-hud-title'));
   pair(hud, 'Recorded mode', 'mc-hud-mode');
   pair(hud, 'Pointing error', 'mc-hud-pointing');
   pair(hud, 'Illumination', 'mc-hud-sun');
-  space.append(hud, el('span', 'ILLUSTRATIVE ORBITAL SCENERY', 'mc-scene-caption'));
+  modelInfo.append(hud);
+  space.append(el('span', 'ILLUSTRATIVE SCENERY', 'mc-scene-caption'));
   const callouts = el('div', undefined, 'mc-callouts');
   for (const [key, label] of [['solar', 'Solar arrays'], ['battery', 'Battery pack'], ['thermal', 'Thermal node'],
     ['link', 'Antenna / link']]) {
@@ -234,7 +273,7 @@
   pair(stateData, 'Modeled actuator', 'mc-actuator-value');
   pair(stateData, 'Thermal node', 'mc-thermal-value');
   state.append(stateData);
-  systems.append(health, environment, state);
+  systems.append(environment, state);
   const flight = el('div', undefined, 'mc-flight-grid');
   flight.append(spacecraft, systems);
   main.append(flight);
@@ -289,9 +328,13 @@
   for (const [tab, title] of [['findings', 'Findings'], ['safety', 'Safety checks'], ['actions', 'Actions']]) {
     const b = el('button', title);
     b.dataset.tab = tab;
+    b.setAttribute('aria-pressed', String(tab === findingTab));
     b.addEventListener('click', () => {
       findingTab = tab;
-      findingsTabs.querySelectorAll('button').forEach(n => n.classList.toggle('active', n === b));
+      findingsTabs.querySelectorAll('button').forEach(n => {
+        n.classList.toggle('active', n === b);
+        n.setAttribute('aria-pressed', String(n === b));
+      });
       if (last) renderFindings(last.snapshot, last.report);
     });
     if (tab === findingTab) b.classList.add('active');
@@ -301,12 +344,17 @@
     'shield', () => jump('assurance'), 'button secondary mc-audit-button'));
   const alertPanel = panel('Current alarms', 'mc-alerts');
   alertPanel.append(identity(el('div', undefined, 'mc-alert-list'), 'mc-alert-list'));
-  rail.append(agentPanel, findings, alertPanel);
+  rail.append(health, agentPanel, findings, alertPanel);
   deck.append(main, rail);
   overview.append(deck);
   const context = el('div', undefined, 'mc-replay-context');
   context.append(identity(el('span', 'RECORDED STATE'), 'mc-replay-context'), el('span', 'Geometry is illustrative · all values are synthetic simulation outputs'));
   overview.prepend(context);
+  const transport = document.querySelector('.replay-top');
+  const recordedSelection = identity(el('div', undefined, 'mc-recorded-selection'), 'mc-recorded-selection');
+  recordedSelection.hidden = true;
+  transport.prepend(recordedSelection);
+  byId('policy').setAttribute('aria-label', 'Standard experiment strategy');
   let last = null,
     activated = false;
   const set = (id, text) => {
@@ -491,6 +539,14 @@
 
   function update(report, idx, options = {}) {
     const s = MissionData.snapshot(report, idx);
+    syncView();
+    const selectedName = String(options.label || report.strategy || report.policy || 'Recorded run');
+    const hasSeed = selectedName.split('·').some(part => part.trim().toLowerCase() === `seed ${report.config.seed}`);
+    const identityLabel = hasSeed ? selectedName : `${selectedName} · seed ${report.config.seed}`;
+    const savedReplay = byId('policy').disabled === true;
+    byId('policy').parentNode.hidden = savedReplay;
+    recordedSelection.hidden = !savedReplay;
+    recordedSelection.textContent = `${identityLabel} · saved replay`;
     last = {
       report,
       snapshot: s,
@@ -500,7 +556,7 @@
     set('mc-state', words(s.operating_mode).toUpperCase());
     set('mc-autonomy', report.assurance ? 'Safety-gated rules' : 'Reference rules');
     set('mc-time', `T+ ${stamp(s.sample_time_seconds) }`);
-    set('mc-mission-context', `${options.label || report.strategy || report.policy} · seed ${report.config.seed} · ${stamp(s.horizon_seconds) } horizon`);
+    set('mc-mission-context', `${identityLabel} · ${stamp(s.horizon_seconds) } horizon`);
     set('mc-rail-context', `${words(s.operating_mode) } · ${options.label || report.strategy || report.policy}`);
     set('mc-rail-time', `T+ ${stamp(s.sample_time_seconds) } / ${stamp(s.horizon_seconds) }`);
     byId('mc-rail-progress').style.width = `${100 * (s.progress || 0) }%`;
@@ -557,9 +613,7 @@
       byId('view-3d').click();
     }
   }
-  window.MissionControl = Object.freeze({
-    update
-  });
+  window.MissionControl = Object.freeze({update, syncView});
   if (typeof current === 'function' && current()) update(current(), index, {
     playing,
     view3d,

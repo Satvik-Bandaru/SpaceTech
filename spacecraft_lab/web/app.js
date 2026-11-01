@@ -302,6 +302,7 @@ $('health-export').addEventListener('click',async()=>{
 function show2d(hint='ILLUSTRATIVE GEOMETRY · RECORDED STATE'){
   view3d=false;$('scene-3d').hidden=true;$('spacecraft').removeAttribute('hidden');$('scene-hint').textContent=hint;
   $('inspection-tools').hidden=true;$('inspection-legend').hidden=true;
+  window.MissionControl?.syncView?.();
 }
 $('view-2d').addEventListener('click',()=>show2d());
 $('view-3d').addEventListener('click',()=>{

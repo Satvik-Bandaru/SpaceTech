@@ -29,7 +29,8 @@ const context={console,structuredClone,setTimeout,clearTimeout,Blob,
     else data=fixture.reports;
     return {ok:true,json:async()=>data};
   }};
-context.MissionControl={update:(report,index,options)=>presentationUpdates.push({report,index,options})};
+let viewSyncs=0;
+context.MissionControl={update:(report,index,options)=>presentationUpdates.push({report,index,options}),syncView:()=>viewSyncs++};
 context.window=context;vm.createContext(context);
 for(const path of ['ui-core.js','app.js','assurance.js'])vm.runInContext(fs.readFileSync(`spacecraft_lab/web/${path}`,'utf8'),context);
 (async()=>{
@@ -38,6 +39,8 @@ for(const path of ['ui-core.js','app.js','assurance.js'])vm.runInContext(fs.read
   assert.equal(get('battery').textContent,fixture.reports.basic.telemetry[0].battery_pct.toFixed(1));
   assert.equal(presentationUpdates.at(-1).report,fixture.reports.basic);
   assert.equal(presentationUpdates.at(-1).index,0);
+  get('view-2d').listeners.click();
+  assert.equal(viewSyncs,1,'The existing 2D/fallback path must synchronize view-selection accessibility state');
   get('scrubber').value='5';get('scrubber').listeners.input();
   assert.match(get('clock').textContent,/01:00/);
   assert.equal(get('battery').textContent,fixture.reports.basic.telemetry[5].battery_pct.toFixed(1));

@@ -1,5 +1,11 @@
 # Spacecraft Reliability & Autonomy Lab
 
+## Clearer mission UI and graphics — 2026-10-31
+
+The interface now has larger, higher-contrast text, grouped workspace navigation, one 3D/2D switch, accessible Inspection settings, and visible camera reset/zoom controls. Selecting a subsystem reveals its detailed telemetry. Saved replays identify their actual run/seed instead of showing an unrelated disabled strategy selector. Ordinary scrolling moves the page; hold Ctrl/Command while scrolling to zoom the spacecraft.
+
+Earth/cloud scenery, metallic surfaces, insulation and dish shading are refined locally, with no new dependency or external assets. All existing workspaces, reports, approval boundaries and simulation behavior remain. **113 tests pass**, with desktop/tablet/mobile browser checks. See [verification](docs/INTUITIVE_UI_VERIFICATION.md). Start unchanged: `python3 -m spacecraft_lab.control_center --port 8014`, then open **http://127.0.0.1:8014/**.
+
 ## Mission control redesign — 2026-10-30
 
 The dashboard now follows the supplied mission-control references: an orbital spacecraft viewport, compact mission controls, systems/environment cards, recorded agent decisions, miniature telemetry plots, an injection timeline and a subsystem status matrix. The detailed WebGL spacecraft retains camera presets, rotation/zoom, thermal/power overlays, exploded inspection and the 2D schematic. All six existing workspaces, scenario editing, campaigns, approvals, saved history, comparisons, replay and exports remain available through the new navigation.

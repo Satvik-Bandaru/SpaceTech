@@ -22,19 +22,26 @@ window.createSpacecraftScene=function(canvas,onFailure){
       void main(){
         vec3 n=normalize(normal),l=normalize(vec3(-2.,4.,5.));
         vec3 v=normalize(eye-worldPosition),h=normalize(l+v);
-        float metallic=step(.5,surface),foil=step(1.5,surface)*(1.-step(2.5,surface));
+        float metal=step(.5,surface)*(1.-step(1.5,surface));
+        float foil=step(1.5,surface)*(1.-step(2.5,surface));
         float cell=step(2.5,surface)*(1.-step(3.5,surface));
-        float grain=sin(localPosition.x*41.+sin(localPosition.y*23.))*sin(localPosition.y*37.+localPosition.z*19.);
-        vec3 base=color*(1.+foil*grain*.13);
+        // Irregular, restrained blanket creases avoid a checker pattern on the MLI.
+        float grain=sin(localPosition.x*17.+sin(localPosition.y*13.+localPosition.z*9.)*2.7);
+        grain+=.45*sin(localPosition.y*31.-localPosition.z*19.+sin(localPosition.x*11.));
+        vec3 base=color*(1.+foil*grain*.04);
         float contact=step(.986,fract((localPosition.y+1.)*3.));
         contact=max(contact,1.-step(.012,abs(abs(localPosition.x)-.72)));
         base=mix(base,vec3(.37,.49,.59),cell*contact*.55);
         float diffuse=max(dot(n,l),0.);
-        float specular=pow(max(dot(n,h),0.),mix(26.,70.,metallic))*(.1+metallic*.55);
-        float rim=pow(1.-max(dot(n,v),0.),3.);
-        vec3 lit=base*(.18+sunlight*(.13+.82*diffuse));
-        lit+=vec3(1.,.9,.72)*specular*sunlight;
-        lit+=vec3(.12,.24,.37)*rim*(.2+.1*sunlight);
+        float specular=pow(max(dot(n,h),0.),32.+metal*12.+foil*4.+cell*64.);
+        specular*=.08+metal*.27+foil*.22+cell*.22;
+        float rim=pow(1.-max(dot(n,v),0.),4.);
+        // Soft environment fill is illustrative shading; recorded sunlight controls the key light.
+        vec3 ambient=vec3(.11,.14,.18)+vec3(.04,.05,.065)*max(n.y,0.);
+        vec3 lit=base*(ambient+sunlight*(vec3(.1)+vec3(.82,.77,.69)*diffuse));
+        vec3 reflection=mix(vec3(.82,.89,.96),min(color*1.3,vec3(1.)),foil);
+        lit+=reflection*specular*sunlight;
+        lit+=vec3(.10,.19,.28)*rim*(.16+sunlight*.18)*(metal+foil+cell);
         gl_FragColor=vec4(lit,1.);
       }`));
     gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error('3D renderer unavailable');
@@ -52,7 +59,8 @@ window.createSpacecraftScene=function(canvas,onFailure){
     const vertices=[],normals=[];
     const triangle=(a,b,c,normal)=>{
       const n=normal||normalize(cross(b.map((v,i)=>v-a[i]),c.map((v,i)=>v-a[i])));
-      for(const point of [a,b,c]){vertices.push(...point);normals.push(...n);}
+      const smooth=normal&&Array.isArray(normal[0]);
+      [a,b,c].forEach((point,i)=>{vertices.push(...point);normals.push(...(smooth?normal[i]:n));});
     };
     const quad=(points,normal)=>{triangle(points[0],points[1],points[2],normal);triangle(points[0],points[2],points[3],normal);};
     build(triangle,quad);
@@ -93,10 +101,12 @@ window.createSpacecraftScene=function(canvas,onFailure){
   });
   const dish=mesh((triangle)=>{
     const point=(r,a)=>[r*Math.cos(a),r*Math.sin(a),.38*r*r];
+    const normal=p=>normalize([-.76*p[0],-.76*p[1],1]);
     for(let r=0;r<10;r++)for(let i=0;i<48;i++){
       const a=i*Math.PI/24,b=(i+1)*Math.PI/24;
       const p=point(r/10,a),q=point((r+1)/10,a),s=point((r+1)/10,b),t=point(r/10,b);
-      triangle(p,q,s);if(r)triangle(p,s,t);
+      triangle(p,q,s,[normal(p),normal(q),normal(s)]);
+      if(r)triangle(p,s,t,[normal(p),normal(s),normal(t)]);
     }
   });
   const rim=mesh((_triangle,quad)=>{
@@ -276,7 +286,7 @@ window.createSpacecraftScene=function(canvas,onFailure){
   canvas.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];canvas.setPointerCapture(e.pointerId);});
   canvas.addEventListener('pointermove',e=>{if(!drag)return;azimuth+=(e.clientX-drag[0])*.01;elevation=clamp(elevation+(e.clientY-drag[1])*.01,-Math.PI/2,Math.PI/2);drag=[e.clientX,e.clientY];draw();});
   canvas.addEventListener('pointerup',()=>{drag=null;});canvas.addEventListener('pointercancel',()=>{drag=null;});
-  canvas.addEventListener('wheel',e=>{e.preventDefault();zoom(e.deltaY*.01);},{passive:false});
+  canvas.addEventListener('wheel',e=>{if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();zoom(e.deltaY*.01);},{passive:false});
   canvas.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','-','Home'].includes(e.key)){
     e.preventDefault();
     if(e.key==='Home'){resetCamera();return;}

@@ -50,12 +50,12 @@ assert.equal(ui.inspectionState().batteryFill,null);
 // Use a GPU boundary adapter: assertions inspect the renderer's matrices and geometry,
 // while browser verification covers the native WebGL implementation itself.
 const fs=require('node:fs'),vm=require('node:vm');
-const frames=[],listeners={},uniforms={};
+const frames=[],listeners={},uniforms={},meshUploads=[];
 let contextOptions,clearRgba;
 const gl={COMPILE_STATUS:1,LINK_STATUS:2,
   createShader:()=>({}),shaderSource(){},compileShader(){},getShaderParameter:()=>true,
   createProgram:()=>({}),attachShader(){},linkProgram(){},getProgramParameter:()=>true,
-  useProgram(){},enable(){},createBuffer:()=>({}),bindBuffer(){},bufferData(){},
+  useProgram(){},enable(){},createBuffer:()=>({}),bindBuffer(){},bufferData(_target,data){meshUploads.push(Array.from(data));},
   getAttribLocation:()=>0,enableVertexAttribArray(){},vertexAttribPointer(){},
   getUniformLocation:(_program,key)=>key,viewport(){},clearColor(...rgba){clearRgba=rgba;},clear(){frames.push([]);},
   uniformMatrix4fv(key,_transpose,value){uniforms[key]=Array.from(value);},
@@ -67,6 +67,18 @@ let failure='';
 const browser={devicePixelRatio:1,addEventListener(){}};
 vm.runInNewContext(fs.readFileSync(require.resolve('../spacecraft_lab/web/scene.js'),'utf8'),{window:browser,LabUI:ui,Float32Array,Math,Number,Error});
 const renderer=browser.createSpacecraftScene(canvas,message=>{failure=message;});
+// A curved dish must have an axial center normal; face normals create a pinched highlight.
+const dishUpload=meshUploads.findIndex((data,i)=>i%2===0&&data.some((_value,j)=>
+  j%3===0&&data[j]===0&&data[j+1]===0&&data[j+2]===0));
+assert.ok(dishUpload>=0,'curved dish geometry should be uploaded');
+for(let i=0;i<meshUploads[dishUpload].length;i+=3){
+  const vertices=meshUploads[dishUpload],normals=meshUploads[dishUpload+1];
+  assert.ok(Math.abs(Math.hypot(...normals.slice(i,i+3))-1)<1e-6,'dish normals must be unit length');
+  if(vertices[i]===0&&vertices[i+1]===0&&vertices[i+2]===0){
+    assert.ok(Math.abs(normals[i])<1e-6&&Math.abs(normals[i+1])<1e-6&&Math.abs(normals[i+2]-1)<1e-6,
+      'dish center normal should follow its smooth curved surface');
+  }
+}
 const row={...telemetry,sunlit:true,comms_up:true,mode:'normal',pointing_error_deg:0};
 renderer.update(row,cfg);
 const original=structuredClone(frames.at(-1));
@@ -129,6 +141,20 @@ renderer.setInspection({overlay:'power'});
 const supplied=structuredClone(frames.at(-1));
 renderer.update({...row,solar_w:0,served_w:20,unserved_w:80},cfg);
 assert.notDeepEqual(frames.at(-1).map(item=>item.model),supplied.map(item=>item.model));
+// The scene must not trap page scrolling; an explicit modifier opts into camera zoom.
+let prevented=false;
+const beforeScroll=frames.length;
+listeners.wheel({deltaY:100,preventDefault(){prevented=true;}});
+assert.equal(prevented,false,'ordinary wheel scrolling must pass through');
+assert.equal(frames.length,beforeScroll,'ordinary wheel scrolling must not change the camera');
+for(const modifier of ['ctrlKey','metaKey']){
+  const beforeZoom=structuredClone(frames.at(-1)[0].view),count=frames.length;
+  prevented=false;
+  listeners.wheel({deltaY:30,[modifier]:true,preventDefault(){prevented=true;}});
+  assert.equal(prevented,true,'modified wheel should be handled by the scene');
+  assert.equal(frames.length,count+1);
+  assert.notDeepEqual(frames.at(-1)[0].view,beforeZoom);
+}
 assert.deepEqual(row,{...telemetry,sunlit:true,comms_up:true,mode:'normal',pointing_error_deg:0});
 for(const fn of [()=>renderer.setView('sideways'),()=>renderer.setInspection({overlay:'voltage'}),()=>renderer.setInspection({exploded:'yes'}),()=>renderer.setInspection({selected:'engine'}),()=>renderer.zoom(NaN)])assert.throws(fn);
 const frameCount=frames.length;

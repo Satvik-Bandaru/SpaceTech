@@ -1,4 +1,12 @@
-# Current resume checkpoint — mission control redesign, 2026-10-30
+# Current resume checkpoint — intuitive UI, 2026-10-31
+
+- Branch `feature/intuitive-mission-ui`; baseline `17982de`; **113 tests passed**. No engine/kernel/workflow/contracts or cross-project changes.
+- Larger text/contrast, six grouped workspaces, one original 3D/2D toggle, native inspection/model disclosures, direct camera controls, visible subsystem feedback and correct saved replay identity. Original IDs/nodes/handlers remain.
+- Refined local SVG atmosphere/clouds and material/dish shading. Plain wheel scrolls the page; Ctrl/Command-wheel and existing controls zoom. Geometry remains illustrative and state remains recorded simulation data.
+- Native checks: 1680/768/390/320-pixel widths, saved assurance/campaign restore and replay, controls/disclosures/navigation; no horizontal overflow or new console errors. Screenshots in `artifacts/intuitive-ui-*.jpg`.
+- See [plan](INTUITIVE_UI_PLAN.md) and [verification](INTUITIVE_UI_VERIFICATION.md). Startup unchanged: `python3 -m spacecraft_lab.control_center --port 8014`. No deployment or push.
+
+# Historical checkpoint — mission control redesign, 2026-10-30
 
 - Branch `feature/mission-control-redesign`; restore point `fa76f97`. **113 tests passed**. Sixteen complete engineering reports exactly match that restore point; engine, assurance, campaign evaluation and contracts are unchanged.
 - Reference-inspired mission console: orbital WebGL scene, compact controls/navigation, actual subsystem/environment checks, recorded agent/decision rail, past-only mini charts, configured-injection timeline and status history matrix. Existing six workspaces and their controls remain available.
