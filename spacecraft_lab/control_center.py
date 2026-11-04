@@ -14,6 +14,9 @@ from .reliability import run_strategy, run_study, STRATEGIES
 from .health_exchange import export_health
 from .presets import presets
 from .assurance.workflow import WorkflowStore
+from .observatory import run_observatory
+from .advisory import engineering_assessment, economy_assessment
+from .observatory_records import ObservationRecords
 
 ROOT = Path(__file__).resolve().parent.parent
 WEB = Path(__file__).resolve().parent / 'web'
@@ -77,6 +80,8 @@ class Handler(BaseHTTPRequestHandler):
                   '/mission-control.js': ('mission-control.js', 'text/javascript; charset=utf-8'),
                   '/mission-data.js': ('mission-data.js', 'text/javascript; charset=utf-8'),
                   '/mission-control.css': ('mission-control.css', 'text/css; charset=utf-8'),
+                  '/observatory.js': ('observatory.js', 'text/javascript; charset=utf-8'),
+                  '/observatory.css': ('observatory.css', 'text/css; charset=utf-8'),
                   '/orbital-backdrop.svg': ('orbital-backdrop.svg', 'image/svg+xml'),
                   '/ui-core.js': ('ui-core.js', 'text/javascript; charset=utf-8')}
         if self.path in routes:
@@ -85,6 +90,20 @@ class Handler(BaseHTTPRequestHandler):
         elif self.path == '/api/bootstrap':
             self.send(200, {'scenario': load_json(ROOT / 'scenarios/engineering_multifault.json'),
                             'max_samples': 2000, 'model_version': 'spacecraft-reference-v0.2', 'presets':presets()})
+        elif self.path == '/api/observatory/history':
+            try:
+                self.send(200, self.server.observation_records.history())
+            except OSError:
+                self.send(503, {'error': 'Local observation store unavailable'})
+        elif self.path.startswith('/api/observatory/reports/'):
+            try:
+                self.send(200, self.server.observation_records.get(self.path.split('/api/observatory/reports/', 1)[1]))
+            except ValueError as exc:
+                self.send(400, {'error': str(exc)})
+            except FileNotFoundError:
+                self.send(404, {'error': 'Saved observation mission not found'})
+            except OSError:
+                self.send(503, {'error': 'Saved observation record unavailable or corrupt'})
         elif urlsplit(self.path).path=='/api/jobs':
             try:
                 query=parse_qs(urlsplit(self.path).query,keep_blank_values=True)
@@ -111,7 +130,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if not self.trusted():
             return
-        if self.path not in ('/api/run','/api/research/run','/api/research/study','/api/research/health','/api/assurance/prepare','/api/assurance/approve','/api/assurance/cancel','/api/campaigns/prepare'):
+        if self.path not in ('/api/run','/api/research/run','/api/research/study','/api/research/health','/api/assurance/prepare','/api/assurance/approve','/api/assurance/cancel','/api/campaigns/prepare','/api/observatory/run','/api/advisory/engineering','/api/advisory/economy'):
             self.send(404, {'error': 'Route not found'})
             return
         try:
@@ -128,6 +147,19 @@ class Handler(BaseHTTPRequestHandler):
                 raise ValueError('Incomplete request')
             data = json.loads(raw, object_pairs_hook=unique_object,
                               parse_constant=lambda value: (_ for _ in ()).throw(ValueError('Nonfinite JSON')))
+            if self.path == '/api/observatory/run':
+                if not isinstance(data, dict) or set(data) != {'config'}:
+                    raise ValueError('Observation requests require only config')
+                report = run_observatory(data['config'])
+                try:
+                    self.server.observation_records.save(report)
+                except OSError as exc:
+                    self.send(503, {'error': str(exc)}); return
+                self.send(200, report); return
+            if self.path == '/api/advisory/engineering':
+                self.send(200, engineering_assessment(data)); return
+            if self.path == '/api/advisory/economy':
+                self.send(200, economy_assessment(data)); return
             if self.path=='/api/campaigns/prepare':
                 self.send(200,self.server.assurance_store().prepare_campaign(data));return
             allowed={'/api/run':{'scenario'},'/api/research/run':{'scenario'},
@@ -186,6 +218,7 @@ def create_server(port=8014,workflow_path=None):
     server.timeout = 5
     server.workflow=None
     server.workflow_path=Path(workflow_path) if workflow_path else ROOT/'artifacts'/'assurance.sqlite'
+    server.observation_records=ObservationRecords(server.workflow_path.parent/'observatory')
     return server
 
 

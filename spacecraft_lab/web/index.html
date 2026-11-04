@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Spacecraft Health — Autonomy Lab</title><link rel="stylesheet" href="/style.css"><script defer src="/ui-core.js"></script><script defer src="/scene.js"></script><script defer src="/app.js"></script></head>
-<body><link rel="stylesheet" href="/research.css"><link rel="stylesheet" href="/assurance.css"><link rel="stylesheet" href="/campaign.css"><link rel="stylesheet" href="/mission-control.css"><script defer src="/assurance.js"></script><script defer src="/campaign.js"></script><script defer src="/mission-data.js"></script><script defer src="/mission-control.js"></script>
+<body><link rel="stylesheet" href="/research.css"><link rel="stylesheet" href="/assurance.css"><link rel="stylesheet" href="/campaign.css"><link rel="stylesheet" href="/mission-control.css"><link rel="stylesheet" href="/observatory.css"><script defer src="/assurance.js"></script><script defer src="/campaign.js"></script><script defer src="/mission-data.js"></script><script defer src="/mission-control.js"></script><script defer src="/observatory.js"></script>
 <aside class="rail">
   <a class="brand" href="/" aria-label="Spacecraft lab home"><span class="brandmark">✧</span><span>ORBITAL<span class="brand-sub">RELIABILITY LAB</span></span></a>
   <div class="rail-label">WORKSPACE / 01</div>
@@ -15,6 +15,7 @@
     <button class="nav" data-view="campaign"><span>⊞</span> Counterfactual studio</button>
     <button class="nav" data-view="comparison"><span>▥</span> Policy comparison</button>
     <button class="nav" data-view="research"><span>∿</span> Reliability research</button>
+    <button class="nav" data-view="observatory"><span>✧</span> Discovery observatory</button>
     <button class="nav" data-view="campaign" data-jump="reports"><span>▤</span> Reports & history</button>
   </nav>
   <div class="rail-note"><div class="tiny">REFERENCE ENGINE</div><strong>v0.2</strong><p>Deterministic simulation<br>Local compute · No GPU</p><span class="pill">SYNTHETIC ENVIRONMENT</span></div>
@@ -109,6 +110,7 @@
     <article class="panel"><div class="panel-head"><h2>Kernel decisions & observed effects</h2><span id="assurance-totals" class="tiny">NO RESULTS</span></div><div id="assurance-decisions" class="action-list"></div></article>
     <article class="panel"><div class="panel-head"><h2>Controlled baseline comparison</h2></div><p class="explanation">Same configuration and seed; baseline retains hard safe-mode protection but disables actuator recovery. These are one-run synthetic trade-offs, not a general performance claim.</p><div class="table-wrap"><table><thead><tr><th>Metric</th><th>Protected baseline</th><th>Assured recovery</th></tr></thead><tbody id="assurance-comparison"></tbody></table></div></article>
   </section>
+  <section id="observatory" class="view" hidden aria-label="Discovery observatory"></section>
   <footer class="replay"><div class="replay-top"><div class="policy-select"><label for="policy">VIEW STRATEGY</label><select id="policy"><option value="none">No actuator recovery</option><option value="basic" selected>Basic recovery</option><option value="enhanced">Enhanced recovery</option></select></div><div class="transport"><button id="rewind" title="Return to first interval" aria-label="Return to first interval">↶</button><button id="play" class="play" disabled>▶ Play</button><select id="speed" aria-label="Replay speed"><option value="1">1×</option><option value="5">5×</option><option value="20" selected>20×</option></select><span id="clock">T+ 00:00 / 00:00</span></div><button id="run" class="button primary" disabled>↗ Run experiment</button></div><input id="scrubber" type="range" min="0" max="1" value="0" disabled aria-label="Replay interval"><div class="replay-bottom"><span id="run-id">NO RUN LOADED</span><span id="replay-state">RECORDED TELEMETRY · PAUSED</span></div></footer>
 </main><div class="disclaimer">SPACECRAFT RELIABILITY & AUTONOMY LAB <span>LOCAL RESEARCH PROTOTYPE · NO OPERATIONAL COMMANDS</span></div>
 </div>

@@ -1,0 +1,7 @@
+{
+  "seed": 7,
+  "steps": 24,
+  "novelty_threshold": 0.22,
+  "capture_budget": 12,
+  "enabled_agents": ["widefield", "telescope", "infrared", "spectrometer", "transient"]
+}

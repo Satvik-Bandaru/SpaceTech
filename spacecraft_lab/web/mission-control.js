@@ -85,7 +85,8 @@
     comparison: 'compare',
     scenario: 'bolt',
     research: 'chart',
-    assurance: 'shield'
+    assurance: 'shield',
+    observatory: 'orbit'
   };
   document.querySelectorAll('.nav').forEach(b => {
     const text = b.textContent.trim().replace(/^[^\p{L}]+/u, '');

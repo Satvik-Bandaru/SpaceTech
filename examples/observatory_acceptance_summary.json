@@ -1,0 +1,131 @@
+{
+  "evidence_id": "OBS-ACCEPTANCE-2026-11-04",
+  "source": "SYNTHETIC",
+  "run_id": "0f38069a366c3b195567366e29f25bee81c3308aade59b33cf707ce3a747ab32",
+  "config": {
+    "seed": 7,
+    "steps": 24,
+    "novelty_threshold": 0.22,
+    "capture_budget": 12,
+    "enabled_agents": [
+      "widefield",
+      "telescope",
+      "infrared",
+      "spectrometer",
+      "transient"
+    ]
+  },
+  "metrics": {
+    "scans": 120,
+    "captures": 50,
+    "novel_targets": 10,
+    "budget_skips": 0,
+    "detected_candidates": 50
+  },
+  "quantum": {
+    "observation_id": "widefield-011",
+    "qubits": 3,
+    "iterations": 2,
+    "marked_candidates": [
+      "Metal-like"
+    ],
+    "probabilities": [
+      {
+        "name": "Silicate-like",
+        "probability": 0.007812499999999998
+      },
+      {
+        "name": "Water-ice-like",
+        "probability": 0.007812499999999998
+      },
+      {
+        "name": "Carbonaceous-like",
+        "probability": 0.007812499999999998
+      },
+      {
+        "name": "Metal-like",
+        "probability": 0.9453124999999998
+      },
+      {
+        "name": "Sulfate-like",
+        "probability": 0.007812499999999998
+      },
+      {
+        "name": "Iron-oxide-like",
+        "probability": 0.007812499999999998
+      },
+      {
+        "name": "Organic-like",
+        "probability": 0.007812499999999998
+      },
+      {
+        "name": "Mixed/ambiguous",
+        "probability": 0.007812499999999998
+      }
+    ]
+  },
+  "engineering": {
+    "delta_v_m_s": 332.57438815215613,
+    "required_eclipse_wh": 70.0,
+    "battery_margin_wh": 90.0
+  },
+  "economy": [
+    {
+      "name": "Downside",
+      "annual_revenue": 600000.0,
+      "annual_operating_cost": 437500.0,
+      "annual_net_cash": 162500.0,
+      "npv": -1383997.1499711273
+    },
+    {
+      "name": "Base",
+      "annual_revenue": 800000.0,
+      "annual_operating_cost": 350000.0,
+      "annual_net_cash": 450000.0,
+      "npv": -294145.9537661986
+    },
+    {
+      "name": "Upside",
+      "annual_revenue": 1000000.0,
+      "annual_operating_cost": 262500.0,
+      "annual_net_cash": 737500.0,
+      "npv": 795705.2424387299
+    }
+  ],
+  "repeated_reports_equal": true,
+  "performance": {
+    "python": "3.12.8",
+    "machine": "arm64",
+    "repeats": 5,
+    "seconds": [
+      0.04141574999084696,
+      0.044486875005532056,
+      0.04234358298708685,
+      0.04119849999551661,
+      0.041588749998481944
+    ],
+    "mean_seconds": 0.04220669159549288,
+    "scope": "In-process finite observation simulation; excludes HTTP, persistence, UI and hardware acquisition."
+  },
+  "maximum_config": {
+    "steps": 120,
+    "metrics": {
+      "scans": 600,
+      "captures": 50,
+      "novel_targets": 10,
+      "budget_skips": 0,
+      "detected_candidates": 50
+    },
+    "serialized_bytes": 311467
+  },
+  "source_sha256": {
+    "spacecraft_lab/observatory.py": "150fbff4186a32fc3cafcae8d77154ff622d3fa4856e444471aa51d1dd3f33f6",
+    "spacecraft_lab/advisory.py": "8182c87def8e4d6fb57601e02c6439caaf4a4e2e4492880381933b67e0917301",
+    "spacecraft_lab/observatory_records.py": "cfe28cc7c8a65a1b45ff066d0d042478fa76cc6c50f38da41780b77db0f29636"
+  },
+  "limitations": [
+    "Five repeated identical synthetic runs check determinism, not statistical scientific accuracy.",
+    "Toy material similarity and circuit probabilities are not composition confidence.",
+    "Performance describes this small classical CPU simulator; no quantum or AI superiority is established."
+  ]
+}

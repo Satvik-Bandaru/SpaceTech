@@ -1,5 +1,19 @@
 # Spacecraft Reliability & Autonomy Lab
 
+## Autonomous Discovery Observatory — 2026-11-04
+
+Open **http://127.0.0.1:8014/** and choose **Discovery observatory**. Five configurable synthetic instrument agents automatically detect catalogue novelty, record numerical images and spectra, suppress duplicate captures and respect budgets. A separate local analysis agent explains spectral-template hypotheses and generates reports. Completed missions save locally and can be restored after refresh; export JSON or Markdown for review. The gallery and plots render the captured data.
+
+The same workspace includes an **ideal three-qubit Grover search simulator**, an **aerospace engineering assistant** for ideal delta-v and eclipse storage arithmetic, and a **space economy assistant** for downside/base/upside project cash-flow scenarios. Quantum probabilities describe the simulated circuit, not material confidence. Analysis is deterministic local code; no LLM, physical cameras/telescopes, quantum hardware, live financial feeds or external services are connected. The five instruments are role proxies over a toy detector, not validated optical models or continuous observatories. Material identification and investment forecasting remain unimplemented.
+
+```bash
+python3 -m spacecraft_lab.control_center --port 8014
+python3 observe.py scenarios/observatory_survey.json --out artifacts/observatory-demo.json
+python3 -m unittest discover -s tests -q
+```
+
+**144 tests pass.** The reproducible seed-7 mission records **120 scans, 50 captures and 10 distinct captured targets**. The existing spacecraft models, recovery safety kernel, seven assurance roles, workspaces and offline contracts are preserved. Read [implemented capabilities and verification](docs/OBSERVATORY_VERIFICATION.md), [physical/scientific and financial assumptions](docs/OBSERVATORY_SCIENCE.md), and the [acceptance summary](examples/observatory_acceptance_summary.json). No deployment or push.
+
 ## Clearer mission UI and graphics — 2026-10-31
 
 The interface now has larger, higher-contrast text, grouped workspace navigation, one 3D/2D switch, accessible Inspection settings, and visible camera reset/zoom controls. Selecting a subsystem reveals its detailed telemetry. Saved replays identify their actual run/seed instead of showing an unrelated disabled strategy selector. Ordinary scrolling moves the page; hold Ctrl/Command while scrolling to zoom the spacecraft.
