@@ -72,6 +72,7 @@ class Handler(BaseHTTPRequestHandler):
                   '/app.js': ('app.js', 'text/javascript; charset=utf-8'),
                   '/style.css': ('style.css', 'text/css; charset=utf-8'),
                   '/scene.js': ('scene.js', 'text/javascript; charset=utf-8'),
+                  '/scene-model.js': ('scene-model.js', 'text/javascript; charset=utf-8'),
                   '/research.css': ('research.css', 'text/css; charset=utf-8'),
                   '/assurance.js': ('assurance.js', 'text/javascript; charset=utf-8'),
                   '/assurance.css': ('assurance.css', 'text/css; charset=utf-8'),
@@ -84,6 +85,8 @@ class Handler(BaseHTTPRequestHandler):
                   '/observatory.css': ('observatory.css', 'text/css; charset=utf-8'),
                   '/orbital-backdrop.svg': ('orbital-backdrop.svg', 'image/svg+xml'),
                   '/earth-horizon.png': ('earth-horizon.png', 'image/png'),
+                  '/mli-material.png': ('mli-material.png', 'image/png'),
+                  '/solar-material.png': ('solar-material.png', 'image/png'),
                   '/ui-core.js': ('ui-core.js', 'text/javascript; charset=utf-8')}
         if self.path in routes:
             name, mime = routes[self.path]

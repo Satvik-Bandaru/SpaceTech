@@ -1,0 +1,35 @@
+{
+  "baseline_commit": "0f493b1",
+  "original_reference": "examples/realistic_twin_preservation.json",
+  "complete_reports_identical": 16,
+  "seeds": [
+    7,
+    11,
+    19,
+    23
+  ],
+  "strategies": [
+    "none",
+    "basic",
+    "enhanced",
+    "assured"
+  ],
+  "report_sha256": {
+    "7/none": "1d6ea414e34b7fa03d67814da32830f7c3e81b5c1ae380d1ea16842cf82c9285",
+    "7/basic": "c02938e769a392238fd143214ad145c062dcb6620ad59a55a86f10055adbcf8f",
+    "7/enhanced": "7fca965438843738f4f146b015c011688c85c632c842ef23f81314860dc8d3d3",
+    "7/assured": "14a0a3b7cb82398568551cf0e84eb06821782dc5dce5488379bde15dd5d31d24",
+    "11/none": "3af3ce6c27c3ab0599bb32bb0c2409c02d1079d84e8279cd2dad0c9819b0daba",
+    "11/basic": "d2114951971d2cfccd66794cb6ef47edbbee6eda22ad78b67ff0f417c54ff0a2",
+    "11/enhanced": "3db04d4d3941b0857103f8ebcf11011ffdc56d78bac9452572b85e9d062b6550",
+    "11/assured": "59ef7b18f6e6ca21a7c18ca93ad5cd5c4fb745fe96655e9a271a7a88d25620d4",
+    "19/none": "32a459ab41b78bdcc6e12f23b39bee436185f38b860cc10b58534ca9b2a045f7",
+    "19/basic": "f9ddd780ecc1bf67491ecc5286f277e9eddca96f8f3ca5c65ce6a779a54e820e",
+    "19/enhanced": "c22fa9ffe2939c8db7c0ff6b1456d5027c86d0d2dd1d01d78fc87794fe825aeb",
+    "19/assured": "66e35443dba6e76726ff0b78d21f8cac11bb0ae3ccd4a10a6ebf4805e73f1d88",
+    "23/none": "6c1951aad32b60aa81119824187178bcb061950dc3a48dfb846172fe0289adba",
+    "23/basic": "53114d824fd5420442dfaa64efdcdfea97c6668e616fb6450d6fb331b98d1ccd",
+    "23/enhanced": "4d39ebd1ab71e683fab985a678623eb46b40398c8b5d57f97047e1380c8c5eb1",
+    "23/assured": "b5591c7e6e0e93faff26cacc2ec7b93335702694ce029ebfee660a0604b02509"
+  }
+}

@@ -4,72 +4,135 @@ window.createSpacecraftScene=function(canvas,onFailure){
   const gl=canvas.getContext('webgl',{antialias:true,alpha:true});
   if(!gl){onFailure('WebGL unavailable; using the telemetry-driven 2D view.');return null;}
   const derivatives=Boolean(gl.getExtension&&gl.getExtension('OES_standard_derivatives'));
+  const textureSupport=['createTexture','bindTexture','texParameteri','texImage2D','activeTexture','uniform1i'].every(key=>typeof gl[key]==='function');
+  const shadowResources=textureSupport&&['createFramebuffer','bindFramebuffer','framebufferTexture2D','checkFramebufferStatus','createRenderbuffer','bindRenderbuffer','renderbufferStorage','framebufferRenderbuffer'].every(key=>typeof gl[key]==='function');
+  const highPrecision=gl.getShaderPrecisionFormat&&gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER,gl.HIGH_FLOAT);
+  const precision=highPrecision&&highPrecision.precision?'highp':'mediump';
+  // Accurate packed depth needs fragment highp. Devices offering only mediump
+  // still draw every material in the original single-pass WebGL path.
+  const accurateFragments=Boolean(highPrecision&&highPrecision.precision>=16);
+  const shadowSupport=shadowResources&&accurateFragments;
+  const bumpSupport=derivatives&&accurateFragments;
   const shader=(type,source)=>{const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error('3D shader unavailable');return s;};
+  const link=(vertex,fragment)=>{
+    const program=gl.createProgram(),shaders=[shader(gl.VERTEX_SHADER,vertex),shader(gl.FRAGMENT_SHADER,fragment)];
+    shaders.forEach(value=>gl.attachShader(program,value));gl.linkProgram(program);
+    if(gl.deleteShader)shaders.forEach(value=>gl.deleteShader(value));
+    if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error('3D renderer unavailable');
+    return program;
+  };
   let program;
   try{
-    program=gl.createProgram();
-    gl.attachShader(program,shader(gl.VERTEX_SHADER,`
+    program=link(`
       attribute vec3 p; attribute vec3 n;
-      uniform mat4 model; uniform mat4 normalModel; uniform mat4 view;
-      varying vec3 normal; varying vec3 worldPosition; varying vec3 localPosition;
+      uniform mat4 model; uniform mat4 normalModel; uniform mat4 view; uniform mat4 lightView;
+      varying vec3 normal; varying vec3 worldPosition; varying vec3 localPosition; varying vec3 localNormal;
+      varying vec4 sunPosition;
       void main(){
-        vec4 world=model*vec4(p,1.); gl_Position=view*world;
-        // Normalize in vertex highp before interpolation: thin parts have large
-        // inverse-scale normals that can overflow fragment mediump on mobile GPUs.
-        normal=normalize(mat3(normalModel)*n); worldPosition=world.xyz; localPosition=p;
-      }`));
-    gl.attachShader(program,shader(gl.FRAGMENT_SHADER,`
+        vec4 world=model*vec4(p,1.); gl_Position=view*world; sunPosition=lightView*world;
+        // Normalize in vertex highp before interpolation: inverse-scale normals on
+        // very thin parts can overflow fragment mediump on mobile GPUs.
+        normal=normalize(mat3(normalModel)*n); worldPosition=world.xyz; localPosition=p; localNormal=n;
+      }`,`
       ${derivatives?'#extension GL_OES_standard_derivatives : enable':''}
-      precision mediump float;
-      varying vec3 normal; varying vec3 worldPosition; varying vec3 localPosition;
-      uniform vec3 color; uniform vec3 eye; uniform float sunlight; uniform float surface;
+      precision ${precision} float;
+      varying vec3 normal; varying vec3 worldPosition; varying vec3 localPosition; varying vec3 localNormal;
+      varying vec4 sunPosition;
+      uniform vec3 color; uniform vec3 eye; uniform vec3 lightDirection;
+      uniform float sunlight; uniform float surface; uniform float materialDetail; uniform float bumpEnabled;
+      uniform float foilReady; uniform float solarReady; uniform float shadowEnabled; uniform float shadowTexel;
+      ${textureSupport?'uniform sampler2D foilMap; uniform sampler2D solarMap; uniform sampler2D shadowMap;':''}
+      ${textureSupport?`
+      float shadowSample(vec2 uv,float compare){
+        vec2 packedDepth=texture2D(shadowMap,uv).rg;
+        return step(compare,dot(packedDepth,vec2(1.,1./255.)));
+      }
+      float sunVisibility(float ndl){
+        if(shadowEnabled<.5)return 1.;
+        vec3 projected=sunPosition.xyz/sunPosition.w*.5+.5;
+        if(projected.x<=0.||projected.x>=1.||projected.y<=0.||projected.y>=1.||projected.z<=0.||projected.z>=1.)return 1.;
+        float bias=max(.00035,.0012*(1.-ndl)),depth=projected.z-bias;
+        float visibility=0.;
+        // A small fixed PCF kernel softens a 1024px Sun shadow without unbounded work.
+        for(int x=-1;x<=1;x++)for(int y=-1;y<=1;y++)
+          visibility+=shadowSample(projected.xy+vec2(float(x),float(y))*shadowTexel,depth);
+        return visibility/9.;
+      }`:'float sunVisibility(float ndl){return 1.;}'}
       void main(){
-        vec3 n=normalize(normal),l=normalize(vec3(-2.,4.,5.));
-        vec3 v=normalize(eye-worldPosition),h=normalize(l+v);
+        vec3 n=normalize(normal),l=lightDirection,v=normalize(eye-worldPosition),h=normalize(l+v);
         float metal=step(.5,surface)*(1.-step(1.5,surface));
         float foil=step(1.5,surface)*(1.-step(2.5,surface));
         float cell=step(2.5,surface)*(1.-step(3.5,surface));
         float glass=step(3.5,surface);
-        // Irregular, restrained blanket creases avoid a checker pattern on the MLI.
+        vec3 base=pow(max(color,vec3(.001)),vec3(2.2));
         float grain=sin(localPosition.x*17.+sin(localPosition.y*13.+localPosition.z*9.)*2.7);
         grain+=.45*sin(localPosition.y*31.-localPosition.z*19.+sin(localPosition.x*11.));
-        float fine=sin(localPosition.x*181.+localPosition.y*127.+localPosition.z*149.);
-        vec3 base=pow(max(color,vec3(.001)),vec3(2.2))*(1.+foil*grain*.055+metal*fine*.012);
-        // Fine cell fingers and two wider busbars are local surface detail, not circuit telemetry.
-        float contactCoordinate=(localPosition.y+1.)*4.;
-        float footprint=${derivatives?'fwidth(contactCoordinate)':'.1'};
-        float fingers=(1.-smoothstep(.022,.022+max(footprint,.015),abs(fract(contactCoordinate)-.5)));
-        fingers*=1.-smoothstep(.10,.35,footprint);
-        float busbar=1.-smoothstep(.014,.04,abs(abs(localPosition.x)-.64));
-        base=mix(base,vec3(.065,.10,.14),cell*max(fingers*.20,busbar*.45));
-        float ndl=max(dot(n,l),0.),ndv=clamp(dot(n,v),0.,1.);
-        float fresnel=pow(1.-ndv,5.);
-        float roughness=.53-metal*.15+foil*.06-cell*.30-glass*.38;
-        float exponent=mix(180.,14.,roughness);
-        float highlight=pow(max(dot(n,h),0.),exponent)*(exponent+2.)/52.;
-        vec3 f0=mix(vec3(.025),base*.62+vec3(.08),metal);
-        f0=mix(f0,base*.74+vec3(.08),foil);
-        f0=mix(f0,vec3(.035,.045,.06),cell);
-        f0=mix(f0,vec3(.018,.025,.035),glass);
-        vec3 specular=f0+(vec3(1.)-f0)*fresnel;
-        // An analytic Earth/space environment gives view-dependent reflections without image maps.
-        // It is decorative lighting; only the key illumination follows recorded sunlit/eclipsed state.
+        float materialHeight=grain*.035;
+        base*=1.+foil*grain*.045;
+        ${textureSupport?`
+        vec3 axis=abs(localNormal);
+        vec2 uv=axis.x>axis.y&&axis.x>axis.z?localPosition.zy:axis.y>axis.z?localPosition.xz:localPosition.xy;
+        uv=clamp(uv*.5+.5,vec2(.001),vec2(.999));
+        if(foil>.5&&foilReady>.5&&materialDetail>.5){
+          vec3 photograph=pow(max(texture2D(foilMap,uv).rgb,vec3(.001)),vec3(2.2));
+          base=mix(base,photograph,.86);
+          materialHeight=dot(photograph,vec3(.2126,.7152,.0722));
+        }
+        if(cell>.5&&solarReady>.5&&materialDetail>.5){
+          vec3 photograph=pow(max(texture2D(solarMap,uv).rgb,vec3(.001)),vec3(2.2));
+          base=mix(base,photograph,.62);
+        }`:''}
+        ${derivatives?`
+        // Screen derivatives reconstruct the height gradient in the world surface;
+        // the photograph supplies fold detail, while geometric normals keep the silhouette.
+        if(foil>.5&&materialDetail>.5&&bumpEnabled>.5){
+          vec3 dx=dFdx(worldPosition),dy=dFdy(worldPosition);
+          vec3 rx=cross(dy,n),ry=cross(n,dx);
+          float determinant=dot(dx,rx);
+          vec3 gradient=(rx*dFdx(materialHeight)+ry*dFdy(materialHeight))*sign(determinant)/max(abs(determinant),${accurateFragments?'.00001':'.0001'});
+          gradient*=min(.045,.55/max(length(gradient),.001));
+          n=normalize(n-gradient);
+        }`:''}
+        // Cell fingers remain fine surface detail, never circuit or power telemetry.
+        float coordinate=(localPosition.y+1.)*9.;
+        float footprint=${derivatives?'fwidth(coordinate)':'.16'};
+        float fingers=1.-smoothstep(.018,.018+max(footprint,.018),abs(fract(coordinate)-.5));
+        fingers*=1.-smoothstep(.14,.45,footprint);
+        float busbar=1.-smoothstep(.012,.025,abs(abs(localPosition.x)-.64));
+        base=mix(base,vec3(.13,.16,.19),cell*max(fingers*.18,busbar*.28));
+        float ndl=max(dot(n,l),0.),ndv=max(dot(n,v),.015),ndh=max(dot(n,h),0.),vdh=max(dot(v,h),0.);
+        float roughness=.64-metal*.27-foil*.18-cell*.37-glass*.47;
+        roughness+=foil*clamp(materialHeight*.16,0.,.16);
+        float metallic=max(metal*.88,foil);
+        vec3 f0=mix(vec3(.04),base,metallic);
+        f0=mix(f0,vec3(.035,.045,.065),cell);
+        f0=mix(f0,vec3(.025,.035,.055),glass);
+        // GGX microfacets, Smith visibility and Schlick Fresnel separate rough metal,
+        // crinkled conductive MLI and dielectric optical/solar coatings.
+        float alpha=roughness*roughness,a2=alpha*alpha;
+        float denominator=max(ndh*ndh*(a2-1.)+1.,.001);
+        float distribution=(a2/denominator)/(3.14159265*denominator);
+        float k=(roughness+1.)*(roughness+1.)/8.;
+        float masking=(ndv/(ndv*(1.-k)+k))*(ndl/(ndl*(1.-k)+k));
+        vec3 fresnel=f0+(vec3(1.)-f0)*pow(clamp(1.-vdh,0.,1.),5.);
+        vec3 specular=distribution*masking*fresnel/max(4.*ndv*ndl,.04);
+        vec3 diffuse=(vec3(1.)-fresnel)*(1.-metallic)*base/3.14159265;
+        float visibility=sunVisibility(ndl);
+        vec3 lit=(diffuse+specular)*vec3(5.2,4.88,4.35)*ndl*sunlight*visibility;
+        // Analytic Earth/space reflections are decorative illumination; the actual
+        // Sun key and its self-shadows share one fixed world-space direction.
         vec3 reflected=reflect(-v,n);
-        float earth=1.-smoothstep(-.52,.32,reflected.y);
-        vec3 environment=mix(vec3(.007,.012,.02),vec3(.045,.095,.16),earth);
-        environment+=vec3(.04,.06,.075)*pow(max(1.-abs(reflected.y+.12),0.),12.);
-        vec3 ambient=vec3(.075,.095,.13)+vec3(.025,.065,.12)*max(-n.y,0.);
-        float cavity=mix(.72,1.,smoothstep(.65,1.,max(abs(localPosition.x),abs(localPosition.y))));
-        vec3 lit=base*(ambient+sunlight*vec3(1.16,1.08,.94)*ndl)*(1.-metal*.32-glass*.7);
-        lit+=specular*highlight*sunlight*ndl;
-        lit+=environment*specular*(.28+metal*.48+foil*.26+cell*.30+glass*.45);
-        lit*=mix(1.,cavity,glass);
-        // Modest exposure, filmic compression and display gamma keep bright rims and dark cells readable.
-        lit*=1.12;
+        float earth=1.-smoothstep(-.58,.32,reflected.y);
+        vec3 environment=mix(vec3(.02,.03,.05),vec3(.17,.31,.48),earth);
+        environment+=vec3(.11,.14,.18)*pow(clamp(1.-abs(reflected.y+.12),0.,1.),10.);
+        vec3 grazing=f0+(vec3(1.)-f0)*pow(clamp(1.-ndv,0.,1.),5.);
+        vec3 ambient=vec3(.095,.12,.16)+vec3(.04,.08,.13)*max(-n.y,0.);
+        lit+=base*ambient*(1.-metallic*.45-glass*.85);
+        lit+=environment*grazing*(.48+metal*.38+foil*.24+cell*.40+glass*.7);
+        lit*=1.4;
         lit=(lit*(2.51*lit+.03))/(lit*(2.43*lit+.59)+.14);
         gl_FragColor=vec4(pow(clamp(lit,0.,1.),vec3(1./2.2)),1.);
-      }`));
-    gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error('3D renderer unavailable');
+      }`);
   }catch(error){onFailure(error.message);return null;}
   gl.useProgram(program);gl.enable(gl.DEPTH_TEST);
   const multiply=(a,b)=>{const out=new Float32Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++)for(let k=0;k<4;k++)out[c*4+r]+=a[k*4+r]*b[c*4+k];return out;};
@@ -95,7 +158,9 @@ window.createSpacecraftScene=function(canvas,onFailure){
     };
     build(triangle,quad);
     const buffers=[vertices,normals].map(data=>{const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);return buffer;});
-    return {buffers,count:vertices.length/3};
+    const bounds=[[-1,-1,-1],[1,1,1]];
+    vertices.forEach((value,index)=>{const axis=index%3;bounds[0][axis]=Math.min(bounds[0][axis],value);bounds[1][axis]=Math.max(bounds[1][axis],value);});
+    return {buffers,count:vertices.length/3,bounds};
   }
   const faces=[
     {n:[0,0,1],p:[[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]]},
@@ -169,8 +234,14 @@ window.createSpacecraftScene=function(canvas,onFailure){
       quad([[...p,-1],[...q,-1],[...q,1],[...p,1]]);
     }
   });
+  const detailedExterior=typeof window.createDetailedSpacecraftModel==='function'?window.createDetailedSpacecraftModel({mesh,cube,chamfered,foil,cylinder,annulus}):null;
   const modelLoc=gl.getUniformLocation(program,'model'),normalLoc=gl.getUniformLocation(program,'normalModel'),viewLoc=gl.getUniformLocation(program,'view');
   const colorLoc=gl.getUniformLocation(program,'color'),sunLoc=gl.getUniformLocation(program,'sunlight'),surfaceLoc=gl.getUniformLocation(program,'surface'),eyeLoc=gl.getUniformLocation(program,'eye');
+  const bumpLoc=gl.getUniformLocation(program,'bumpEnabled');
+  const detailLoc=gl.getUniformLocation(program,'materialDetail'),foilReadyLoc=gl.getUniformLocation(program,'foilReady'),solarReadyLoc=gl.getUniformLocation(program,'solarReady');
+  const lightLoc=gl.getUniformLocation(program,'lightDirection'),lightViewLoc=gl.getUniformLocation(program,'lightView');
+  const shadowEnabledLoc=gl.getUniformLocation(program,'shadowEnabled'),shadowTexelLoc=gl.getUniformLocation(program,'shadowTexel');
+  const samplerLocs=textureSupport?['foilMap','solarMap','shadowMap'].map(name=>gl.getUniformLocation(program,name)):[];
   const presets={isometric:[-.46,.31,7.8],front:[0,0,8.5],top:[0,Math.PI/2,8.5]};
   let [azimuth,elevation,distance]=presets.isometric;
   let row=null,cfg=null,drag=null,lost=false;
@@ -179,36 +250,188 @@ window.createSpacecraftScene=function(canvas,onFailure){
   const mix=(a,b,fraction)=>a.map((value,i)=>value+(b[i]-value)*fraction);
   const thermalColor=fraction=>fraction===null?[.38,.44,.51]:fraction<.5?
     mix([.13,.42,.94],[.23,.82,.7],fraction*2):mix([.23,.82,.7],[1,.25,.14],(fraction-.5)*2);
+  const lightDirection=normalize([-2,4,5]);
+  const materialMaps=[];
+  function materialStatus(){
+    if(canvas.dataset)canvas.dataset.renderMaterials=lost?'unavailable':materialMaps.length===2&&materialMaps.every(entry=>entry&&entry.ready)?'textured':materialMaps.some(entry=>entry&&entry.image)?'loading':'procedural';
+  }
+  if(canvas.dataset){canvas.dataset.renderShadows='fallback';canvas.dataset.modelDetail='schematic';}
+  // Browser-managed images are requested exactly once. Both photographs have a
+  // complete neutral 1px texture while loading, including on WebGL1 NPOT hardware.
+  function materialMap(url,unit){
+    if(!textureSupport)return null;
+    let texture=null;
+    try{
+      texture=gl.createTexture();if(!texture)return null;
+      gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,texture);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+      gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([128,128,128,255]));
+    }catch(_error){if(texture&&gl.deleteTexture)gl.deleteTexture(texture);return null;}
+    const entry={texture,unit,ready:false,image:null};
+    if(typeof window.Image!=='function')return entry;
+    let image;
+    try{image=new window.Image();}catch(_error){return entry;}
+    entry.image=image;
+    const done=()=>{image.onload=null;image.onerror=null;entry.image=null;materialStatus();};
+    image.onload=()=>{
+      if(lost){done();return;}
+      try{
+        const width=image.naturalWidth||image.width,height=image.naturalHeight||image.height;
+        const maximum=gl.getParameter?gl.getParameter(gl.MAX_TEXTURE_SIZE):2048;
+        if(!width||!height||width>maximum||height>maximum){done();return;}
+        let source=image;
+        // Mipmaps remove photograph shimmer as hundreds of cells shrink in the
+        // hero. Resample NPOT sources only when a native 2D canvas is available;
+        // otherwise WebGL1's complete clamp/linear texture remains the fallback.
+        if(gl.generateMipmap&&window.document&&window.document.createElement){
+          try{
+            const bitmap=window.document.createElement('canvas');
+            bitmap.width=2**Math.floor(Math.log2(Math.min(width,1024)));
+            bitmap.height=2**Math.floor(Math.log2(Math.min(height,1024)));
+            const context=bitmap.getContext('2d');
+            if(context){context.drawImage(image,0,0,bitmap.width,bitmap.height);source=bitmap;}
+          }catch(_error){source=image;}
+        }
+        gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,texture);
+        gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,source);
+        if(gl.generateMipmap&&gl.LINEAR_MIPMAP_LINEAR&&(source.width&(source.width-1))===0&&(source.height&(source.height-1))===0){
+          gl.generateMipmap(gl.TEXTURE_2D);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);
+        }
+        entry.ready=true;
+      }catch(_error){entry.ready=false;}
+      done();draw();
+    };
+    image.onerror=done;
+    try{image.src=url;}catch(_error){done();}
+    return entry;
+  }
+  let shadow=null;
+  if(shadowSupport){
+    let texture=null,framebuffer=null,depth=null,depthProgram=null;
+    try{
+      const limit=gl.getParameter?Math.min(gl.getParameter(gl.MAX_TEXTURE_SIZE),gl.getParameter(gl.MAX_RENDERBUFFER_SIZE)):1024;
+      const size=Math.min(1024,limit);if(size<512)throw new Error('Optional shadow target too small');
+      depthProgram=link(`attribute vec3 p;uniform mat4 model;uniform mat4 lightView;
+        void main(){gl_Position=lightView*model*vec4(p,1.);}`,`
+        precision ${precision} float;
+        void main(){
+          // Two bounded channels avoid the mediump overflow of 24/32-bit packing.
+          float depth=min(gl_FragCoord.z,.9999),low=fract(depth*255.);
+          gl_FragColor=vec4(depth-low/255.,low,0.,1.);
+        }`);
+      texture=gl.createTexture();framebuffer=gl.createFramebuffer();depth=gl.createRenderbuffer();
+      if(!texture||!framebuffer||!depth)throw new Error('Optional shadow target unavailable');
+      gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,texture);
+      gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,size,size,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+      gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffer);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,texture,0);
+      gl.bindRenderbuffer(gl.RENDERBUFFER,depth);gl.renderbufferStorage(gl.RENDERBUFFER,gl.DEPTH_COMPONENT16,size,size);
+      gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.RENDERBUFFER,depth);
+      if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw new Error('Optional shadow framebuffer incomplete');
+      shadow={texture,framebuffer,depth,program:depthProgram,size,
+        attribute:gl.getAttribLocation(depthProgram,'p'),model:gl.getUniformLocation(depthProgram,'model'),view:gl.getUniformLocation(depthProgram,'lightView')};
+    }catch(_error){
+      if(texture&&gl.deleteTexture)gl.deleteTexture(texture);
+      if(framebuffer&&gl.deleteFramebuffer)gl.deleteFramebuffer(framebuffer);
+      if(depth&&gl.deleteRenderbuffer)gl.deleteRenderbuffer(depth);
+      if(depthProgram&&gl.deleteProgram)gl.deleteProgram(depthProgram);
+    }finally{gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);}
+  }
+  materialMaps.push(materialMap('/mli-material.png',0),materialMap('/solar-material.png',1));materialStatus();
+  function sunView(commands){
+    const z=lightDirection,x=normalize(cross([0,1,0],z)),y=cross(z,x);
+    const rotation=new Float32Array([x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,0,0,0,1]);
+    const low=[Infinity,Infinity,Infinity],high=[-Infinity,-Infinity,-Infinity];
+    for(const command of commands){
+      const matrix=multiply(rotation,command.model),bounds=command.shape.bounds||[[-1,-1,-1],[1,1,1]];
+      for(const px of [bounds[0][0],bounds[1][0]])for(const py of [bounds[0][1],bounds[1][1]])for(const pz of [bounds[0][2],bounds[1][2]]){
+        for(let axis=0;axis<3;axis++){
+          const value=matrix[axis]*px+matrix[4+axis]*py+matrix[8+axis]*pz+matrix[12+axis];
+          low[axis]=Math.min(low[axis],value);high[axis]=Math.max(high[axis],value);
+        }
+      }
+    }
+    const projection=identity();
+    for(let axis=0;axis<3;axis++){
+      low[axis]-=.18;high[axis]+=.18;
+      const span=high[axis]-low[axis],sign=axis===2?-1:1;
+      projection[axis*5]=sign*2/span;projection[12+axis]=-sign*(high[axis]+low[axis])/span;
+    }
+    return multiply(projection,rotation);
+  }
+  function render(commands,cameraView,eye,state){
+    const lightView=sunView(commands),hasShadow=Boolean(shadow&&!state.eclipse);
+    materialStatus();if(canvas.dataset)canvas.dataset.renderShadows=hasShadow?'mapped':'fallback';
+    if(hasShadow){
+      gl.bindFramebuffer(gl.FRAMEBUFFER,shadow.framebuffer);gl.viewport(0,0,shadow.size,shadow.size);
+      gl.clearColor(1,1,1,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(shadow.program);
+      gl.uniformMatrix4fv(shadow.view,false,lightView);
+      let bound=null;
+      for(const command of commands){
+        if(bound!==command.shape){
+          gl.bindBuffer(gl.ARRAY_BUFFER,command.shape.buffers[0]);gl.enableVertexAttribArray(shadow.attribute);
+          gl.vertexAttribPointer(shadow.attribute,3,gl.FLOAT,false,0,0);bound=command.shape;
+        }
+        gl.uniformMatrix4fv(shadow.model,false,command.model);gl.drawArrays(gl.TRIANGLES,0,command.shape.count);
+      }
+      gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+    }
+    gl.useProgram(program);gl.viewport(0,0,canvas.width,canvas.height);
+    gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    gl.uniformMatrix4fv(viewLoc,false,cameraView);gl.uniformMatrix4fv(lightViewLoc,false,lightView);
+    gl.uniform3fv(eyeLoc,eye);gl.uniform3fv(lightLoc,lightDirection);
+    gl.uniform1f(sunLoc,state.eclipse?.14:1);gl.uniform1f(detailLoc,inspection.overlay==='subsystems'?1:0);gl.uniform1f(bumpLoc,bumpSupport?1:0);
+    gl.uniform1f(shadowEnabledLoc,hasShadow?1:0);gl.uniform1f(shadowTexelLoc,shadow?1/shadow.size:0);
+    gl.uniform1f(foilReadyLoc,materialMaps[0]&&materialMaps[0].ready?1:0);
+    gl.uniform1f(solarReadyLoc,materialMaps[1]&&materialMaps[1].ready?1:0);
+    if(textureSupport){
+      for(let i=0;i<2;i++){
+        gl.activeTexture(gl.TEXTURE0+i);gl.bindTexture(gl.TEXTURE_2D,materialMaps[i]?materialMaps[i].texture:null);
+        gl.uniform1i(samplerLocs[i],i);
+      }
+      gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,shadow?shadow.texture:materialMaps[0]?materialMaps[0].texture:null);
+      gl.uniform1i(samplerLocs[2],2);
+    }
+    let bound=null;
+    for(const command of commands){
+      if(bound!==command.shape){
+        command.shape.buffers.forEach((buffer,i)=>{gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.enableVertexAttribArray(attributes[i]);gl.vertexAttribPointer(attributes[i],3,gl.FLOAT,false,0,0);});
+        bound=command.shape;
+      }
+      gl.uniformMatrix4fv(modelLoc,false,command.model);gl.uniformMatrix4fv(normalLoc,false,command.normal);
+      gl.uniform3fv(colorLoc,command.color);gl.uniform1f(surfaceLoc,command.surface);gl.drawArrays(gl.TRIANGLES,0,command.shape.count);
+    }
+  }
   function draw(){
     if(lost||!row||!canvas.clientWidth||!canvas.clientHeight)return;
     const ratio=clamp(window.devicePixelRatio||1,1,2);
     canvas.width=Math.round(canvas.clientWidth*ratio);canvas.height=Math.round(canvas.clientHeight*ratio);
-    gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
     const aspect=canvas.width/canvas.height,f=1/Math.tan(Math.PI/8),near=.1,far=100;
     const projection=new Float32Array([f/aspect,0,0,0,0,f,0,0,0,0,(far+near)/(near-far),-1,0,0,2*far*near/(near-far),0]);
     // Fit the wide array span consistently; retain vertical room on very wide heroes.
     // User zoom remains a bounded distance, independent of viewport resizing.
     const exterior=inspection.exterior&&!inspection.exploded&&inspection.overlay==='subsystems';
+    if(canvas.dataset)canvas.dataset.modelDetail=exterior&&detailedExterior?'detailed':'schematic';
     const framedDistance=distance*Math.max(exterior?.55:inspection.exploded?.78:.62,(exterior?1.25:1.55)/aspect);
     const camera=identity();camera[14]=-framedDistance;
-    gl.uniformMatrix4fv(viewLoc,false,multiply(projection,multiply(camera,multiply(rotX(elevation),rotY(azimuth)))));
-    gl.uniform3fv(eyeLoc,[-Math.sin(azimuth)*Math.cos(elevation)*framedDistance,Math.sin(elevation)*framedDistance,Math.cos(azimuth)*Math.cos(elevation)*framedDistance]);
+    const cameraView=multiply(projection,multiply(camera,multiply(rotX(elevation),rotY(azimuth))));
+    const eye=[-Math.sin(azimuth)*Math.cos(elevation)*framedDistance,Math.sin(elevation)*framedDistance,Math.cos(azimuth)*Math.cos(elevation)*framedDistance];
     const state=LabUI.sceneState(row,cfg),measurements=LabUI.inspectionState(row,cfg);
     // A fixed exterior presentation tilt is cosmetic; pointing error remains the sole recorded rotation.
     const attitude=multiply(rotY(Number.isFinite(state.yaw)?state.yaw:0),exterior?rotZ(-.14):identity());
-    gl.uniform1f(sunLoc,state.eclipse?.14:1);
-    let boundMesh=null;
+    const commands=[];
     const part=(shape,pos,scale,color,surface=0,rotation=identity())=>{
-      if(boundMesh!==shape){
-        shape.buffers.forEach((buffer,i)=>{gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.enableVertexAttribArray(attributes[i]);gl.vertexAttribPointer(attributes[i],3,gl.FLOAT,false,0,0);});
-        boundMesh=shape;
-      }
       const location=identity();location[12]=pos[0];location[13]=pos[1];location[14]=pos[2];
       const orientation=multiply(attitude,multiply(location,rotation));
-      gl.uniformMatrix4fv(modelLoc,false,multiply(orientation,transform([0,0,0],scale)));
-      // Reciprocal scale retains correct normals on flattened panels and curved hardware.
-      gl.uniformMatrix4fv(normalLoc,false,multiply(orientation,transform([0,0,0],scale.map(value=>1/value))));
-      gl.uniform3fv(colorLoc,color);gl.uniform1f(surfaceLoc,surface);gl.drawArrays(gl.TRIANGLES,0,shape.count);
+      commands.push({shape,model:multiply(orientation,transform([0,0,0],scale)),
+        normal:multiply(orientation,transform([0,0,0],scale.map(value=>1/value))),color,surface});
     };
     const box=(pos,scale,color,surface=0)=>part(cube,pos,scale,color,surface);
     const rod=(from,to,radius,color)=>{
@@ -231,6 +454,7 @@ window.createSpacecraftScene=function(canvas,onFailure){
         rod(a,b,.008,[.24,.43,.58]);
       }
     };
+    if(exterior&&detailedExterior){detailedExterior({part,box,rod},state);}else{
     const silver=[.63,.69,.73],dark=[.045,.065,.085],gold=[.73,.46,.14],highlight=[1,.77,.31];
     const temperature=thermalColor(measurements.temperatureFraction);
     // Measured overlays and exploded inspection always expose the existing schematic modules.
@@ -369,6 +593,7 @@ window.createSpacecraftScene=function(canvas,onFailure){
     box([.48,.93,-.34],[.12,.07,.14],gold,1);
     rod([.48,.99,-.34],[.48,1.48,-.34],.012,silver);
     rod([.44,1.48,-.34],[.52,1.48,-.34],.01,silver);
+    }
     if(inspection.overlay==='power'){
       // Three relative bars (solar / served / unserved, top to bottom), using recorded W only.
       // Unknown channels remain unfilled. There is no inferred voltage, current or power routing.
@@ -381,6 +606,7 @@ window.createSpacecraftScene=function(canvas,onFailure){
         if(value!==null&&value>0){const halfWidth=.7*(value/maximum);box([-.7+halfWidth,y,.88],[halfWidth,.04,.015],colors[i]);}
       });
     }
+    render(commands,cameraView,eye,state);
   }
   function setView(name){
     if(!Object.hasOwn(presets,name))throw new Error('Unknown inspection view');
@@ -412,7 +638,7 @@ window.createSpacecraftScene=function(canvas,onFailure){
     if(e.key==='ArrowUp')elevation=clamp(elevation-.15,-Math.PI/2,Math.PI/2);
     if(e.key==='ArrowDown')elevation=clamp(elevation+.15,-Math.PI/2,Math.PI/2);draw();
   }});
-  canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();if(lost)return;lost=true;drag=null;onFailure('3D context lost; using 2D.');});
+  canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();if(lost)return;lost=true;drag=null;materialStatus();if(canvas.dataset)canvas.dataset.renderShadows='fallback';onFailure('3D context lost; using 2D.');});
   window.addEventListener('resize',draw);
   return {update(r,c){row=r;cfg=c;draw();},draw,setInspection,setView,resetCamera,zoom};
 };

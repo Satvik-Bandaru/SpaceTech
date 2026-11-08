@@ -53,6 +53,20 @@ class ControlCenterTests(unittest.TestCase):
         self.assertEqual(data[:8], b'\x89PNG\r\n\x1a\n')
         self.assertIn("default-src 'self'", headers['Content-Security-Policy'])
 
+    def test_satellite_materials_and_model_are_local_and_ordered(self):
+        for path in ('/mli-material.png', '/solar-material.png'):
+            status, headers, data = self.request('GET', path)
+            self.assertEqual(status, 200, path)
+            self.assertEqual(headers['Content-Type'], 'image/png')
+            self.assertEqual(data[:8], b'\x89PNG\r\n\x1a\n')
+            self.assertIn("default-src 'self'", headers['Content-Security-Policy'])
+        status, headers, helper = self.request('GET', '/scene-model.js')
+        self.assertEqual(status, 200)
+        self.assertIn('text/javascript', headers['Content-Type'])
+        self.assertIn(b'createDetailedSpacecraftModel', helper)
+        page = self.request('GET', '/')[2]
+        self.assertLess(page.index(b'/scene-model.js'), page.index(b'/scene.js'))
+
     def test_bootstrap_and_run_use_real_engine_reproducibly(self):
         status, _, raw = self.request('GET', '/api/bootstrap')
         self.assertEqual(status, 200)

@@ -1,6 +1,12 @@
 # Spacecraft Reliability & Autonomy Lab
 
-## Realistic spacecraft digital twin — 2026-11-07
+## Detailed satellite structure and materials — 2026-11-07
+
+Open **http://127.0.0.1:8014/** and choose **Digital twin**. The satellite now has a beveled structural bus, recessed optical barrel and baffles, fasteners, connectors, harnesses, wing hinges and 112 clipped solar cells. Local insulation/solar material maps, roughness-aware lighting and filtered self-shadows replace the simpler exterior surfaces. Camera, cutaway, thermal/power inspection, replay, 2D fallback and all seven workspaces remain available.
+
+**148 tests pass**; 16 complete simulation reports still exactly match the previous version. No new runtime dependency is required. The detailed exterior is illustrative, not spacecraft CAD or calibrated optics; existing physical models are unchanged. See [verification and limitations](docs/SATELLITE_SURFACE_VERIFICATION.md), [plan](docs/SATELLITE_SURFACE_PLAN.md) and [material provenance](docs/SATELLITE_MATERIAL_ASSETS.md). No deployment or flight-certification claim.
+
+## Earlier exterior increment — 2026-11-07
 
 Open **http://127.0.0.1:8014/** and choose **Digital twin**. The 3D view now defaults to a detailed dark spacecraft exterior with an optical aperture, refined solar cells, metal/MLI/glass shading and a local illustrative Earth backdrop. Choose **Subsystem cutaway** for the existing measured battery, thermal and power inspections. Thermal/power overlays and exploded inspection open that view; choosing the exterior closes them. Existing replay, camera controls, 2D fallback and all seven workspaces are retained.
 
