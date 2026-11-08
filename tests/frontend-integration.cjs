@@ -14,10 +14,14 @@ class Element{
 }
 const elements=new Map(),get=id=>{if(!elements.has(id))elements.set(id,new Element());return elements.get(id);};
 get('policy').value='basic';get('metric').value='battery_pct';get('speed').value='20';
+get('inspection-model').value='exterior';get('inspection-overlay').value='subsystems';
+get('inspection-exploded').checked=false;
 get('assurance-source').value='demo';get('assurance-budget').value='128';get('assurance-probe').checked=true;
 const workflowPosts=[],presentationUpdates=[];
+const inspectionCalls=[];
 const fakeJob={job_id:'0123456789abcdef0123456789abcdef',status:'PREPARED',plan_sha256:'a'.repeat(64),plan:{scenario:fixture.scenario,options:{probe_unsafe:true}},checkpoint:null,audit:[]};
 const context={console,structuredClone,setTimeout,clearTimeout,Blob,
+  createSpacecraftScene:()=>({update(){},setInspection:value=>inspectionCalls.push(structuredClone(value)),setView(){},resetCamera(){},zoom(){}}),
   document:{getElementById:get,querySelectorAll:()=>[],querySelector:()=>get('overview-nav'),createElement:()=>new Element(),createElementNS:()=>new Element()},
   fetch:async (url,options)=>{
     let data;
@@ -39,6 +43,21 @@ for(const path of ['ui-core.js','app.js','assurance.js'])vm.runInContext(fs.read
   assert.equal(get('battery').textContent,fixture.reports.basic.telemetry[0].battery_pct.toFixed(1));
   assert.equal(presentationUpdates.at(-1).report,fixture.reports.basic);
   assert.equal(presentationUpdates.at(-1).index,0);
+  const originalTelemetry=JSON.stringify(fixture.reports.basic.telemetry);
+  get('view-3d').listeners.click();
+  assert.equal(inspectionCalls.at(-1).exterior,true,'The interactive twin defaults to a realistic exterior');
+  get('inspection-model').value='cutaway';get('inspection-model').listeners.change();
+  assert.equal(inspectionCalls.at(-1).exterior,false,'Cutaway must reach the existing inspection renderer');
+  get('inspection-model').value='exterior';get('inspection-model').listeners.change();
+  assert.equal(inspectionCalls.at(-1).exterior,true);
+  get('inspection-overlay').value='thermal';get('inspection-overlay').listeners.change();
+  assert.equal(get('inspection-model').value,'cutaway','A thermal inspection must identify its effective cutaway view');
+  get('inspection-exploded').checked=true;get('inspection-exploded').listeners.change();
+  get('inspection-model').value='exterior';get('inspection-model').listeners.change();
+  assert.equal(get('inspection-overlay').value,'subsystems','Choosing exterior restores the material view');
+  assert.equal(get('inspection-exploded').checked,false,'Choosing exterior closes the exploded schematic');
+  assert.equal(inspectionCalls.at(-1).exterior,true);
+  assert.equal(JSON.stringify(fixture.reports.basic.telemetry),originalTelemetry,'Presentation changes must not alter recorded data');
   get('view-2d').listeners.click();
   assert.equal(viewSyncs,1,'The existing 2D/fallback path must synchronize view-selection accessibility state');
   get('scrubber').value='5';get('scrubber').listeners.input();

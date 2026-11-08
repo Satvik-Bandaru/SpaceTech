@@ -199,6 +199,9 @@
   check.addEventListener('change', () => spacecraft.classList.toggle('mc-labels-hidden', !check.checked));
   tabs.append(labels);
   const inspection = spacecraft.querySelector('#inspection-tools');
+  const modelChoice = inspection.querySelector('#inspection-model-field');
+  modelChoice.classList.add('mc-model-choice');
+  tabs.append(modelChoice);
   const inspectionSettings = el('details', undefined, 'mc-inspection-settings');
   inspectionSettings.append(el('summary', 'Inspection settings'), inspection);
   const cameraActions = el('div', undefined, 'mc-camera-actions');
@@ -217,6 +220,7 @@
     view2dButton.setAttribute('aria-pressed', String(!is3d));
     spacecraft.classList.toggle('mc-is-2d', !is3d);
     inspectionSettings.hidden = cameraActions.hidden = !is3d;
+    modelChoice.hidden = !is3d;
     if (is3d) sceneHint.textContent = 'Drag to rotate · Ctrl + scroll to zoom';
   };
   view2dButton.addEventListener('click', syncView);

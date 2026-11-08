@@ -46,6 +46,13 @@ class ControlCenterTests(unittest.TestCase):
         for path in ('/../AGENTS.md', '/spacecraft_lab/model.py', '/unknown'):
             self.assertEqual(self.request('GET', path)[0], 404)
 
+    def test_earth_scenery_is_local_png_with_security_headers(self):
+        status, headers, data = self.request('GET', '/earth-horizon.png')
+        self.assertEqual(status, 200)
+        self.assertEqual(headers['Content-Type'], 'image/png')
+        self.assertEqual(data[:8], b'\x89PNG\r\n\x1a\n')
+        self.assertIn("default-src 'self'", headers['Content-Security-Policy'])
+
     def test_bootstrap_and_run_use_real_engine_reproducibly(self):
         status, _, raw = self.request('GET', '/api/bootstrap')
         self.assertEqual(status, 200)

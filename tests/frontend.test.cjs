@@ -120,6 +120,60 @@ for(const [width,height] of [[900,345],[320,330]]){
 }
 canvas.clientWidth=800;canvas.clientHeight=500;renderer.resetCamera();
 assert.deepEqual(frames.at(-1),original);
+// Exterior geometry is an optional presentation; recorded measurements and inspection stay intact.
+// Removing the exterior branch, leaking the battery fill, or ignoring inspection must fail these checks.
+const rowBeforeExterior=structuredClone(row),cfgBeforeExterior=structuredClone(cfg);
+renderer.setInspection({exterior:true});
+const exterior=structuredClone(frames.at(-1));
+assert.notDeepEqual(exterior.map(item=>item.model),original.map(item=>item.model));
+assert.ok(exterior.some(item=>item.surface===4),'exterior includes a separate optical glass material');
+assert.equal(exterior.filter(item=>item.surface===3).length,112,'exterior uses two 28-cell panels per wing');
+assert.equal(original.filter(item=>item.surface===3).length,168,'cutaway retains all six original panels');
+renderer.update({...row,battery_pct:75},cfg);
+assert.deepEqual(frames.at(-1),exterior,'closed exterior must not show schematic battery fill');
+renderer.update(row,cfg);
+renderer.setInspection({overlay:'thermal'});
+const exteriorThermal=structuredClone(frames.at(-1));
+renderer.setInspection({exterior:false});
+assert.deepEqual(frames.at(-1),exteriorThermal,'thermal inspection must expose the original measured modules');
+renderer.setInspection({exterior:true,overlay:'power'});
+const exteriorPower=structuredClone(frames.at(-1));
+renderer.setInspection({exterior:false});
+assert.deepEqual(frames.at(-1),exteriorPower,'power inspection must expose the original measured modules');
+renderer.setInspection({exterior:true,overlay:'subsystems',exploded:true});
+const exteriorExploded=structuredClone(frames.at(-1));
+renderer.setInspection({exterior:false});
+assert.deepEqual(frames.at(-1),exteriorExploded,'explosion must expose the original measured modules');
+renderer.setInspection({exterior:true,exploded:false});
+for(const [width,height]of [[900,345],[320,330]]){
+  canvas.clientWidth=width;canvas.clientHeight=height;renderer.resetCamera();
+  const bounds=projectedBounds(frames.at(-1));
+  assert.ok((bounds.right-bounds.left)/2>.58,'exterior should fill the viewport');
+  assert.ok(bounds.left>-.96&&bounds.right<.96&&bounds.bottom>-.96&&bounds.top<.96,
+    `exterior optical payload and wings must fit ${width}×${height}: ${JSON.stringify(bounds)}`);
+}
+// Test the actual submitted inverse-scale normal transform, including oblique rods and thin panels.
+for(const frame of [original,exterior,exteriorExploded])for(const item of frame){
+  for(const key of ['model','normalModel','view','eye'])assert.ok(item[key].every(Number.isFinite),`${key} must be finite`);
+  for(let i=0;i<3;i++)for(let j=0;j<3;j++){
+    const dot=[0,1,2].reduce((sum,k)=>sum+item.model[i*4+k]*item.normalModel[j*4+k],0);
+    assert.ok(Math.abs(dot-(i===j?1:0))<1e-5,'normal transform must remain orthogonal to transformed tangents');
+  }
+}
+// Smooth cylinder sides follow the radial direction; caps keep their axial face normals.
+const cylinderUpload=meshUploads.findIndex((data,i)=>i%2===0&&data.length>100&&data.every((value,j)=>
+  j%3===1?Math.abs(Math.abs(value)-1)<1e-6:j%3===0?Math.hypot(value,data[j+2])<=1.000001:true));
+assert.ok(cylinderUpload>=0,'a cylinder mesh must be present');
+for(let i=0;i<meshUploads[cylinderUpload].length;i+=3){
+  const p=meshUploads[cylinderUpload].slice(i,i+3),n=meshUploads[cylinderUpload+1].slice(i,i+3);
+  assert.ok(n.every(Number.isFinite)&&Math.abs(Math.hypot(...n)-1)<1e-6,'cylinder normals must be finite unit vectors');
+  if(Math.abs(n[1])<1e-6)assert.ok(Math.abs(p[0]*n[0]+p[2]*n[2]-1)<1e-6,'cylinder side normals must be radial');
+}
+assert.deepEqual(row,rowBeforeExterior);assert.deepEqual(cfg,cfgBeforeExterior);
+for(const exteriorValue of ['yes',1,null,undefined])assert.throws(()=>renderer.setInspection({exterior:exteriorValue}));
+canvas.clientWidth=800;canvas.clientHeight=500;
+renderer.setInspection({exterior:false,overlay:'subsystems',exploded:false,selected:null});renderer.resetCamera();
+assert.deepEqual(frames.at(-1),original,'legacy cutaway default must remain available');
 renderer.zoom(1000);const farView=frames.at(-1)[0].view;
 renderer.zoom(1000);assert.deepEqual(frames.at(-1)[0].view,farView);
 renderer.zoom(-1000);const nearView=frames.at(-1)[0].view;

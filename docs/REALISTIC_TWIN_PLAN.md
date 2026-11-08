@@ -1,0 +1,13 @@
+# Realistic spacecraft twin presentation — 2026-11-07
+
+Request: improve the existing spacecraft digital twin toward the supplied CubeSat/Earth reference while preserving every working feature. Correct target is the independent `spacecraft-reliability-lab` application serving localhost:8014, not the `space-tech` download or the original Downloads source. Starting commit `1b090c2`; isolated branch `feature/realistic-spacecraft-twin`. Baseline: 144 tests pass with loopback permission (the restricted run cannot bind the two HTTP test servers).
+
+Retain dependency-free WebGL and the Python reference model. Add a realistic exterior option with machined dark panels, rails, optical aperture, solar-cell contacts, aluminum/MLI/glass material separation and smooth curved hardware. Keep the existing subsystem cutaway, exploded inspection, thermal/power overlays, camera presets/drag/zoom/keyboard, 2D fallback, replay, all seven workspaces and original DOM IDs. Exterior is the UI default; renderer's new `setInspection({exterior:boolean})` remains opt-in for backward compatibility. Exploded/thermal/power inspection exposes the modeled modules instead of painting invented sensor detail onto the shell.
+
+Use one local generated Earth-only bitmap as an illustrative backdrop, retain the existing SVG fallback, and document provenance. Background is scenery, not propagated ground position. Optical parts and exterior geometry are illustrative, not new telescope/propulsion channels. Pointing error is only the existing visual yaw mapping, not a solved three-axis attitude. Eclipse illumination, safe-mode indicators and inspection overlays continue to use recorded simulation data. No fake animation loop, live feed, new runtime dependency, engine change or flight claim.
+
+Tasks:
+1. Pin exterior/cutaway API, input validation, finite geometry/normals and framing with renderer boundary regressions; preserve telemetry immutability and existing controls.
+2. Add the UI model selector with real production-controller tests; preserve connected-tree shell IDs, handlers and all legacy views. Add explicit image route, MIME/admission checks and generated-asset provenance.
+3. Review native shader compilation and appearance against the reference, including rotation, eclipse/replay, cutaway/exploded/overlays and desktop/mobile layout. Use bounded current local browser actions only; no unrelated app access.
+4. Run the full Python/Node suite, verify representative numerical reports remain identical, document visual limits, commit locally and refresh the downloadable source ZIP. No push, deployment or other-project edits.

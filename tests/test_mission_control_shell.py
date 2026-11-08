@@ -101,6 +101,7 @@ assert.equal(new Set(ids).size,ids.length,'Presentation must not duplicate IDs')
 get('run').click();get('export').click();assert.equal(runs,1);assert.equal(exports,1);
 assert.equal(get('view-3d').parentNode,document.querySelector('.mc-view-tabs'),'Use original 3D control in the single view switcher');
 assert.equal(get('view-2d').parentNode,document.querySelector('.mc-view-tabs'),'Use original 2D control in the single view switcher');
+assert.equal(get('inspection-model').parentNode.parentNode,document.querySelector('.mc-view-tabs'),'Exterior and cutaway selection stays directly accessible');
 assert.equal(get('inspection-tools').parentNode.tagName,'details','Advanced controls belong in a native keyboard-accessible disclosure');
 assert.equal(get('inspection-reset').parentNode.className,'mc-camera-actions','Camera reset remains directly accessible');
 document.querySelector('[data-subsystem="thermal"]').click();

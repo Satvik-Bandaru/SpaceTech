@@ -83,6 +83,7 @@ class Handler(BaseHTTPRequestHandler):
                   '/observatory.js': ('observatory.js', 'text/javascript; charset=utf-8'),
                   '/observatory.css': ('observatory.css', 'text/css; charset=utf-8'),
                   '/orbital-backdrop.svg': ('orbital-backdrop.svg', 'image/svg+xml'),
+                  '/earth-horizon.png': ('earth-horizon.png', 'image/png'),
                   '/ui-core.js': ('ui-core.js', 'text/javascript; charset=utf-8')}
         if self.path in routes:
             name, mime = routes[self.path]

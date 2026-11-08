@@ -1,5 +1,11 @@
 # Spacecraft Reliability & Autonomy Lab
 
+## Realistic spacecraft digital twin — 2026-11-07
+
+Open **http://127.0.0.1:8014/** and choose **Digital twin**. The 3D view now defaults to a detailed dark spacecraft exterior with an optical aperture, refined solar cells, metal/MLI/glass shading and a local illustrative Earth backdrop. Choose **Subsystem cutaway** for the existing measured battery, thermal and power inspections. Thermal/power overlays and exploded inspection open that view; choosing the exterior closes them. Existing replay, camera controls, 2D fallback and all seven workspaces are retained.
+
+**145 tests pass**; 16 complete numerical reports remain exactly equal to the pre-graphics baseline. No extra installation or runtime dependency is required. Spacecraft lighting follows recorded sunlight/eclipse state; the artistic Earth background and optical geometry are not measured imagery, an orbit propagator or new instrument physics. See [verification and limitations](docs/REALISTIC_TWIN_VERIFICATION.md), [plan](docs/REALISTIC_TWIN_PLAN.md) and [generated asset provenance](docs/EARTH_BACKDROP_ASSET.md). No flight certification or deployment.
+
 ## Autonomous Discovery Observatory — 2026-11-04
 
 Open **http://127.0.0.1:8014/** and choose **Discovery observatory**. Five configurable synthetic instrument agents automatically detect catalogue novelty, record numerical images and spectra, suppress duplicate captures and respect budgets. A separate local analysis agent explains spectral-template hypotheses and generates reports. Completed missions save locally and can be restored after refresh; export JSON or Markdown for review. The gallery and plots render the captured data.

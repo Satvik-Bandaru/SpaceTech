@@ -1,8 +1,9 @@
 'use strict';
-// Dependency-free WebGL inspection schematic. Draw only on telemetry/camera changes.
+// Dependency-free illustrative exterior / inspection geometry. Draw only on state/camera changes.
 window.createSpacecraftScene=function(canvas,onFailure){
   const gl=canvas.getContext('webgl',{antialias:true,alpha:true});
   if(!gl){onFailure('WebGL unavailable; using the telemetry-driven 2D view.');return null;}
+  const derivatives=Boolean(gl.getExtension&&gl.getExtension('OES_standard_derivatives'));
   const shader=(type,source)=>{const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error('3D shader unavailable');return s;};
   let program;
   try{
@@ -13,9 +14,12 @@ window.createSpacecraftScene=function(canvas,onFailure){
       varying vec3 normal; varying vec3 worldPosition; varying vec3 localPosition;
       void main(){
         vec4 world=model*vec4(p,1.); gl_Position=view*world;
-        normal=mat3(normalModel)*n; worldPosition=world.xyz; localPosition=p;
+        // Normalize in vertex highp before interpolation: thin parts have large
+        // inverse-scale normals that can overflow fragment mediump on mobile GPUs.
+        normal=normalize(mat3(normalModel)*n); worldPosition=world.xyz; localPosition=p;
       }`));
     gl.attachShader(program,shader(gl.FRAGMENT_SHADER,`
+      ${derivatives?'#extension GL_OES_standard_derivatives : enable':''}
       precision mediump float;
       varying vec3 normal; varying vec3 worldPosition; varying vec3 localPosition;
       uniform vec3 color; uniform vec3 eye; uniform float sunlight; uniform float surface;
@@ -25,24 +29,45 @@ window.createSpacecraftScene=function(canvas,onFailure){
         float metal=step(.5,surface)*(1.-step(1.5,surface));
         float foil=step(1.5,surface)*(1.-step(2.5,surface));
         float cell=step(2.5,surface)*(1.-step(3.5,surface));
+        float glass=step(3.5,surface);
         // Irregular, restrained blanket creases avoid a checker pattern on the MLI.
         float grain=sin(localPosition.x*17.+sin(localPosition.y*13.+localPosition.z*9.)*2.7);
         grain+=.45*sin(localPosition.y*31.-localPosition.z*19.+sin(localPosition.x*11.));
-        vec3 base=color*(1.+foil*grain*.04);
-        float contact=step(.986,fract((localPosition.y+1.)*3.));
-        contact=max(contact,1.-step(.012,abs(abs(localPosition.x)-.72)));
-        base=mix(base,vec3(.37,.49,.59),cell*contact*.55);
-        float diffuse=max(dot(n,l),0.);
-        float specular=pow(max(dot(n,h),0.),32.+metal*12.+foil*4.+cell*64.);
-        specular*=.08+metal*.27+foil*.22+cell*.22;
-        float rim=pow(1.-max(dot(n,v),0.),4.);
-        // Soft environment fill is illustrative shading; recorded sunlight controls the key light.
-        vec3 ambient=vec3(.11,.14,.18)+vec3(.04,.05,.065)*max(n.y,0.);
-        vec3 lit=base*(ambient+sunlight*(vec3(.1)+vec3(.82,.77,.69)*diffuse));
-        vec3 reflection=mix(vec3(.82,.89,.96),min(color*1.3,vec3(1.)),foil);
-        lit+=reflection*specular*sunlight;
-        lit+=vec3(.10,.19,.28)*rim*(.16+sunlight*.18)*(metal+foil+cell);
-        gl_FragColor=vec4(lit,1.);
+        float fine=sin(localPosition.x*181.+localPosition.y*127.+localPosition.z*149.);
+        vec3 base=pow(max(color,vec3(.001)),vec3(2.2))*(1.+foil*grain*.055+metal*fine*.012);
+        // Fine cell fingers and two wider busbars are local surface detail, not circuit telemetry.
+        float contactCoordinate=(localPosition.y+1.)*4.;
+        float footprint=${derivatives?'fwidth(contactCoordinate)':'.1'};
+        float fingers=(1.-smoothstep(.022,.022+max(footprint,.015),abs(fract(contactCoordinate)-.5)));
+        fingers*=1.-smoothstep(.10,.35,footprint);
+        float busbar=1.-smoothstep(.014,.04,abs(abs(localPosition.x)-.64));
+        base=mix(base,vec3(.065,.10,.14),cell*max(fingers*.20,busbar*.45));
+        float ndl=max(dot(n,l),0.),ndv=clamp(dot(n,v),0.,1.);
+        float fresnel=pow(1.-ndv,5.);
+        float roughness=.53-metal*.15+foil*.06-cell*.30-glass*.38;
+        float exponent=mix(180.,14.,roughness);
+        float highlight=pow(max(dot(n,h),0.),exponent)*(exponent+2.)/52.;
+        vec3 f0=mix(vec3(.025),base*.62+vec3(.08),metal);
+        f0=mix(f0,base*.74+vec3(.08),foil);
+        f0=mix(f0,vec3(.035,.045,.06),cell);
+        f0=mix(f0,vec3(.018,.025,.035),glass);
+        vec3 specular=f0+(vec3(1.)-f0)*fresnel;
+        // An analytic Earth/space environment gives view-dependent reflections without image maps.
+        // It is decorative lighting; only the key illumination follows recorded sunlit/eclipsed state.
+        vec3 reflected=reflect(-v,n);
+        float earth=1.-smoothstep(-.52,.32,reflected.y);
+        vec3 environment=mix(vec3(.007,.012,.02),vec3(.045,.095,.16),earth);
+        environment+=vec3(.04,.06,.075)*pow(max(1.-abs(reflected.y+.12),0.),12.);
+        vec3 ambient=vec3(.075,.095,.13)+vec3(.025,.065,.12)*max(-n.y,0.);
+        float cavity=mix(.72,1.,smoothstep(.65,1.,max(abs(localPosition.x),abs(localPosition.y))));
+        vec3 lit=base*(ambient+sunlight*vec3(1.16,1.08,.94)*ndl)*(1.-metal*.32-glass*.7);
+        lit+=specular*highlight*sunlight*ndl;
+        lit+=environment*specular*(.28+metal*.48+foil*.26+cell*.30+glass*.45);
+        lit*=mix(1.,cavity,glass);
+        // Modest exposure, filmic compression and display gamma keep bright rims and dark cells readable.
+        lit*=1.12;
+        lit=(lit*(2.51*lit+.03))/(lit*(2.43*lit+.59)+.14);
+        gl_FragColor=vec4(pow(clamp(lit,0.,1.),vec3(1./2.2)),1.);
       }`));
     gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error('3D renderer unavailable');
   }catch(error){onFailure(error.message);return null;}
@@ -51,6 +76,7 @@ window.createSpacecraftScene=function(canvas,onFailure){
   const identity=()=>new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);
   const rotY=a=>new Float32Array([Math.cos(a),0,-Math.sin(a),0,0,1,0,0,Math.sin(a),0,Math.cos(a),0,0,0,0,1]);
   const rotX=a=>new Float32Array([1,0,0,0,0,Math.cos(a),Math.sin(a),0,0,-Math.sin(a),Math.cos(a),0,0,0,0,1]);
+  const rotZ=a=>new Float32Array([Math.cos(a),Math.sin(a),0,0,-Math.sin(a),Math.cos(a),0,0,0,0,1,0,0,0,0,1]);
   const transform=(pos,scale)=>new Float32Array([scale[0],0,0,0,0,scale[1],0,0,0,0,scale[2],0,...pos,1]);
   const normalize=v=>{const length=Math.hypot(...v);return v.map(value=>value/length);};
   const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
@@ -62,7 +88,11 @@ window.createSpacecraftScene=function(canvas,onFailure){
       const smooth=normal&&Array.isArray(normal[0]);
       [a,b,c].forEach((point,i)=>{vertices.push(...point);normals.push(...(smooth?normal[i]:n));});
     };
-    const quad=(points,normal)=>{triangle(points[0],points[1],points[2],normal);triangle(points[0],points[2],points[3],normal);};
+    const quad=(points,normal)=>{
+      const smooth=normal&&Array.isArray(normal[0]);
+      triangle(points[0],points[1],points[2],smooth?[normal[0],normal[1],normal[2]]:normal);
+      triangle(points[0],points[2],points[3],smooth?[normal[0],normal[2],normal[3]]:normal);
+    };
     build(triangle,quad);
     const buffers=[vertices,normals].map(data=>{const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);return buffer;});
     return {buffers,count:vertices.length/3};
@@ -91,11 +121,12 @@ window.createSpacecraftScene=function(canvas,onFailure){
     }
   });
   const cylinder=mesh((triangle,quad)=>{
-    for(let i=0;i<24;i++){
-      const a=i*Math.PI/12,b=(i+1)*Math.PI/12;
+    for(let i=0;i<64;i++){
+      const a=i*Math.PI/32,b=(i+1)*Math.PI/32;
       const pa=[Math.cos(a),-1,Math.sin(a)],pb=[Math.cos(b),-1,Math.sin(b)];
       const pc=[pb[0],1,pb[2]],pd=[pa[0],1,pa[2]];
-      quad([pa,pd,pc,pb],[Math.cos((a+b)/2),0,Math.sin((a+b)/2)]);
+      const na=[Math.cos(a),0,Math.sin(a)],nb=[Math.cos(b),0,Math.sin(b)];
+      quad([pa,pd,pc,pb],[na,na,nb,nb]);
       triangle([0,1,0],pc,pd,[0,1,0]);triangle([0,-1,0],pa,pb,[0,-1,0]);
     }
   });
@@ -116,12 +147,34 @@ window.createSpacecraftScene=function(canvas,onFailure){
       quad([point(x,u),point(y,u),point(y,v),point(x,v)]);
     }
   });
+  // Machined annulus: a real open aperture, with smooth barrel walls and flat front/back rings.
+  const annulus=mesh((_triangle,quad)=>{
+    for(let i=0;i<64;i++){
+      const a=i*Math.PI/32,b=(i+1)*Math.PI/32;
+      const point=(angle,r,z)=>[r*Math.cos(angle),r*Math.sin(angle),z];
+      const na=[Math.cos(a),Math.sin(a),0],nb=[Math.cos(b),Math.sin(b),0];
+      quad([point(a,1,-1),point(b,1,-1),point(b,1,1),point(a,1,1)],[na,nb,nb,na]);
+      quad([point(b,.72,-1),point(a,.72,-1),point(a,.72,1),point(b,.72,1)],
+        [nb.map(v=>-v),na.map(v=>-v),na.map(v=>-v),nb.map(v=>-v)]);
+      quad([point(a,.72,1),point(a,1,1),point(b,1,1),point(b,.72,1)],[0,0,1]);
+      quad([point(b,.72,-1),point(b,1,-1),point(a,1,-1),point(a,.72,-1)],[0,0,-1]);
+    }
+  });
+  const chamfered=mesh((triangle,quad)=>{
+    const corners=[[-.88,-1],[.88,-1],[1,-.88],[1,.88],[.88,1],[-.88,1],[-1,.88],[-1,-.88]];
+    for(let i=0;i<corners.length;i++){
+      const p=corners[i],q=corners[(i+1)%corners.length];
+      triangle([0,0,1],[...p,1],[...q,1],[0,0,1]);
+      triangle([0,0,-1],[...q,-1],[...p,-1],[0,0,-1]);
+      quad([[...p,-1],[...q,-1],[...q,1],[...p,1]]);
+    }
+  });
   const modelLoc=gl.getUniformLocation(program,'model'),normalLoc=gl.getUniformLocation(program,'normalModel'),viewLoc=gl.getUniformLocation(program,'view');
   const colorLoc=gl.getUniformLocation(program,'color'),sunLoc=gl.getUniformLocation(program,'sunlight'),surfaceLoc=gl.getUniformLocation(program,'surface'),eyeLoc=gl.getUniformLocation(program,'eye');
   const presets={isometric:[-.46,.31,7.8],front:[0,0,8.5],top:[0,Math.PI/2,8.5]};
   let [azimuth,elevation,distance]=presets.isometric;
   let row=null,cfg=null,drag=null,lost=false;
-  let inspection={exploded:false,overlay:'subsystems',selected:null};
+  let inspection={exploded:false,overlay:'subsystems',selected:null,exterior:false};
   const clamp=(value,low,high)=>Math.max(low,Math.min(high,value));
   const mix=(a,b,fraction)=>a.map((value,i)=>value+(b[i]-value)*fraction);
   const thermalColor=fraction=>fraction===null?[.38,.44,.51]:fraction<.5?
@@ -135,12 +188,14 @@ window.createSpacecraftScene=function(canvas,onFailure){
     const projection=new Float32Array([f/aspect,0,0,0,0,f,0,0,0,0,(far+near)/(near-far),-1,0,0,2*far*near/(near-far),0]);
     // Fit the wide array span consistently; retain vertical room on very wide heroes.
     // User zoom remains a bounded distance, independent of viewport resizing.
-    const framedDistance=distance*Math.max(inspection.exploded?.78:.62,1.55/aspect);
+    const exterior=inspection.exterior&&!inspection.exploded&&inspection.overlay==='subsystems';
+    const framedDistance=distance*Math.max(exterior?.55:inspection.exploded?.78:.62,(exterior?1.25:1.55)/aspect);
     const camera=identity();camera[14]=-framedDistance;
     gl.uniformMatrix4fv(viewLoc,false,multiply(projection,multiply(camera,multiply(rotX(elevation),rotY(azimuth)))));
     gl.uniform3fv(eyeLoc,[-Math.sin(azimuth)*Math.cos(elevation)*framedDistance,Math.sin(elevation)*framedDistance,Math.cos(azimuth)*Math.cos(elevation)*framedDistance]);
     const state=LabUI.sceneState(row,cfg),measurements=LabUI.inspectionState(row,cfg);
-    const attitude=rotY(Number.isFinite(state.yaw)?state.yaw:0);
+    // A fixed exterior presentation tilt is cosmetic; pointing error remains the sole recorded rotation.
+    const attitude=multiply(rotY(Number.isFinite(state.yaw)?state.yaw:0),exterior?rotZ(-.14):identity());
     gl.uniform1f(sunLoc,state.eclipse?.14:1);
     let boundMesh=null;
     const part=(shape,pos,scale,color,surface=0,rotation=identity())=>{
@@ -178,6 +233,7 @@ window.createSpacecraftScene=function(canvas,onFailure){
     };
     const silver=[.63,.69,.73],dark=[.045,.065,.085],gold=[.73,.46,.14],highlight=[1,.77,.31];
     const temperature=thermalColor(measurements.temperatureFraction);
+    // Measured overlays and exploded inspection always expose the existing schematic modules.
     const radiator=inspection.exploded?[-1.15,.35,1.2]:[.27,.08,.68];
     const battery=inspection.exploded?[1.2,-.08,1.25]:[-.32,-.19,.76];
     const antenna=inspection.exploded?[.1,1.65,.65]:[.18,1.02,.08];
@@ -196,6 +252,7 @@ window.createSpacecraftScene=function(canvas,onFailure){
     box([0,0,-.645],[.59,.67,.025],[.31,.35,.4],1);
     for(let i=0;i<9;i++)box([-.48+i*.12,0,-.681],[.016,.59,.012],[.6,.65,.69],1);
     if(inspection.exploded){guide([.27,.08,.68],radiator);guide([-.32,-.19,.76],battery);guide([.18,.85,.08],antenna);}
+    if(!exterior){
     // This is one modeled thermal node, never a spatial surface heat map.
     box(radiator,[.31,.56,.035],inspection.overlay==='thermal'?temperature:[.77,.8,.81],1);
     for(let i=0;i<7;i++)box([radiator[0],radiator[1]-.43+i*.14,radiator[2]+.043],[.275,.008,.006],[.3,.35,.39],1);
@@ -211,11 +268,62 @@ window.createSpacecraftScene=function(canvas,onFailure){
     box([controller[0],controller[1],controller[2]+.062],[.145,.087,.012],state.safe?[1,.5,.16]:[.23,.52,.69]);
     for(const x of [-.16,.16])for(const y of [-.1,.1])part(cylinder,[controller[0]+x,controller[1]+y,controller[2]+.065],[.018,.013,.018],silver,1,rotX(Math.PI/2));
     if(inspection.selected==='fdir')outline(controller,[.21,.15,.055],highlight);
+    }else{
+      const charcoal=[.075,.085,.095],black=[.012,.017,.023],machined=[.50,.53,.56];
+      part(chamfered,[0,0,.665],[.71,.79,.045],charcoal);
+      // Segmented front panels, recessed joints, corner bosses and flush screw heads.
+      for(const y of [-.66,.66]){
+        part(chamfered,[0,y,.716],[.63,.095,.014],[.095,.105,.12]);
+        for(const x of [-.56,.56]){
+          part(cylinder,[x,y,.739],[.035,.013,.035],machined,1,rotX(Math.PI/2));
+          box([x,y,.754],[.018,.004,.002],black);
+        }
+      }
+      for(const x of [-.66,.66]){
+        box([x,0,.726],[.022,.55,.018],silver,1);
+        for(const y of [-.47,0,.47]){
+          part(cylinder,[x,y,.75],[.027,.009,.027],machined,1,rotX(Math.PI/2));
+          box([x,y,.761],[.012,.003,.002],black);
+        }
+      }
+      // Optical hardware is an illustrative payload, not a connected camera or added plant sensor.
+      part(chamfered,[0,.015,.735],[.60,.59,.035],[.05,.065,.08]);
+      part(annulus,[0,.015,.87],[.50,.50,.135],[.22,.245,.27],1);
+      part(annulus,[0,.015,1.015],[.535,.535,.028],machined,1);
+      part(annulus,[0,.015,1.049],[.487,.487,.012],[.10,.12,.14]);
+      part(annulus,[0,.015,1.067],[.458,.458,.008],[.32,.35,.38],1);
+      part(cylinder,[0,.015,1.04],[.323,.008,.323],[.008,.018,.032],4,rotX(Math.PI/2));
+      // Recessed baffles and a secondary mirror behind thin support vanes give the aperture depth.
+      part(annulus,[0,.015,1.077],[.399,.399,.012],black);
+      part(cylinder,[0,.015,1.095],[.09,.028,.09],black,0,rotX(Math.PI/2));
+      part(annulus,[0,.015,1.124],[.094,.094,.003],[.075,.085,.095]);
+      for(const angle of [0,Math.PI/2,Math.PI,Math.PI*1.5]){
+        rod([Math.cos(angle)*.105,.015+Math.sin(angle)*.105,1.098],
+          [Math.cos(angle)*.405,.015+Math.sin(angle)*.405,1.098],.004,[.15,.17,.19]);
+      }
+      for(let i=0;i<8;i++){
+        const a=i*Math.PI/4;
+        part(cylinder,[Math.cos(a)*.497,.015+Math.sin(a)*.497,1.049],[.018,.009,.018],silver,1,rotX(Math.PI/2));
+      }
+      // Side service panels leave the crumpled MLI visible between structural ribs.
+      for(const side of [-1,1]){
+        box([side*.75,.12,-.12],[.018,.50,.32],[.08,.095,.11]);
+        for(const y of [-.45,.57])for(const z of [-.38,.14])
+          rod([side*.764,y,z],[side*.784,y,z],.023,silver);
+        for(const y of [-.72,.73])box([side*.746,y,-.05],[.013,.015,.52],silver,1);
+        // Harness loops and hold-down fittings are fixed cosmetic parts.
+        const cable=[[side*.77,-.55,.18],[side*.96,-.58,.18],[side*1.02,-.35,.12],[side*.92,-.17,.07]];
+        for(let i=0;i<cable.length-1;i++)rod(cable[i],cable[i+1],.018,[.12,.11,.085]);
+        box([side*.76,-.52,.18],[.035,.055,.06],gold,1);
+      }
+      box([-.48,-.66,.755],[.07,.032,.012],state.safe?[.76,.32,.08]:[.18,.42,.37],1);
+      box([.48,-.66,.755],[.07,.032,.012],state.link?[.18,.42,.37]:[.76,.32,.08],1);
+    }
     // Six framed rigid panels, with discrete cells and rear structural ribs.
     for(const side of [-1,1]){
       rod([side*.73,0,0],[side*1.3,0,0],.065,silver);
       part(cylinder,[side*.87,0,0],[.12,.17,.12],dark,1,rotX(Math.PI/2));
-      for(let segment=0;segment<3;segment++){
+      for(let segment=0;segment<(exterior?2:3);segment++){
         const center=side*(1.5+segment*.75),front=.062;
         box([center,0,0],[.36,.7,.034],[.035,.06,.08],1);
         for(const y of [-.7,.7])box([center,y,front],[.365,.016,.016],silver,1);
@@ -224,10 +332,10 @@ window.createSpacecraftScene=function(canvas,onFailure){
           const px=center-.265+x*.176,py=-.594+y*.198;
           const variation=((x*3+y*2+segment)%5)*.013;
           const color=inspection.overlay==='thermal'?[.1,.17,.23]:state.solar?[.045+variation,.17+variation,.33+variation]:[.038,.085,.15];
-          box([px,py,.043],[.081,.091,.008],color,3);
+          part(exterior?chamfered:cube,[px,py,.043],[.081,.091,.008],color,3);
         }
         for(const y of [-.51,.51])box([center,y,-.045],[.33,.016,.014],[.35,.4,.44],1);
-        if(segment<2)for(const y of [-.5,.5])box([center+side*.375,y,0],[.043,.05,.055],gold,1);
+        if(segment<(exterior?1:2))for(const y of [-.5,.5])box([center+side*.375,y,0],[.043,.05,.055],gold,1);
       }
       // Cosmetic instrument housings and nozzles do not imply propulsion telemetry.
       box([side*.48,-.93,-.12],[.14,.12,.14],silver,1);
@@ -235,6 +343,7 @@ window.createSpacecraftScene=function(canvas,onFailure){
       part(cylinder,[side*.48,-1.16,-.12],[.13,.035,.13],silver,1);
       part(cylinder,[side*.48,-1.199,-.12],[.092,.006,.092],dark);
     }
+    if(!exterior){
     // Parabolic high-gain dish, rolled rim, three supports and a link-state feed housing.
     rod([antenna[0],antenna[1]-.25,antenna[2]],[antenna[0],antenna[1]+.13,antenna[2]],.055,silver);
     const dishCenter=[antenna[0],antenna[1]+.15,antenna[2]+.12],dishScale=.43;
@@ -246,6 +355,13 @@ window.createSpacecraftScene=function(canvas,onFailure){
       rod([dishCenter[0]+Math.cos(angle)*.39,dishCenter[1]+Math.sin(angle)*.39,dishCenter[2]+.15],feed,.011,silver);
     }
     part(cylinder,feed,[.055,.075,.055],state.link?[.39,.69,.65]:[.9,.4,.12],1,rotX(Math.PI/2));
+    }else{
+      // Compact patch antenna and mechanical deck hardware keep the exterior payload silhouette clear.
+      part(chamfered,[.32,.925,-.06],[.29,.045,.30],[.22,.25,.28],1);
+      box([.32,.976,-.06],[.24,.008,.25],[.62,.60,.52]);
+      for(const x of [.08,.56])for(const z of [-.29,.17])
+        part(cylinder,[x,.986,z],[.018,.009,.018],silver,1);
+    }
     // Fixed optical sensor and communication whip are model detail, not new telemetry channels.
     box([-.44,.95,-.27],[.15,.13,.14],silver,1);
     part(cylinder,[-.44,1.075,-.27],[.09,.025,.09],dark,1);
@@ -277,8 +393,9 @@ window.createSpacecraftScene=function(canvas,onFailure){
   }
   function setInspection(options={}){
     if(!options||typeof options!=='object'||Array.isArray(options))throw new Error('Invalid inspection options');
-    for(const key of Object.keys(options))if(!['exploded','overlay','selected'].includes(key))throw new Error('Unknown inspection option');
+    for(const key of Object.keys(options))if(!['exploded','overlay','selected','exterior'].includes(key))throw new Error('Unknown inspection option');
     if('exploded'in options&&typeof options.exploded!=='boolean')throw new Error('Exploded inspection requires a boolean');
+    if('exterior'in options&&typeof options.exterior!=='boolean')throw new Error('Exterior inspection requires a boolean');
     if('overlay'in options&&!['subsystems','thermal','power'].includes(options.overlay))throw new Error('Unknown inspection overlay');
     if('selected'in options&&options.selected!==null&&!['eps','thermal','fdir'].includes(options.selected))throw new Error('Unknown inspection subsystem');
     inspection={...inspection,...options};draw();

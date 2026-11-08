@@ -130,7 +130,8 @@ function render() {
     const measured=LabUI.inspectionState(row,report.config);
     const value=n=>Number.isFinite(n)?fmt(n):'unknown';
     const overlay=$('inspection-overlay').value;
-    const note=overlay==='thermal'?`Single-node color scale ${fmt(report.config.low_temperature_k)}–${fmt(report.config.high_temperature_k)} K · `:overlay==='power'?'Bars top to bottom: solar, served, unserved; scaled to the largest current value · ':'';
+    const exterior=$('inspection-model').value==='exterior'&&overlay==='subsystems'&&!$('inspection-exploded').checked;
+    const note=exterior?'Illustrative exterior; use Subsystem cutaway to inspect modeled hardware. ':overlay==='thermal'?`Single-node color scale ${fmt(report.config.low_temperature_k)}–${fmt(report.config.high_temperature_k)} K · `:overlay==='power'?'Bars top to bottom: solar, served, unserved; scaled to the largest current value · ':'';
     $('inspection-legend').textContent=`${note}Battery fill ${value(measured.batteryPct)}% · Solar ${value(measured.solarW)} W · Served ${value(measured.servedW)} W · Unserved ${value(measured.unservedW)} W. Exploded positions are inspection geometry.`;
   }
   $('briefing').textContent=report.briefing.statements.join(' ');
@@ -207,7 +208,8 @@ document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener
 }));
 document.querySelectorAll('[data-subsystem]').forEach(button=>button.addEventListener('click',()=>{
   subsystem=button.dataset.subsystem;
-  if(scene)scene.setInspection({selected:subsystem});
+  $('inspection-model').value='cutaway';
+  if(scene)scene.setInspection({selected:subsystem,exterior:false});
   document.querySelectorAll('[data-subsystem]').forEach(b=>b.classList.toggle('selected',b===button));render();
 }));
 $('run').addEventListener('click',run);
@@ -311,11 +313,16 @@ $('view-3d').addEventListener('click',()=>{
   if(!scene)return;
   view3d=true;$('scene-3d').hidden=false;$('spacecraft').setAttribute('hidden','');
   $('inspection-tools').hidden=false;$('inspection-legend').hidden=false;
-  scene.setInspection({exploded:$('inspection-exploded').checked,overlay:$('inspection-overlay').value,selected:subsystem});
+  scene.setInspection({exterior:$('inspection-model').value==='exterior',exploded:$('inspection-exploded').checked,overlay:$('inspection-overlay').value,selected:subsystem});
   $('scene-hint').textContent='DRAG TO ROTATE · WHEEL / + − TO ZOOM';render();
 });
-for(const id of ['inspection-exploded','inspection-overlay'])$(id).addEventListener('change',()=>{
-  if(!scene)return;scene.setInspection({exploded:$('inspection-exploded').checked,overlay:$('inspection-overlay').value});render();
+for(const id of ['inspection-model','inspection-exploded','inspection-overlay'])$(id).addEventListener('change',()=>{
+  if(id==='inspection-model'&&$('inspection-model').value==='exterior'){
+    $('inspection-overlay').value='subsystems';$('inspection-exploded').checked=false;
+  }else if($('inspection-overlay').value!=='subsystems'||$('inspection-exploded').checked){
+    $('inspection-model').value='cutaway';
+  }
+  if(!scene)return;scene.setInspection({exterior:$('inspection-model').value==='exterior',exploded:$('inspection-exploded').checked,overlay:$('inspection-overlay').value});render();
 });
 $('inspection-camera').addEventListener('change',()=>{if(scene)scene.setView($('inspection-camera').value);});
 $('inspection-reset').addEventListener('click',()=>{if(scene)scene.resetCamera();$('inspection-camera').value='isometric';});
