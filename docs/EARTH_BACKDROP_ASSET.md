@@ -24,4 +24,3 @@ Color palette: black and deep navy space, dark blue oceans and cloud layers, nat
 Materials/textures: photographic Earth cloud detail, natural atmosphere, realistic curvature without an exaggerated fisheye effect.
 Constraints: this is background scenery ONLY. NO satellite, spacecraft, solar panels, space station, astronaut, vehicle, foreground object, sun disk, moon, planets other than Earth, logos, text, symbols, grid, HUD, labels, watermark, frames or graphical overlays. No bright galaxy, nebula, dense cloud of stars, or lens flare. No UI. Generate as a wide 16:9 image.
 ```
-
